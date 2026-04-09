@@ -147,6 +147,13 @@ add_action('rest_api_init', function () {
         'permission_callback' => 'hc_check_admin_auth',
     ]);
 
+    // POST /wp-json/healthcode/v1/activate-plugin
+    register_rest_route('healthcode/v1', '/activate-plugin', [
+        'methods'  => 'POST',
+        'callback' => 'hc_activate_plugin',
+        'permission_callback' => 'hc_check_admin_auth',
+    ]);
+
     // GET /wp-json/healthcode/v1/ping
     register_rest_route('healthcode/v1', '/ping', [
         'methods'  => 'GET',
@@ -161,6 +168,42 @@ add_action('rest_api_init', function () {
         'permission_callback' => 'hc_check_api_auth',
     ]);
 });
+
+/**
+ * Activate or deactivate a WordPress plugin by its slug.
+ */
+function hc_activate_plugin(WP_REST_Request $request): WP_REST_Response {
+    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+    $body = $request->get_json_params();
+    $plugin = $body['plugin'] ?? '';
+    $action = $body['action'] ?? 'activate';
+
+    if (empty($plugin)) {
+        return new WP_REST_Response(['error' => 'Missing "plugin" field (e.g. "healthcode-design-system/healthcode-design-system.php")'], 400);
+    }
+
+    // Validate plugin file exists
+    $plugin_path = WP_PLUGIN_DIR . '/' . $plugin;
+    if (!file_exists($plugin_path)) {
+        return new WP_REST_Response(['error' => 'Plugin file not found: ' . $plugin, 'path' => $plugin_path], 404);
+    }
+
+    if ($action === 'activate') {
+        $result = activate_plugin($plugin);
+        if (is_wp_error($result)) {
+            return new WP_REST_Response(['error' => $result->get_error_message()], 500);
+        }
+        return new WP_REST_Response(['success' => true, 'plugin' => $plugin, 'status' => 'active'], 200);
+    }
+
+    if ($action === 'deactivate') {
+        deactivate_plugins($plugin);
+        return new WP_REST_Response(['success' => true, 'plugin' => $plugin, 'status' => 'inactive'], 200);
+    }
+
+    return new WP_REST_Response(['error' => 'Invalid action. Use "activate" or "deactivate".'], 400);
+}
 
 /**
  * Get Elementor data for a post.
