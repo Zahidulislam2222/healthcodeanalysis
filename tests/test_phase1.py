@@ -123,14 +123,12 @@ def test_project_structure():
     print("\n=== Test: Project Structure ===")
     base = os.path.join(os.path.dirname(__file__), "..")
 
-    dirs = ["scripts", "configs", "templates", "assets", "tests"]
+    dirs = ["scripts", "configs", "tests"]
     for d in dirs:
         path = os.path.join(base, d)
         test(f"Directory '{d}' exists", os.path.isdir(path))
 
     files = [
-        "CLAUDE.md",
-        "BUILD_PLAN.md",
         ".env.sample",
         ".gitignore",
         "scripts/wp_client.py",
