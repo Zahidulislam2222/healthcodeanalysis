@@ -12,3 +12,6 @@ deployment:
     - /bin/cp scripts/healthcode-design-system/healthcode-design-system.php $DESIGNDIR/healthcode-design-system.php
     - /bin/cp scripts/healthcode-design-system/css/healthcode-theme.css $DESIGNDIR/css/healthcode-theme.css
     - /bin/cp scripts/healthcode-design-system/js/healthcode-animations.js $DESIGNDIR/js/healthcode-animations.js
+    # Must-use plugin: auto-activates the design system
+    - /bin/mkdir -p /home/mehzsolu/public_html/wp-content/mu-plugins
+    - /bin/cp scripts/hc-auto-activate.php /home/mehzsolu/public_html/wp-content/mu-plugins/hc-auto-activate.php
