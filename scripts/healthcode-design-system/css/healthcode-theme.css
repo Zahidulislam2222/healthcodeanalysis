@@ -1,0 +1,937 @@
+/* ==========================================================================
+   HealthCode Design System — Dark Glassmorphism Medical AI Theme
+   Version: 1.0.0
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES
+   -------------------------------------------------------------------------- */
+:root {
+    /* Base palette */
+    --hc-bg-primary: #0a0e1a;
+    --hc-bg-secondary: #0f1225;
+    --hc-bg-tertiary: #141830;
+    --hc-bg-elevated: #1a1f3a;
+
+    /* Glass surfaces */
+    --hc-glass-bg: rgba(255, 255, 255, 0.03);
+    --hc-glass-bg-hover: rgba(255, 255, 255, 0.06);
+    --hc-glass-border: rgba(255, 255, 255, 0.08);
+    --hc-glass-border-hover: rgba(255, 255, 255, 0.15);
+    --hc-glass-blur: 20px;
+
+    /* Accent colors */
+    --hc-cyan: #06b6d4;
+    --hc-blue: #3b82f6;
+    --hc-emerald: #10b981;
+    --hc-purple: #8b5cf6;
+    --hc-amber: #f59e0b;
+    --hc-rose: #f43f5e;
+
+    /* Gradients */
+    --hc-gradient-primary: linear-gradient(135deg, #06b6d4, #3b82f6);
+    --hc-gradient-health: linear-gradient(135deg, #10b981, #06b6d4);
+    --hc-gradient-ai: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    --hc-gradient-mesh: linear-gradient(135deg, #0a0e1a 0%, #0f1225 25%, #1a1040 50%, #0f1225 75%, #0a0e1a 100%);
+
+    /* Text */
+    --hc-text-primary: #f1f5f9;
+    --hc-text-secondary: #94a3b8;
+    --hc-text-muted: #64748b;
+    --hc-text-accent: #06b6d4;
+
+    /* Shadows & Glows */
+    --hc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --hc-shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --hc-shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --hc-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.25);
+    --hc-glow-blue: 0 0 20px rgba(59, 130, 246, 0.25);
+    --hc-glow-purple: 0 0 20px rgba(139, 92, 246, 0.25);
+
+    /* Typography */
+    --hc-font-heading: 'Space Grotesk', system-ui, sans-serif;
+    --hc-font-body: 'Inter', system-ui, sans-serif;
+    --hc-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Spacing */
+    --hc-radius-sm: 8px;
+    --hc-radius-md: 12px;
+    --hc-radius-lg: 16px;
+    --hc-radius-xl: 24px;
+
+    /* Transitions */
+    --hc-ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --hc-duration: 0.4s;
+}
+
+/* --------------------------------------------------------------------------
+   2. GLOBAL RESETS & BASE
+   -------------------------------------------------------------------------- */
+.hc-dark-theme,
+.hc-dark-theme body {
+    background-color: var(--hc-bg-primary) !important;
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-body) !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+/* Animated mesh gradient background */
+.hc-dark-theme::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--hc-gradient-mesh);
+    background-size: 400% 400%;
+    animation: hc-mesh-shift 20s ease infinite;
+    z-index: -2;
+    pointer-events: none;
+}
+
+@keyframes hc-mesh-shift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+}
+
+/* Subtle dot grid overlay */
+.hc-dark-theme::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Scrollbar */
+.hc-dark-theme ::-webkit-scrollbar {
+    width: 8px;
+}
+.hc-dark-theme ::-webkit-scrollbar-track {
+    background: var(--hc-bg-primary);
+}
+.hc-dark-theme ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+.hc-dark-theme ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Selection */
+.hc-dark-theme ::selection {
+    background: rgba(6, 182, 212, 0.3);
+    color: var(--hc-text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   3. TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+.hc-dark-theme h1,
+.hc-dark-theme h2,
+.hc-dark-theme h3,
+.hc-dark-theme h4,
+.hc-dark-theme h5,
+.hc-dark-theme h6,
+.hc-dark-theme .elementor-heading-title {
+    font-family: var(--hc-font-heading) !important;
+    color: var(--hc-text-primary) !important;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.hc-dark-theme p,
+.hc-dark-theme .elementor-text-editor,
+.hc-dark-theme .elementor-widget-text-editor {
+    color: var(--hc-text-secondary) !important;
+    font-family: var(--hc-font-body) !important;
+    line-height: 1.7;
+}
+
+.hc-dark-theme a {
+    color: var(--hc-cyan) !important;
+    text-decoration: none !important;
+    transition: color var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme a:hover {
+    color: var(--hc-blue) !important;
+}
+
+/* Gradient text utility */
+.hc-gradient-text,
+.hc-dark-theme .elementor-widget-heading.hc-gradient-text .elementor-heading-title {
+    background: var(--hc-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --------------------------------------------------------------------------
+   4. ASTRA THEME OVERRIDES
+   -------------------------------------------------------------------------- */
+
+/* Header */
+.hc-dark-theme .ast-primary-header-bar,
+.hc-dark-theme .site-header,
+.hc-dark-theme #masthead,
+.hc-dark-theme .ast-header-break-point .ast-mobile-header-wrap .ast-primary-header-bar {
+    background: rgba(10, 14, 26, 0.85) !important;
+    backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    border-bottom: 1px solid var(--hc-glass-border) !important;
+    box-shadow: var(--hc-shadow-sm) !important;
+    transition: background var(--hc-duration) var(--hc-ease);
+}
+
+.hc-dark-theme .ast-above-header-bar,
+.hc-dark-theme .ast-below-header-bar {
+    background: rgba(10, 14, 26, 0.9) !important;
+    border-color: var(--hc-glass-border) !important;
+}
+
+/* Site title / logo */
+.hc-dark-theme .ast-site-title-wrap .site-title a,
+.hc-dark-theme .site-title a,
+.hc-dark-theme .ast-site-identity .site-title a {
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-heading) !important;
+    font-weight: 700 !important;
+}
+
+/* Navigation */
+.hc-dark-theme .main-header-menu > .menu-item > a,
+.hc-dark-theme .ast-header-break-point .ast-mobile-popup-content a,
+.hc-dark-theme .main-header-menu .menu-item a {
+    color: var(--hc-text-secondary) !important;
+    font-family: var(--hc-font-body) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    transition: color var(--hc-duration) var(--hc-ease) !important;
+    position: relative;
+}
+.hc-dark-theme .main-header-menu > .menu-item > a:hover,
+.hc-dark-theme .main-header-menu > .menu-item.current-menu-item > a,
+.hc-dark-theme .main-header-menu .menu-item a:hover {
+    color: var(--hc-cyan) !important;
+}
+
+/* Nav hover underline effect */
+.hc-dark-theme .main-header-menu > .menu-item > a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--hc-gradient-primary);
+    transition: width var(--hc-duration) var(--hc-ease), left var(--hc-duration) var(--hc-ease);
+    border-radius: 1px;
+}
+.hc-dark-theme .main-header-menu > .menu-item > a:hover::after,
+.hc-dark-theme .main-header-menu > .menu-item.current-menu-item > a::after {
+    width: 100%;
+    left: 0;
+}
+
+/* Mobile menu */
+.hc-dark-theme .ast-mobile-popup-drawer .ast-mobile-popup-inner {
+    background: var(--hc-bg-secondary) !important;
+    border-left: 1px solid var(--hc-glass-border) !important;
+}
+
+/* Dropdown sub-menus */
+.hc-dark-theme .main-header-menu .sub-menu,
+.hc-dark-theme .ast-header-break-point .main-header-menu .sub-menu {
+    background: rgba(15, 18, 37, 0.95) !important;
+    backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-md) !important;
+    box-shadow: var(--hc-shadow-lg) !important;
+}
+.hc-dark-theme .main-header-menu .sub-menu .menu-item a {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .main-header-menu .sub-menu .menu-item a:hover {
+    background: var(--hc-glass-bg-hover) !important;
+    color: var(--hc-cyan) !important;
+}
+
+/* Footer */
+.hc-dark-theme .site-footer,
+.hc-dark-theme .ast-footer-overlay,
+.hc-dark-theme footer,
+.hc-dark-theme .ast-small-footer {
+    background: var(--hc-bg-secondary) !important;
+    border-top: 1px solid var(--hc-glass-border) !important;
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .site-footer a,
+.hc-dark-theme .ast-small-footer a {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .site-footer a:hover {
+    color: var(--hc-cyan) !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. ELEMENTOR SECTION OVERRIDES
+   -------------------------------------------------------------------------- */
+.hc-dark-theme .elementor-section {
+    transition: opacity 0.6s var(--hc-ease), transform 0.6s var(--hc-ease);
+}
+
+/* All sections: dark backgrounds */
+.hc-dark-theme .elementor-section:not([data-settings*="background"]),
+.hc-dark-theme .elementor-section.elementor-section-boxed,
+.hc-dark-theme .elementor-section.elementor-section-full_width {
+    background-color: transparent !important;
+}
+
+/* Section with backgrounds — add overlay */
+.hc-dark-theme .elementor-section[data-settings*="background_background"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 14, 26, 0.65);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Containers */
+.hc-dark-theme .elementor-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* --------------------------------------------------------------------------
+   6. GLASS CARD SYSTEM
+   -------------------------------------------------------------------------- */
+
+/* Auto glass styling for Elementor inner sections and columns with backgrounds */
+.hc-dark-theme .elementor-inner-section,
+.hc-dark-theme .elementor-widget-wrap.e-widget-wrap {
+    transition: transform var(--hc-duration) var(--hc-ease),
+                box-shadow var(--hc-duration) var(--hc-ease),
+                border-color var(--hc-duration) var(--hc-ease);
+}
+
+/* Glass card utility class — apply via Elementor CSS Classes field */
+.hc-dark-theme .hc-glass,
+.hc-dark-theme .elementor-widget.hc-glass {
+    background: var(--hc-glass-bg) !important;
+    backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    box-shadow: var(--hc-shadow-sm) !important;
+    transition: all var(--hc-duration) var(--hc-ease) !important;
+    padding: 24px !important;
+}
+.hc-dark-theme .hc-glass:hover,
+.hc-dark-theme .elementor-widget.hc-glass:hover {
+    background: var(--hc-glass-bg-hover) !important;
+    border-color: var(--hc-glass-border-hover) !important;
+    box-shadow: var(--hc-shadow-md), var(--hc-glow-cyan) !important;
+    transform: translateY(-4px);
+}
+
+/* Glass card with gradient border */
+.hc-dark-theme .hc-glass-glow {
+    position: relative;
+    background: var(--hc-glass-bg) !important;
+    backdrop-filter: blur(var(--hc-glass-blur)) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    border: 1px solid transparent !important;
+    background-clip: padding-box !important;
+}
+.hc-dark-theme .hc-glass-glow::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    background: var(--hc-gradient-primary);
+    border-radius: var(--hc-radius-lg);
+    z-index: -1;
+    opacity: 0.3;
+    transition: opacity var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .hc-glass-glow:hover::before {
+    opacity: 0.6;
+}
+
+/* --------------------------------------------------------------------------
+   7. ELEMENTOR WIDGET OVERRIDES
+   -------------------------------------------------------------------------- */
+
+/* --- Buttons --- */
+.hc-dark-theme .elementor-button {
+    background: var(--hc-gradient-primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: var(--hc-radius-md) !important;
+    font-family: var(--hc-font-heading) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+    padding: 14px 32px !important;
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--hc-duration) var(--hc-ease),
+                box-shadow var(--hc-duration) var(--hc-ease) !important;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+}
+.hc-dark-theme .elementor-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4) !important;
+}
+.hc-dark-theme .elementor-button:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+/* Button shimmer effect */
+.hc-dark-theme .elementor-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    transition: left 0.6s var(--hc-ease);
+}
+.hc-dark-theme .elementor-button:hover::before {
+    left: 100%;
+}
+
+/* Ghost/outline button variant */
+.hc-dark-theme .elementor-button.hc-ghost {
+    background: transparent !important;
+    border: 1px solid var(--hc-cyan) !important;
+    color: var(--hc-cyan) !important;
+    box-shadow: none;
+}
+.hc-dark-theme .elementor-button.hc-ghost:hover {
+    background: rgba(6, 182, 212, 0.1) !important;
+    box-shadow: var(--hc-glow-cyan) !important;
+}
+
+/* --- Icon Boxes --- */
+.hc-dark-theme .elementor-widget-icon-box .elementor-icon-box-wrapper {
+    background: var(--hc-glass-bg);
+    backdrop-filter: blur(var(--hc-glass-blur));
+    -webkit-backdrop-filter: blur(var(--hc-glass-blur));
+    border: 1px solid var(--hc-glass-border);
+    border-radius: var(--hc-radius-lg);
+    padding: 32px;
+    transition: all var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-widget-icon-box .elementor-icon-box-wrapper:hover {
+    border-color: var(--hc-glass-border-hover);
+    background: var(--hc-glass-bg-hover);
+    box-shadow: var(--hc-shadow-md), var(--hc-glow-cyan);
+    transform: translateY(-4px);
+}
+.hc-dark-theme .elementor-widget-icon-box .elementor-icon {
+    color: var(--hc-cyan) !important;
+    transition: transform var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-widget-icon-box:hover .elementor-icon {
+    transform: scale(1.1);
+}
+.hc-dark-theme .elementor-icon-box-title,
+.hc-dark-theme .elementor-icon-box-title a {
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-heading) !important;
+}
+.hc-dark-theme .elementor-icon-box-description {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --- Counters --- */
+.hc-dark-theme .elementor-widget-counter .elementor-counter {
+    background: var(--hc-glass-bg);
+    backdrop-filter: blur(var(--hc-glass-blur));
+    -webkit-backdrop-filter: blur(var(--hc-glass-blur));
+    border: 1px solid var(--hc-glass-border);
+    border-radius: var(--hc-radius-lg);
+    padding: 28px 24px;
+    transition: all var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-widget-counter .elementor-counter:hover {
+    border-color: var(--hc-glass-border-hover);
+    box-shadow: var(--hc-shadow-md);
+    transform: translateY(-2px);
+}
+.hc-dark-theme .elementor-counter-number-wrapper {
+    color: transparent !important;
+    background: var(--hc-gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    font-family: var(--hc-font-heading) !important;
+    font-weight: 700 !important;
+}
+.hc-dark-theme .elementor-counter-title {
+    color: var(--hc-text-secondary) !important;
+    font-family: var(--hc-font-body) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 13px !important;
+    margin-top: 8px;
+}
+
+/* --- Images --- */
+.hc-dark-theme .elementor-widget-image img {
+    border-radius: var(--hc-radius-md);
+    transition: transform var(--hc-duration) var(--hc-ease),
+                filter var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-widget-image:hover img {
+    transform: scale(1.02);
+}
+
+/* --- Image with glass frame --- */
+.hc-dark-theme .hc-img-glass img {
+    border: 1px solid var(--hc-glass-border);
+    box-shadow: var(--hc-shadow-md);
+}
+
+/* --- Testimonials --- */
+.hc-dark-theme .elementor-widget-testimonial .elementor-testimonial-wrapper {
+    background: var(--hc-glass-bg) !important;
+    backdrop-filter: blur(var(--hc-glass-blur));
+    -webkit-backdrop-filter: blur(var(--hc-glass-blur));
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    padding: 32px !important;
+    transition: all var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-widget-testimonial .elementor-testimonial-wrapper:hover {
+    border-color: var(--hc-glass-border-hover) !important;
+    box-shadow: var(--hc-shadow-md), var(--hc-glow-purple) !important;
+}
+.hc-dark-theme .elementor-testimonial-content {
+    color: var(--hc-text-secondary) !important;
+    font-style: italic;
+}
+.hc-dark-theme .elementor-testimonial-name {
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-heading) !important;
+}
+.hc-dark-theme .elementor-testimonial-job {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .elementor-testimonial-img img {
+    border: 2px solid var(--hc-cyan) !important;
+    border-radius: 50% !important;
+}
+
+/* --- Forms --- */
+.hc-dark-theme .elementor-widget-form input,
+.hc-dark-theme .elementor-widget-form textarea,
+.hc-dark-theme .elementor-widget-form select,
+.hc-dark-theme .wpcf7 input,
+.hc-dark-theme .wpcf7 textarea,
+.hc-dark-theme .wpforms-form input,
+.hc-dark-theme .wpforms-form textarea,
+.hc-dark-theme .metform-form-content input,
+.hc-dark-theme .metform-form-content textarea {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-sm) !important;
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-body) !important;
+    padding: 12px 16px !important;
+    transition: border-color var(--hc-duration) var(--hc-ease),
+                box-shadow var(--hc-duration) var(--hc-ease) !important;
+}
+.hc-dark-theme .elementor-widget-form input:focus,
+.hc-dark-theme .elementor-widget-form textarea:focus,
+.hc-dark-theme .wpcf7 input:focus,
+.hc-dark-theme .wpcf7 textarea:focus,
+.hc-dark-theme .wpforms-form input:focus,
+.hc-dark-theme .wpforms-form textarea:focus,
+.hc-dark-theme .metform-form-content input:focus,
+.hc-dark-theme .metform-form-content textarea:focus {
+    border-color: var(--hc-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15) !important;
+    outline: none !important;
+}
+.hc-dark-theme .elementor-widget-form label,
+.hc-dark-theme .wpcf7 label,
+.hc-dark-theme .metform-form-content label {
+    color: var(--hc-text-secondary) !important;
+    font-family: var(--hc-font-body) !important;
+    font-weight: 500;
+}
+.hc-dark-theme .elementor-widget-form input::placeholder,
+.hc-dark-theme .elementor-widget-form textarea::placeholder {
+    color: var(--hc-text-muted) !important;
+}
+
+/* --- Social Icons --- */
+.hc-dark-theme .elementor-widget-social-icons .elementor-icon {
+    background: var(--hc-glass-bg) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    transition: all var(--hc-duration) var(--hc-ease) !important;
+}
+.hc-dark-theme .elementor-widget-social-icons .elementor-icon:hover {
+    background: var(--hc-glass-bg-hover) !important;
+    border-color: var(--hc-cyan) !important;
+    box-shadow: var(--hc-glow-cyan) !important;
+    transform: translateY(-3px);
+}
+.hc-dark-theme .elementor-widget-social-icons .elementor-icon i {
+    color: var(--hc-text-secondary) !important;
+    transition: color var(--hc-duration) var(--hc-ease) !important;
+}
+.hc-dark-theme .elementor-widget-social-icons .elementor-icon:hover i {
+    color: var(--hc-cyan) !important;
+}
+
+/* --- Dividers / Separators --- */
+.hc-dark-theme .elementor-divider-separator {
+    border-color: var(--hc-glass-border) !important;
+}
+
+/* --- Tabs & Accordions --- */
+.hc-dark-theme .elementor-tab-title {
+    color: var(--hc-text-secondary) !important;
+    font-family: var(--hc-font-heading) !important;
+    border-color: var(--hc-glass-border) !important;
+    transition: color var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-tab-title.elementor-active,
+.hc-dark-theme .elementor-tab-title:hover {
+    color: var(--hc-cyan) !important;
+}
+.hc-dark-theme .elementor-tab-content {
+    background: var(--hc-glass-bg) !important;
+    border-color: var(--hc-glass-border) !important;
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --- Post Grid / Blog --- */
+.hc-dark-theme .elementor-post,
+.hc-dark-theme .elementor-posts-container article,
+.hc-dark-theme .jet-listing-grid__item {
+    background: var(--hc-glass-bg) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    overflow: hidden;
+    transition: all var(--hc-duration) var(--hc-ease);
+}
+.hc-dark-theme .elementor-post:hover,
+.hc-dark-theme .elementor-posts-container article:hover,
+.hc-dark-theme .jet-listing-grid__item:hover {
+    border-color: var(--hc-glass-border-hover) !important;
+    box-shadow: var(--hc-shadow-md) !important;
+    transform: translateY(-4px);
+}
+.hc-dark-theme .elementor-post__title,
+.hc-dark-theme .elementor-post__title a {
+    color: var(--hc-text-primary) !important;
+    font-family: var(--hc-font-heading) !important;
+}
+.hc-dark-theme .elementor-post__excerpt {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .elementor-post__meta-data,
+.hc-dark-theme .elementor-post-date,
+.hc-dark-theme .elementor-post-author {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .elementor-post__badge {
+    background: var(--hc-gradient-primary) !important;
+    color: #ffffff !important;
+    border-radius: var(--hc-radius-sm) !important;
+}
+
+/* --- Widgets Background --- */
+.hc-dark-theme .elementor-widget-container {
+    color: var(--hc-text-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   8. HERO SECTION — First section on any page
+   -------------------------------------------------------------------------- */
+.hc-dark-theme .elementor-page .elementor > .elementor-section:first-child,
+.hc-dark-theme .elementor-page .elementor > .e-con:first-child {
+    position: relative;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Hero gradient overlay */
+.hc-dark-theme .elementor-page .elementor > .elementor-section:first-child::before,
+.hc-dark-theme .elementor-page .elementor > .e-con:first-child::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(10, 14, 26, 0.3) 0%,
+        rgba(10, 14, 26, 0.6) 50%,
+        var(--hc-bg-primary) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Hero heading — large, gradient */
+.hc-dark-theme .elementor-page .elementor > .elementor-section:first-child .elementor-heading-title,
+.hc-dark-theme .elementor-page .elementor > .e-con:first-child .elementor-heading-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+    font-weight: 700 !important;
+    background: linear-gradient(135deg, var(--hc-text-primary) 0%, var(--hc-cyan) 50%, var(--hc-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1 !important;
+}
+
+/* Hero text */
+.hc-dark-theme .elementor-page .elementor > .elementor-section:first-child .elementor-text-editor,
+.hc-dark-theme .elementor-page .elementor > .e-con:first-child .elementor-text-editor {
+    font-size: clamp(1rem, 1.5vw, 1.25rem) !important;
+    color: var(--hc-text-secondary) !important;
+    max-width: 600px;
+}
+
+/* --------------------------------------------------------------------------
+   9. ECG PULSE LINE
+   -------------------------------------------------------------------------- */
+.hc-ecg-container {
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.2;
+}
+
+.hc-ecg-line {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    animation: hc-ecg-scroll 4s linear infinite;
+}
+
+.hc-ecg-line svg {
+    width: 50%;
+    height: 100%;
+    float: left;
+}
+
+.hc-ecg-line svg path {
+    fill: none;
+    stroke: var(--hc-cyan);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 6px rgba(6, 182, 212, 0.5));
+}
+
+@keyframes hc-ecg-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* --------------------------------------------------------------------------
+   10. FLOATING PARTICLES CANVAS
+   -------------------------------------------------------------------------- */
+#hc-particles-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.4;
+}
+
+/* --------------------------------------------------------------------------
+   11. SCROLL ANIMATION CLASSES (set by GSAP)
+   -------------------------------------------------------------------------- */
+.hc-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+}
+.hc-reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+}
+.hc-reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+}
+.hc-reveal-scale {
+    opacity: 0;
+    transform: scale(0.9);
+}
+
+/* --------------------------------------------------------------------------
+   12. SKELETON SHIMMER (loading state)
+   -------------------------------------------------------------------------- */
+.hc-shimmer {
+    background: linear-gradient(
+        90deg,
+        var(--hc-glass-bg) 25%,
+        rgba(255, 255, 255, 0.06) 50%,
+        var(--hc-glass-bg) 75%
+    );
+    background-size: 200% 100%;
+    animation: hc-shimmer-move 1.5s ease infinite;
+    border-radius: var(--hc-radius-sm);
+}
+
+@keyframes hc-shimmer-move {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* --------------------------------------------------------------------------
+   13. UTILITY CLASSES
+   -------------------------------------------------------------------------- */
+.hc-dark-theme .hc-text-cyan { color: var(--hc-cyan) !important; }
+.hc-dark-theme .hc-text-blue { color: var(--hc-blue) !important; }
+.hc-dark-theme .hc-text-emerald { color: var(--hc-emerald) !important; }
+.hc-dark-theme .hc-text-purple { color: var(--hc-purple) !important; }
+.hc-dark-theme .hc-text-amber { color: var(--hc-amber) !important; }
+
+.hc-dark-theme .hc-bg-gradient { background: var(--hc-gradient-primary) !important; }
+.hc-dark-theme .hc-bg-health { background: var(--hc-gradient-health) !important; }
+.hc-dark-theme .hc-bg-ai { background: var(--hc-gradient-ai) !important; }
+
+.hc-dark-theme .hc-border-glow {
+    border: 1px solid var(--hc-cyan) !important;
+    box-shadow: var(--hc-glow-cyan) !important;
+}
+
+.hc-dark-theme .hc-pulse {
+    animation: hc-pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes hc-pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.4); }
+}
+
+/* Medical cross icon pulse */
+.hc-dark-theme .hc-medical-pulse {
+    animation: hc-medical-beat 1.5s ease-in-out infinite;
+}
+
+@keyframes hc-medical-beat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.08); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.05); }
+    60% { transform: scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   14. RESPONSIVE ADJUSTMENTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+    .hc-dark-theme .elementor-page .elementor > .elementor-section:first-child,
+    .hc-dark-theme .elementor-page .elementor > .e-con:first-child {
+        min-height: 70vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .hc-dark-theme .elementor-page .elementor > .elementor-section:first-child,
+    .hc-dark-theme .elementor-page .elementor > .e-con:first-child {
+        min-height: 60vh;
+    }
+
+    .hc-dark-theme .elementor-page .elementor > .elementor-section:first-child .elementor-heading-title,
+    .hc-dark-theme .elementor-page .elementor > .e-con:first-child .elementor-heading-title {
+        font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
+    }
+
+    .hc-dark-theme .elementor-widget-icon-box .elementor-icon-box-wrapper {
+        padding: 20px;
+    }
+
+    .hc-dark-theme .elementor-widget-counter .elementor-counter {
+        padding: 20px 16px;
+    }
+
+    /* Disable particles on mobile for performance */
+    #hc-particles-canvas {
+        display: none;
+    }
+
+    .hc-ecg-container {
+        opacity: 0.1;
+    }
+}
+
+@media (max-width: 480px) {
+    .hc-dark-theme .elementor-button {
+        padding: 12px 24px !important;
+        font-size: 14px !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   15. REDUCED MOTION — Respect user preference
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .hc-dark-theme::before {
+        animation: none;
+    }
+    .hc-ecg-line {
+        animation: none;
+    }
+    .hc-dark-theme .hc-pulse,
+    .hc-dark-theme .hc-medical-pulse {
+        animation: none;
+    }
+    .hc-shimmer {
+        animation: none;
+    }
+    .hc-reveal,
+    .hc-reveal-left,
+    .hc-reveal-right,
+    .hc-reveal-scale {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   16. PRINT STYLES
+   -------------------------------------------------------------------------- */
+@media print {
+    .hc-dark-theme,
+    .hc-dark-theme body {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+    #hc-particles-canvas,
+    .hc-ecg-container {
+        display: none !important;
+    }
+}
