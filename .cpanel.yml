@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export PLUGINDIR=/home/mehzsolu/public_html/wp-content/plugins/healthcode-api-bridge
+    - /bin/mkdir -p $PLUGINDIR
+    - /bin/cp scripts/healthcode-api-bridge.php $PLUGINDIR/healthcode-api-bridge.php

@@ -1,0 +1,106 @@
+# ============================================================
+# Environment & Secrets
+# ============================================================
+.env
+.env.*
+!.env.sample
+*.local
+
+# ============================================================
+# Claude AI (internal use only, not for repo)
+# ============================================================
+.claude/
+CLAUDE.md
+BUILD_PLAN.md
+
+# ============================================================
+# WordPress Exports & Database (too large, sensitive)
+# ============================================================
+*.wpress
+extracted_database.sql
+extracted_package.json
+extracted/
+
+# ============================================================
+# Customer Data (photos, real configs)
+# ============================================================
+assets/*/
+configs/customer-*.json
+!configs/customer-template.json
+
+# ============================================================
+# Documents
+# ============================================================
+*.docx
+*.pdf
+*.xlsx
+
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+*.egg
+.installed.cfg
+pip-log.txt
+pip-delete-this-directory.txt
+venv/
+.venv/
+ENV/
+
+# ============================================================
+# Testing & Coverage
+# ============================================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# ============================================================
+# IDE & Editors
+# ============================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================================
+# Temp & Logs
+# ============================================================
+*.tmp
+*.bak
+*.log
+*.cache
+.ruff_cache/

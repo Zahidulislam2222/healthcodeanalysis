@@ -1,0 +1,128 @@
+name: Deploy Customer
+
+on:
+  workflow_dispatch:
+    inputs:
+      config_file:
+        description: "Customer config file (e.g. configs/customer-template.json)"
+        required: true
+        type: string
+      site_url:
+        description: "Target WordPress site URL (e.g. https://example.com)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry-run first (recommended)"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate Config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate config exists
+        run: |
+          if [ ! -f "${{ inputs.config_file }}" ]; then
+            echo "ERROR: Config file '${{ inputs.config_file }}' not found"
+            exit 1
+          fi
+
+      - name: Validate config schema
+        run: python scripts/config_validator.py "${{ inputs.config_file }}"
+
+  dry-run:
+    name: Dry Run
+    needs: validate
+    if: ${{ inputs.dry_run }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run deployment (dry-run)
+        env:
+          WP_SITE_URL: ${{ inputs.site_url }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          HC_API_KEY: ${{ secrets.HC_API_KEY }}
+        run: |
+          echo "============================================"
+          echo "DRY RUN — No changes will be made"
+          echo "Config: ${{ inputs.config_file }}"
+          echo "Target: ${{ inputs.site_url }}"
+          echo "============================================"
+          python scripts/deploy_customer.py "${{ inputs.config_file }}" --dry-run --verbose
+
+  deploy:
+    name: Deploy to Production
+    needs: [validate, dry-run]
+    if: ${{ always() && needs.validate.result == 'success' && (needs.dry-run.result == 'success' || needs.dry-run.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Deploy customer content
+        env:
+          WP_SITE_URL: ${{ inputs.site_url }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+          HC_API_KEY: ${{ secrets.HC_API_KEY }}
+        run: |
+          echo "============================================"
+          echo "LIVE DEPLOYMENT"
+          echo "Config: ${{ inputs.config_file }}"
+          echo "Target: ${{ inputs.site_url }}"
+          echo "============================================"
+          python scripts/deploy_customer.py "${{ inputs.config_file }}" --verbose
+
+      - name: Verify deployment
+        env:
+          HC_API_KEY: ${{ secrets.HC_API_KEY }}
+        run: |
+          echo "Verifying site is reachable..."
+          python -c "
+          import requests, os
+          url = '${{ inputs.site_url }}'
+          key = os.environ.get('HC_API_KEY', '')
+          resp = requests.get(f'{url}/wp-json/healthcode/v1/ping',
+                              headers={'X-HC-API-Key': key}, timeout=15)
+          if resp.status_code == 200:
+              data = resp.json()
+              print(f'Site: {data.get(\"site\", \"unknown\")}')
+              print(f'Version: {data.get(\"version\", \"unknown\")}')
+              print('Deployment verified successfully!')
+          else:
+              print(f'WARNING: Site returned {resp.status_code}')
+              exit(1)
+          "

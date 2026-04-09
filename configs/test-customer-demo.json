@@ -1,0 +1,122 @@
+{
+  "customer_name": "MediCare Plus",
+  "domain": "medicareplus.com",
+
+  "site_settings": {
+    "title": "MediCare Plus",
+    "description": "Your trusted health partner"
+  },
+
+  "pages": [
+    {
+      "page_id": 2471,
+      "page_name": "Home",
+      "headings": [
+        {"index": 0, "new_text": "Your health hub, all in one"},
+        {"index": 1, "new_text": "Where <span class=\"gradient-text\">Modern Care</span> <br> Meets Technology"},
+        {"index": 4, "new_text": "Explore Our Services"},
+        {"index": 5, "new_text": "Diagnostics"},
+        {"index": 6, "new_text": "Treatments"},
+        {"index": 7, "new_text": "Wellness"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "Providing world-class healthcare with cutting-edge AI diagnostics and personalized treatment plans."}
+      ],
+      "images": [],
+      "meta": {
+        "rank_math_title": "MediCare Plus - Modern Healthcare Solutions",
+        "rank_math_description": "World-class healthcare with AI diagnostics and personalized treatment plans.",
+        "rank_math_focus_keyword": "healthcare solutions"
+      }
+    },
+    {
+      "page_id": 1210,
+      "page_name": "About Us",
+      "headings": [
+        {"index": 0, "new_text": "About MediCare Plus"},
+        {"index": 1, "new_text": "A Healthcare Provider You Can Trust"},
+        {"index": 2, "new_text": "Patient Testimonials"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "<p>About <strong>MediCare Plus</strong> — delivering excellence in healthcare since 2015.</p>"},
+        {"index": 1, "new_html": "<p>Our team of certified physicians and AI specialists provide the most accurate diagnoses in the industry.</p>"}
+      ],
+      "images": [
+        {"old_url": "About-US.webp", "new_file": "assets/test-customer/new-about-bg.png", "match_mode": "filename"},
+        {"old_url": "Doctor2-pose.png", "new_file": "assets/test-customer/new-doctor.png", "match_mode": "filename"},
+        {"old_url": "Testimonial-3.png", "new_file": "assets/test-customer/new-testimonial1.png", "match_mode": "filename"},
+        {"old_url": "Testimonial.png", "new_file": "assets/test-customer/new-testimonial2.png", "match_mode": "filename"}
+      ],
+      "meta": {
+        "rank_math_title": "About Us - MediCare Plus",
+        "rank_math_description": "Learn about MediCare Plus and our commitment to healthcare excellence.",
+        "rank_math_focus_keyword": "about medicare plus"
+      }
+    },
+    {
+      "page_id": 1212,
+      "page_name": "Contact",
+      "headings": [
+        {"index": 0, "new_text": "Contact MediCare Plus"},
+        {"index": 1, "new_text": "We're here to help you 24/7"}
+      ],
+      "texts": [],
+      "images": [
+        {"old_url": "Contact-US.webp", "new_file": "assets/test-customer/new-contact-bg.png", "match_mode": "filename"}
+      ],
+      "meta": {
+        "rank_math_title": "Contact - MediCare Plus",
+        "rank_math_description": "Get in touch with MediCare Plus for appointments and inquiries.",
+        "rank_math_focus_keyword": "contact medicare plus"
+      }
+    },
+    {
+      "page_id": 1233,
+      "page_name": "Repository",
+      "headings": [
+        {"index": 0, "new_text": "Health Articles"},
+        {"index": 1, "new_text": "Trending Articles"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "Expert insights from our medical professionals."}
+      ],
+      "images": [
+        {"old_url": "Cover-New-1.jpg", "new_file": "assets/test-customer/new-cover.png", "match_mode": "filename"},
+        {"old_url": "Pic-1.jpg", "new_file": "assets/test-customer/new-promo.png", "match_mode": "filename"}
+      ],
+      "meta": {
+        "rank_math_title": "Health Articles - MediCare Plus",
+        "rank_math_description": "Read the latest health articles from our expert physicians.",
+        "rank_math_focus_keyword": "health articles"
+      }
+    },
+    {
+      "page_id": 3017,
+      "page_name": "Affiliate Disclosure",
+      "headings": [
+        {"index": 0, "new_text": "Affiliate Disclosure"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "<p>MediCare Plus may earn commissions from affiliate links on this site.</p>"}
+      ],
+      "images": [
+        {"old_url": "Affiliate-Disclosure.png", "new_file": "assets/test-customer/new-disclosure-bg.png", "match_mode": "filename"}
+      ],
+      "meta": {
+        "rank_math_title": "Affiliate Disclosure - MediCare Plus",
+        "rank_math_description": "Our affiliate disclosure policy."
+      }
+    },
+    {
+      "page_id": 3,
+      "page_name": "Privacy Policy",
+      "headings": [],
+      "texts": [],
+      "images": [],
+      "meta": {
+        "rank_math_title": "Privacy Policy - MediCare Plus",
+        "rank_math_description": "MediCare Plus privacy policy and data protection."
+      }
+    }
+  ]
+}

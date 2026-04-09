@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint & Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Ruff
+        run: pip install ruff
+
+      - name: Ruff lint
+        run: ruff check scripts/ tests/
+
+      - name: Ruff format check
+        run: ruff format --check scripts/ tests/
+
+      - name: Security scan (Bandit rules)
+        run: ruff check --select S scripts/
+
+      - name: PHP syntax check
+        run: php -l scripts/healthcode-api-bridge.php
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Phase 1 tests (75)
+        run: python tests/test_phase1.py
+
+      - name: Phase 2-4 tests (46)
+        run: python tests/test_phase2_4.py
+
+      - name: Phase 6 tests (38)
+        run: python tests/test_phase6.py
+
+      - name: End-to-end swap tests (126)
+        run: python tests/test_e2e_swap.py
+
+  coverage:
+    name: Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt coverage
+
+      - name: Run tests with coverage
+        run: |
+          coverage run tests/test_phase1.py
+          coverage run -a tests/test_phase2_4.py
+          coverage run -a tests/test_phase6.py
+          coverage run -a tests/test_e2e_swap.py
+
+      - name: Coverage report
+        run: coverage report
+
+      - name: Generate coverage badge data
+        run: |
+          COVERAGE=$(coverage report --format=total)
+          echo "Coverage: ${COVERAGE}%"
+
+  validate:
+    name: Validate Configs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Validate customer template
+        run: python scripts/config_validator.py configs/customer-template.json
+
+      - name: Validate JSON syntax
+        run: python -c "import json, glob; [json.load(open(f)) for f in glob.glob('configs/*.json')]"

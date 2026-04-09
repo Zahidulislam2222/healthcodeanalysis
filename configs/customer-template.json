@@ -1,0 +1,152 @@
+{
+  "customer_name": "CUSTOMER_NAME",
+  "domain": "customer-domain.com",
+
+  "site_settings": {
+    "title": "Customer Site Title",
+    "description": "Customer site tagline",
+    "logo_file": "assets/customer-name/logo.png",
+    "favicon_file": "assets/customer-name/favicon.png"
+  },
+
+  "pages": [
+    {
+      "page_id": 2471,
+      "page_name": "Home",
+      "headings": [
+        {"index": 0, "new_text": "Your main hero tagline"},
+        {"index": 1, "new_text": "Where <span class=\"gradient-text\">Your Brand</span> <br> Meets Innovation"},
+        {"index": 4, "new_text": "Choose Your Path"},
+        {"index": 5, "new_text": "Section 1 Title"},
+        {"index": 6, "new_text": "Section 2 Title"},
+        {"index": 7, "new_text": "Section 3 Title"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "Your main description paragraph here."},
+        {"index": 1, "new_html": "Secondary description here."}
+      ],
+      "images": [],
+      "meta": {
+        "rank_math_title": "Customer Site - Home",
+        "rank_math_description": "Your meta description for the home page.",
+        "rank_math_focus_keyword": "main keyword"
+      }
+    },
+    {
+      "page_id": 1210,
+      "page_name": "About Us",
+      "headings": [
+        {"index": 0, "new_text": "About Us"},
+        {"index": 1, "new_text": "A clinic you can trust"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "<p>About your business description.</p>"}
+      ],
+      "images": [
+        {
+          "old_url": "About-US.webp",
+          "new_file": "assets/customer-name/about-bg.webp",
+          "match_mode": "filename"
+        },
+        {
+          "old_url": "Doctor2-pose.png",
+          "new_file": "assets/customer-name/team-photo.png",
+          "match_mode": "filename"
+        },
+        {
+          "old_url": "Testimonial-3.png",
+          "new_file": "assets/customer-name/testimonial-1.png",
+          "match_mode": "filename"
+        },
+        {
+          "old_url": "Testimonial.png",
+          "new_file": "assets/customer-name/testimonial-2.png",
+          "match_mode": "filename"
+        }
+      ],
+      "meta": {
+        "rank_math_title": "About Us - Customer Site",
+        "rank_math_description": "Learn about our team and mission."
+      }
+    },
+    {
+      "page_id": 1212,
+      "page_name": "Contact",
+      "headings": [
+        {"index": 0, "new_text": "Contact Us"},
+        {"index": 1, "new_text": "Stay connected with Customer Name"}
+      ],
+      "texts": [],
+      "images": [
+        {
+          "old_url": "Contact-US.webp",
+          "new_file": "assets/customer-name/contact-bg.webp",
+          "match_mode": "filename"
+        }
+      ],
+      "meta": {
+        "rank_math_title": "Contact - Customer Site",
+        "rank_math_description": "Get in touch with us."
+      }
+    },
+    {
+      "page_id": 1233,
+      "page_name": "Repository",
+      "headings": [
+        {"index": 0, "new_text": "Blog"},
+        {"index": 1, "new_text": "Popular Posts"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "Your custom blog tagline here."}
+      ],
+      "images": [
+        {
+          "old_url": "Cover-New-1.jpg",
+          "new_file": "assets/customer-name/blog-cover.jpg",
+          "match_mode": "filename"
+        },
+        {
+          "old_url": "Pic-1.jpg",
+          "new_file": "assets/customer-name/promo-image.jpg",
+          "match_mode": "filename"
+        }
+      ],
+      "meta": {
+        "rank_math_title": "Blog - Customer Site",
+        "rank_math_description": "Read our latest articles."
+      }
+    },
+    {
+      "page_id": 3017,
+      "page_name": "Affiliate Disclosure",
+      "headings": [
+        {"index": 0, "new_text": "Affiliate Disclosure"}
+      ],
+      "texts": [
+        {"index": 0, "new_html": "<p>Customer-specific affiliate disclosure text.</p>"}
+      ],
+      "images": [
+        {
+          "old_url": "Affiliate-Disclosure.png",
+          "new_file": "assets/customer-name/disclosure-bg.png",
+          "match_mode": "filename"
+        }
+      ],
+      "meta": {
+        "rank_math_title": "Affiliate Disclosure - Customer Site",
+        "rank_math_description": "Our affiliate disclosure policy."
+      }
+    },
+    {
+      "page_id": 3,
+      "page_name": "Privacy Policy",
+      "headings": [],
+      "texts": [],
+      "images": [],
+      "meta": {
+        "rank_math_title": "Privacy Policy - Customer Site",
+        "rank_math_description": "Our privacy policy."
+      }
+    }
+  ]
+}
