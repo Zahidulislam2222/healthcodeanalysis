@@ -315,11 +315,12 @@ body.hc-dark-theme {
     background: transparent !important;
 }
 
-/* Push page content below fixed header (header is 60px) */
+/* Push page content below fixed header (header ~70px) */
 .hc-dark-theme .site-content,
 .hc-dark-theme #content,
-.hc-dark-theme [data-elementor-type="wp-page"] {
-    padding-top: 60px !important;
+.hc-dark-theme [data-elementor-type="wp-page"],
+.hc-dark-theme [data-elementor-type="section"] {
+    padding-top: 75px !important;
 }
 
 /* Header Elementor containers */
@@ -1254,7 +1255,40 @@ html {
     color: var(--hc-text-secondary) !important;
 }
 
-/* --- I. Tailwind utility overrides for dark theme --- */
+/* --- I. Benchmark chart — gray bars invisible on dark bg (verified: .bar.gray) --- */
+.hc-dark-theme .bar.gray {
+    background-color: var(--hc-cyan) !important;
+    opacity: 0.7;
+}
+.hc-dark-theme .widget-card {
+    background: var(--hc-glass-bg) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+}
+.hc-dark-theme .widget-title {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .widget-footer {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .bar-group .label {
+    color: var(--hc-text-muted) !important;
+}
+
+/* --- J. MED-TECH heading — center text inside background box --- */
+.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .e-con.e-child,
+.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .e-con.e-child,
+.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .e-con.e-child,
+.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .e-con.e-child,
+.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .e-con.e-child {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* --- K. Tailwind utility overrides for dark theme --- */
 .hc-dark-theme .text-slate-600,
 .hc-dark-theme .text-slate-500,
 .hc-dark-theme .text-gray-600,
