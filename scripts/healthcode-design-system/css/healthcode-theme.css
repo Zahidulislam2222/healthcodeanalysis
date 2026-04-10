@@ -1095,7 +1095,7 @@ html {
     width: 100%;
 }
 
-/* NeuroScan grid cards */
+/* NeuroScan grid cards (verified: .neuro-card from Code Snippets) */
 .hc-dark-theme .neuro-card {
     background: var(--hc-glass-bg) !important;
     border: 1px solid var(--hc-glass-border) !important;
@@ -1125,9 +1125,119 @@ html {
 }
 
 /* --------------------------------------------------------------------------
-   18. SINGLE POST — Article text readability
+   18. VERIFIED DOM OVERRIDES — Real selectors from live site inspection
    -------------------------------------------------------------------------- */
-/* Post body text — higher contrast */
+
+/* --- A. Home page review cards (Code Snippets: .card-*) --- */
+.hc-dark-theme .card-body {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .card-title,
+.hc-dark-theme .card-title a {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .card-pros li,
+.hc-dark-theme .card-pros .text-slate-600,
+.hc-dark-theme .card-pros .text-sm {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .verdict-row {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .verdict-badge {
+    color: var(--hc-emerald) !important;
+}
+.hc-dark-theme .verdict-label {
+    color: var(--hc-text-muted) !important;
+}
+/* Star badge */
+.hc-dark-theme .star-badge {
+    color: var(--hc-amber) !important;
+}
+
+/* --- B. Single post title (Jeg Kit: h2.post-title.style-color) --- */
+.hc-dark-theme .post-title,
+.hc-dark-theme .post-title.style-color,
+.hc-dark-theme h2.post-title,
+.hc-dark-theme .jkit-post-title .post-title {
+    color: var(--hc-text-primary) !important;
+}
+
+/* --- C. Author info (Royal Addons: .wpr-post-info, Code Snippets: .author-info) --- */
+.hc-dark-theme .wpr-post-info,
+.hc-dark-theme .wpr-post-info span,
+.hc-dark-theme .wpr-post-info a,
+.hc-dark-theme .wpr-post-info-author span {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .wpr-post-info-date span {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .author-info .name {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .author-info .role {
+    color: var(--hc-text-muted) !important;
+}
+
+/* --- D. Rating Breakdown (verified: .neuro-bar-wrapper, .label, .score) --- */
+.hc-dark-theme .neuro-bar-wrapper {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-bar-header .label {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-bar-header .score {
+    color: var(--hc-cyan) !important;
+}
+.hc-dark-theme .neuro-bar-track {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+.hc-dark-theme .neuro-bar-fill {
+    background: var(--hc-gradient-primary) !important;
+}
+
+/* --- E. Tech Specs table (verified: .neuro-specs-table) --- */
+.hc-dark-theme .neuro-specs-table {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-specs-table .spec-label {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-specs-table .spec-value {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .neuro-specs-table tr {
+    border-color: var(--hc-glass-border) !important;
+}
+.hc-dark-theme .neuro-specs-table td {
+    border-color: var(--hc-glass-border) !important;
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --- F. AI Summary box (verified: .medisynth-wrapper, .medisynth-content) --- */
+.hc-dark-theme .medisynth-wrapper {
+    color: var(--hc-text-secondary) !important;
+    border-color: var(--hc-glass-border) !important;
+}
+.hc-dark-theme .medisynth-header {
+    color: var(--hc-emerald) !important;
+}
+.hc-dark-theme .medisynth-header span {
+    color: var(--hc-emerald) !important;
+}
+.hc-dark-theme .medisynth-content,
+.hc-dark-theme .medisynth-content li,
+.hc-dark-theme .medisynth-content li span,
+.hc-dark-theme .medisynth-content li p {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .medisynth-content strong,
+.hc-dark-theme .medisynth-content strong span {
+    color: var(--hc-text-primary) !important;
+}
+
+/* --- G. Post body text — higher contrast --- */
 .hc-dark-theme .entry-content p,
 .hc-dark-theme .entry-content li,
 .hc-dark-theme .entry-content td,
@@ -1138,55 +1248,33 @@ html {
     color: var(--hc-text-secondary) !important;
 }
 
-/* Review cards and shortcode boxes — ensure readable text */
+/* --- H. Shortcode containers general text --- */
 .hc-dark-theme .elementor-shortcode,
 .hc-dark-theme .elementor-widget-shortcode .elementor-widget-container {
     color: var(--hc-text-secondary) !important;
 }
 
-/* Rating Breakdown & Tech Specs — fix invisible text */
-.hc-dark-theme .neuro-rating-breakdown,
-.hc-dark-theme .neuro-tech-specs,
-.hc-dark-theme .neuro-review-box {
+/* --- I. Tailwind utility overrides for dark theme --- */
+.hc-dark-theme .text-slate-600,
+.hc-dark-theme .text-slate-500,
+.hc-dark-theme .text-gray-600,
+.hc-dark-theme .text-gray-500 {
     color: var(--hc-text-secondary) !important;
 }
-.hc-dark-theme .neuro-rating-breakdown h4,
-.hc-dark-theme .neuro-tech-specs h4,
-.hc-dark-theme .neuro-review-box h4 {
+.hc-dark-theme .text-slate-900,
+.hc-dark-theme .text-gray-900,
+.hc-dark-theme .text-slate-800,
+.hc-dark-theme .text-gray-800 {
     color: var(--hc-text-primary) !important;
 }
-.hc-dark-theme .neuro-rating-label,
-.hc-dark-theme .neuro-spec-label {
-    color: var(--hc-text-secondary) !important;
+.hc-dark-theme .bg-white,
+.hc-dark-theme .bg-slate-50,
+.hc-dark-theme .bg-gray-50 {
+    background-color: var(--hc-glass-bg) !important;
 }
-.hc-dark-theme .neuro-rating-value,
-.hc-dark-theme .neuro-spec-value {
-    color: var(--hc-cyan) !important;
-}
-.hc-dark-theme .neuro-rating-bar {
-    background: rgba(255,255,255,0.08) !important;
-}
-.hc-dark-theme .neuro-rating-fill {
-    background: var(--hc-gradient-primary) !important;
-}
-
-/* AI Summary box */
-.hc-dark-theme .neuro-ai-summary,
-.hc-dark-theme [class*="ai-summary"],
-.hc-dark-theme [class*="medintel-summary"] {
-    color: var(--hc-text-secondary) !important;
+.hc-dark-theme .border-slate-200,
+.hc-dark-theme .border-gray-200 {
     border-color: var(--hc-glass-border) !important;
-}
-.hc-dark-theme .neuro-ai-summary li,
-.hc-dark-theme [class*="ai-summary"] li,
-.hc-dark-theme [class*="medintel-summary"] li {
-    color: var(--hc-text-secondary) !important;
-}
-
-/* Verdict card text */
-.hc-dark-theme .neuro-verdict,
-.hc-dark-theme [class*="verdict"] {
-    color: var(--hc-text-secondary) !important;
 }
 
 /* --------------------------------------------------------------------------
