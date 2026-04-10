@@ -31,8 +31,8 @@
     --hc-gradient-mesh: linear-gradient(135deg, #0a0e1a 0%, #0f1225 25%, #1a1040 50%, #0f1225 75%, #0a0e1a 100%);
 
     --hc-text-primary: #f1f5f9;
-    --hc-text-secondary: #cbd5e1;
-    --hc-text-muted: #94a3b8;
+    --hc-text-secondary: #d1d9e6;
+    --hc-text-muted: #a8b5c8;
     --hc-text-accent: #06b6d4;
 
     --hc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -1044,7 +1044,191 @@ body.hc-dark-theme {
 }
 
 /* --------------------------------------------------------------------------
-   16. PRINT
+   16. SMOOTH SCROLLING
+   -------------------------------------------------------------------------- */
+html {
+    scroll-behavior: smooth;
+}
+
+/* --------------------------------------------------------------------------
+   17. NEUROSCAN OVERRIDES — Filter buttons, search, grid cards for dark theme
+   -------------------------------------------------------------------------- */
+/* Filter buttons — dark theme */
+.hc-dark-theme .neuro-filter-btn {
+    background: transparent !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    color: var(--hc-text-secondary) !important;
+    box-shadow: none !important;
+}
+.hc-dark-theme .neuro-filter-btn:hover {
+    background: rgba(6, 182, 212, 0.08) !important;
+    border-color: var(--hc-cyan) !important;
+    color: var(--hc-cyan) !important;
+}
+.hc-dark-theme .neuro-filter-btn.active {
+    background: var(--hc-gradient-primary) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+
+/* Search input — fix icon overlap */
+.hc-dark-theme .neuro-search-wrapper {
+    position: relative;
+}
+.hc-dark-theme .neuro-search-icon {
+    position: absolute;
+    right: 14px !important;
+    left: auto !important;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--hc-text-muted) !important;
+    pointer-events: none;
+    z-index: 1;
+}
+.hc-dark-theme #neuro-live-search {
+    padding-left: 16px !important;
+    padding-right: 40px !important;
+    background: rgba(255,255,255,0.04) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-xl) !important;
+    color: var(--hc-text-primary) !important;
+    width: 100%;
+}
+
+/* NeuroScan grid cards */
+.hc-dark-theme .neuro-card {
+    background: var(--hc-glass-bg) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-card:hover {
+    border-color: var(--hc-glass-border-hover) !important;
+    box-shadow: var(--hc-shadow-md) !important;
+}
+.hc-dark-theme .neuro-card h3,
+.hc-dark-theme .neuro-card h3 a {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .neuro-card .neuro-meta {
+    color: var(--hc-text-muted) !important;
+}
+/* NeuroScan breadcrumbs */
+.hc-dark-theme .neuro-breadcrumbs {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .neuro-breadcrumbs a {
+    color: var(--hc-cyan) !important;
+}
+.hc-dark-theme .neuro-breadcrumbs .current {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   18. SINGLE POST — Article text readability
+   -------------------------------------------------------------------------- */
+/* Post body text — higher contrast */
+.hc-dark-theme .entry-content p,
+.hc-dark-theme .entry-content li,
+.hc-dark-theme .entry-content td,
+.hc-dark-theme .entry-content th,
+.hc-dark-theme .entry-content blockquote,
+.hc-dark-theme .elementor-widget-theme-post-content p,
+.hc-dark-theme .elementor-widget-theme-post-content li {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* Review cards and shortcode boxes — ensure readable text */
+.hc-dark-theme .elementor-shortcode,
+.hc-dark-theme .elementor-widget-shortcode .elementor-widget-container {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* Rating Breakdown & Tech Specs — fix invisible text */
+.hc-dark-theme .neuro-rating-breakdown,
+.hc-dark-theme .neuro-tech-specs,
+.hc-dark-theme .neuro-review-box {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-rating-breakdown h4,
+.hc-dark-theme .neuro-tech-specs h4,
+.hc-dark-theme .neuro-review-box h4 {
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .neuro-rating-label,
+.hc-dark-theme .neuro-spec-label {
+    color: var(--hc-text-secondary) !important;
+}
+.hc-dark-theme .neuro-rating-value,
+.hc-dark-theme .neuro-spec-value {
+    color: var(--hc-cyan) !important;
+}
+.hc-dark-theme .neuro-rating-bar {
+    background: rgba(255,255,255,0.08) !important;
+}
+.hc-dark-theme .neuro-rating-fill {
+    background: var(--hc-gradient-primary) !important;
+}
+
+/* AI Summary box */
+.hc-dark-theme .neuro-ai-summary,
+.hc-dark-theme [class*="ai-summary"],
+.hc-dark-theme [class*="medintel-summary"] {
+    color: var(--hc-text-secondary) !important;
+    border-color: var(--hc-glass-border) !important;
+}
+.hc-dark-theme .neuro-ai-summary li,
+.hc-dark-theme [class*="ai-summary"] li,
+.hc-dark-theme [class*="medintel-summary"] li {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* Verdict card text */
+.hc-dark-theme .neuro-verdict,
+.hc-dark-theme [class*="verdict"] {
+    color: var(--hc-text-secondary) !important;
+}
+
+/* --------------------------------------------------------------------------
+   19. FIX: Hero centering on mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child {
+        text-align: center !important;
+    }
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-widget-container {
+        text-align: center !important;
+    }
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-widget-heading .elementor-widget-container {
+        display: inline-block !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   20. FIX: Counter cards responsive — force equal sizing
+   -------------------------------------------------------------------------- */
+.hc-dark-theme .elementor-widget-counter .elementor-counter {
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   21. FIX: Category page hero spacing
+   -------------------------------------------------------------------------- */
+/* Category/archive pages — reduce excessive hero height */
+.hc-dark-theme .category .e-con.e-parent:first-child,
+.hc-dark-theme .archive .e-con.e-parent:first-child,
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child:has(.elementor-widget-heading:only-child) {
+    min-height: auto !important;
+    padding-top: 80px !important;
+    padding-bottom: 60px !important;
+}
+
+/* --------------------------------------------------------------------------
+   22. PRINT
    -------------------------------------------------------------------------- */
 @media print {
     .hc-dark-theme, .hc-dark-theme body {

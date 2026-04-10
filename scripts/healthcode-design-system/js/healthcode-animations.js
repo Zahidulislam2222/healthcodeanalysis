@@ -419,6 +419,73 @@
     }
 
     /* ------------------------------------------------------------------
+       12. FIX NEUROSCAN AJAX FILTER — Patch broken sibling selector
+       The Code Snippets JS uses container.next('.neuro-grid-instance')
+       but Elementor wraps filter and grid in separate containers,
+       so they're not DOM siblings. This patches the click handler.
+       ------------------------------------------------------------------ */
+    function fixNeuroFilter() {
+        var buttons = document.querySelectorAll('.neuro-filter-btn');
+        if (!buttons.length) return;
+
+        buttons.forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                // Find the grid anywhere on the page (not just siblings)
+                var grid = document.querySelector('.neuro-grid-instance');
+                if (!grid || typeof jQuery === 'undefined') return;
+
+                var slug = btn.getAttribute('data-slug');
+                var container = btn.closest('.neuro-filter-container');
+
+                // Update button visual state
+                if (container) {
+                    container.querySelectorAll('.neuro-filter-btn').forEach(function (b) {
+                        b.classList.remove('active');
+                    });
+                }
+                btn.classList.add('active');
+
+                // Call the existing runGridUpdate via jQuery trigger
+                var $grid = jQuery(grid);
+                var cfg = $grid.data('config') || {};
+
+                $grid.css('opacity', '0.5');
+
+                jQuery.ajax({
+                    url: window.location.origin + '/wp-admin/admin-ajax.php',
+                    type: 'POST',
+                    data: {
+                        action: 'neuro_update_components',
+                        category: slug,
+                        search: '',
+                        paged: 1,
+                        count: cfg.count,
+                        hero: cfg.hero,
+                        featured_id: cfg.featured_id,
+                        sort: cfg.sort,
+                        pagination: cfg.pagination,
+                        columns: cfg.columns,
+                        hide_meta: cfg.hide_meta,
+                        hide_author: cfg.hide_author,
+                        offset: cfg.offset
+                    },
+                    success: function (response) {
+                        $grid.html(response);
+                        $grid.css('opacity', '1');
+                        $grid.data('current-cat', slug);
+                    },
+                    error: function () {
+                        $grid.css('opacity', '1');
+                    }
+                });
+
+                // Stop the broken original handler from also firing
+                e.stopImmediatePropagation();
+            });
+        });
+    }
+
+    /* ------------------------------------------------------------------
        INIT
        ------------------------------------------------------------------ */
     function init() {
@@ -433,6 +500,7 @@
         initParticles();
         initHeaderEffects();
         initPopupFix();
+        fixNeuroFilter();
 
         setTimeout(forceDarkBackgrounds, 1000);
         setTimeout(forceDarkBackgrounds, 3000);
