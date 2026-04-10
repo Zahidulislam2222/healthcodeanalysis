@@ -55,8 +55,12 @@ export default {
       const dfData = await callDialogflow(env, token, query, sessionId);
       const intent = dfData.queryResult?.intent?.displayName || "";
 
-      // If it's chitchat, let Dialogflow respond
-      if (isChitchat(intent)) {
+      // Handle chitchat locally if Dialogflow misses it
+      const smallTalk = detectSmallTalk(query);
+      if (isChitchat(intent) || smallTalk) {
+        if (!isChitchat(intent) && smallTalk) {
+          dfData.queryResult.fulfillmentText = smallTalk;
+        }
         return json(dfData);
       }
 
@@ -154,7 +158,7 @@ async function searchAndAnswer(term, preferredCat) {
   const encoded = encodeURIComponent(term);
 
   // 1. Search posts via WordPress (MySQL handles the heavy lifting)
-  const posts = await wpGet(`/posts?search=${encoded}&per_page=5&_fields=id,title,link,excerpt`);
+  let posts = await wpGet(`/posts?search=${encoded}&per_page=5&_fields=id,title,link,excerpt`);
 
   // 2. Also check categories for an exact match
   if (!preferredCat) {
@@ -169,7 +173,25 @@ async function searchAndAnswer(term, preferredCat) {
   }
 
   if (!posts || posts.length === 0) {
-    return `I couldn't find anything about "${h(term)}". Try different keywords, or ask me to show categories.`;
+    // Retry with individual words (e.g. "blood pressure wearable" → try "blood pressure", then "wearable")
+    const words = term.split(/\s+/).filter((w) => w.length > 2);
+    if (words.length > 1) {
+      // Try the longest sub-phrase first, then individual words
+      for (let len = words.length - 1; len >= 1; len--) {
+        for (let i = 0; i <= words.length - len; i++) {
+          const sub = words.slice(i, i + len).join(" ");
+          const subPosts = await wpGet(`/posts?search=${encodeURIComponent(sub)}&per_page=3&_fields=id,title,link,excerpt`);
+          if (subPosts?.length > 0) {
+            posts = subPosts;
+            break;
+          }
+        }
+        if (posts?.length > 0) break;
+      }
+    }
+    if (!posts || posts.length === 0) {
+      return `I couldn't find anything about "${h(term)}". Try different keywords, or ask me to show categories.`;
+    }
   }
 
   // 3. For the best match, fetch full content and extract a relevant snippet
@@ -291,6 +313,35 @@ const CHITCHAT = new Set([
 
 function isChitchat(intent) {
   return CHITCHAT.has(intent);
+}
+
+// Returns a response string if the query is small talk, or null if not
+function detectSmallTalk(query) {
+  const clean = query.trim();
+  if (clean.length > 40) return null; // small talk is short
+  const lower = clean.toLowerCase();
+
+  // Greetings (including typos)
+  if (/^(h[ae]llo+w?|hi+|hey+|howdy|yo+|sup|good\s*(morning|afternoon|evening|day)|greetings|what'?s?\s*up|hola|salaam|assalamu)\b/i.test(clean)) {
+    return "Hello! I can help you find articles, browse categories, or search for topics. What are you looking for?";
+  }
+
+  // Thanks
+  if (/^(thanks?|thank\s*you|thx|ty|appreciated?|cheers)\b/i.test(clean)) {
+    return "You're welcome! Let me know if you need anything else.";
+  }
+
+  // Goodbye
+  if (/^(bye+|goodbye|see\s*ya|later|take\s*care|good\s*night|cya)\b/i.test(clean)) {
+    return "Goodbye! Feel free to come back anytime.";
+  }
+
+  // Help
+  if (/^(help|what can you do|how do you work)\b/i.test(clean)) {
+    return "I can help you:<br/>- Search for articles (e.g. \"tell me about AI radiology\")<br/>- Show latest or popular posts<br/>- Browse categories<br/>- Answer questions about our content";
+  }
+
+  return null;
 }
 
 async function callDialogflow(env, token, query, sessionId) {
