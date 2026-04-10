@@ -1274,41 +1274,16 @@ html {
     color: var(--hc-text-muted) !important;
 }
 
-/* --- J. Category page headings — center text inside background box --- */
-/* Target the e-child, its inner wrapper, AND the heading widget + text */
-.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .e-con.e-child,
-.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .e-con.e-child,
-.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .e-con.e-child,
-.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .e-con.e-child,
-.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .e-con.e-child {
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-}
-.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
-.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
-.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
-.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
-.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .e-con.e-child .e-con-inner {
-    align-items: center !important;
-    justify-content: center !important;
-    text-align: center !important;
-    width: 100% !important;
-}
-.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .elementor-heading-title,
-.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .elementor-heading-title,
-.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .elementor-heading-title,
-.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .elementor-heading-title,
-.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .elementor-heading-title {
-    text-align: center !important;
-    width: 100% !important;
-}
-.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .elementor-widget-heading,
-.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .elementor-widget-heading,
-.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .elementor-widget-heading,
-.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .elementor-widget-heading,
-.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .elementor-widget-heading {
-    width: 100% !important;
+/* --- J. Category page headings — widen the bg box so text centers properly --- */
+/* Verified: element 67f7242 has --width:50% in post-2847.css making the box too tight.
+   Elementor already sets text-align:center on the heading widget (f1888ad).
+   Fix: widen the container so text has room to center visually. */
+.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child > .e-con-inner > .e-con.e-child,
+.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child > .e-con-inner > .e-con.e-child,
+.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child > .e-con-inner > .e-con.e-child,
+.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child > .e-con-inner > .e-con.e-child,
+.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child > .e-con-inner > .e-con.e-child {
+    --width: 70% !important;
     text-align: center !important;
 }
 
