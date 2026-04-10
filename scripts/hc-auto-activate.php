@@ -17,7 +17,8 @@ if (!headers_sent()) {
     // www.google.com + www.gstatic.com: reCAPTCHA v3
     // font-src data:: inline base64 fonts from plugins
     // worker-src blob:: WordPress emoji detection worker
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://www.google.com; worker-src blob:; frame-src https://www.google.com; frame-ancestors 'self';");
+    // askme.healthcodeanalysis.workers.dev: AskMe chatbot Cloudflare Worker
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://www.google.com https://askme.healthcodeanalysis.workers.dev; worker-src blob:; frame-src https://www.google.com; frame-ancestors 'self';");
 }
 
 $design_plugin = WP_PLUGIN_DIR . '/healthcode-design-system/healthcode-design-system.php';

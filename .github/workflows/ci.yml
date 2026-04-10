@@ -112,6 +112,38 @@ jobs:
       - name: Validate JSON syntax
         run: python -c "import json, glob; [json.load(open(f)) for f in glob.glob('configs/*.json')]"
 
+  deploy-worker:
+    name: Deploy AskMe Worker to Cloudflare
+    needs: [lint, test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Wrangler
+        run: npm ci
+        working-directory: workers/askme
+
+      - name: Deploy Worker
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        working-directory: workers/askme
+        run: npx wrangler deploy
+
+      - name: Verify Worker is live
+        run: |
+          RESPONSE=$(curl -s -X POST "https://askme.healthcodeanalysis.workers.dev" \
+            -H "Content-Type: application/json" \
+            -d '{"query":"hello","sessionId":"ci-verify"}')
+          echo "Response: $RESPONSE"
+          echo "$RESPONSE" | grep -q "fulfillmentText" || { echo "FAILED: Worker not responding"; exit 1; }
+          echo "Worker verified!"
+
   deploy-plugin:
     name: Deploy Plugin to Live Site
     needs: [lint, test]

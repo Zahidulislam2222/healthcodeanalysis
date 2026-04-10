@@ -1,0 +1,12 @@
+name = "askme"
+main = "src/index.js"
+compatibility_date = "2025-12-20"
+
+# Secrets (set via: npx wrangler secret put GOOGLE_PRIVATE_KEY)
+# Required secrets:
+#   GOOGLE_PRIVATE_KEY   — Google service account PEM private key
+#   GOOGLE_CLIENT_EMAIL  — Service account email
+#   DIALOGFLOW_PROJECT   — Dialogflow project ID
+
+[observability]
+enabled = true

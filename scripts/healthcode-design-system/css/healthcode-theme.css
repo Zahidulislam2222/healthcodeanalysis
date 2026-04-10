@@ -1362,7 +1362,41 @@ html {
 }
 
 /* --------------------------------------------------------------------------
-   22. PRINT
+   22. ASKME CHATBOT — Isolate from dark theme overrides
+   -------------------------------------------------------------------------- */
+#medibot-container,
+#medibot-container * {
+    background-color: revert !important;
+}
+#medibot-container #medibot-window {
+    background-color: #f8fafc !important;
+}
+.msg-bubble.bot {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1px solid #e2e8f0 !important;
+}
+.msg-bubble.user {
+    background: #0d9488 !important;
+    color: #ffffff !important;
+}
+#medibot-container .mb-header {
+    background: linear-gradient(to right, #0284c6, #14b8a7) !important;
+    color: #ffffff !important;
+}
+#medibot-container .mb-footer {
+    background: #ffffff !important;
+}
+#medibot-container #mb-input {
+    background: #f8fafc !important;
+    color: #334155 !important;
+}
+#medibot-container .mb-disclaimer {
+    color: #94a3b8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   23. PRINT
    -------------------------------------------------------------------------- */
 @media print {
     .hc-dark-theme, .hc-dark-theme body {
