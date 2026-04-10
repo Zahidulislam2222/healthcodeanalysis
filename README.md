@@ -25,10 +25,11 @@
 
 ## Overview
 
-A full-stack WordPress automation platform with two core capabilities:
+A full-stack WordPress automation platform with three core capabilities:
 
 1. **Content Automation** — Clone an Elementor template site and programmatically replace all content (photos, text, headings, SEO metadata) for multiple customers via a single command.
 2. **Dark Glassmorphism Design System** — A plugin-based visual overhaul with vanilla JS scroll animations, sticky header, glassmorphic cards, and responsive dark theme. Zero external dependencies.
+3. **AskMe AI Chatbot** — A Cloudflare Worker-powered chatbot that answers visitor questions using live WordPress content. Queries the WP REST API on demand (scales to any post count), with Dialogflow ES for greetings/chitchat.
 
 **Live Site:** [healthcodeanalysis.com](https://healthcodeanalysis.com)
 
@@ -52,8 +53,13 @@ healthcodeanalysis/
 ├── configs/
 │   └── customer-template.json          # Config template with real page IDs
 ├── tests/                              # 281 tests (4 suites)
+├── workers/
+│   └── askme/                          # AskMe chatbot Cloudflare Worker
+│       ├── wrangler.toml               # Worker config (secrets via wrangler)
+│       ├── src/index.js                # Dialogflow + WP REST API search
+│       └── package.json                # Dependencies
 ├── .github/workflows/
-│   ├── ci.yml                          # CI + auto-deploy to cPanel on push
+│   ├── ci.yml                          # CI + auto-deploy (cPanel + Cloudflare)
 │   └── deploy.yml                      # Manual customer deployment with approval
 ├── .env.sample                         # Environment variable template
 └── .cpanel.yml                         # cPanel deployment task mapping
@@ -142,6 +148,60 @@ A WordPress plugin that applies a dark medical AI theme on top of any Elementor 
 | MetForm | Contact/login forms |
 | Astra | Theme (Header Footer Builder) |
 
+## AskMe AI Chatbot
+
+A serverless chatbot running on Cloudflare Workers (free tier) that gives visitors real answers from site content — not canned responses.
+
+### How It Works
+
+```
+User: "What is eGFR calculator?"
+    │
+    ├── Dialogflow ES → classifies intent (greeting? content question?)
+    │
+    ├── If greeting/chitchat → Dialogflow responds ("How can I help you?")
+    │
+    └── If content question → Worker queries WordPress REST API
+        ├── GET /posts?search=eGFR → finds matching posts
+        ├── GET /posts/{id}?_fields=content → fetches full text
+        ├── Extracts relevant sentence from post body
+        └── Returns snippet + link to the article
+```
+
+### Capabilities
+
+| Feature | How |
+|---|---|
+| **Content search** | Searches post titles + body text via WP REST API |
+| **Snippet extraction** | Pulls the most relevant sentence from matched post content |
+| **Category browsing** | Lists all categories with post counts, shows posts per category |
+| **Latest / Popular** | Returns N latest or featured posts (user specifies count) |
+| **Greeting detection** | Catches typos like "hellow" locally, falls back gracefully |
+| **Smart retry** | If "blood pressure wearable" finds nothing, retries with "blood pressure" |
+
+### Architecture Decisions
+
+- **No content cached in memory** — Every query hits the WP REST API. Scales to 100K posts without changing code
+- **Only categories cached** (30 min TTL) — They're tiny metadata and rarely change
+- **Google OAuth token cached** — Avoids re-auth on every request (~300ms saved)
+- **Dialogflow only for chitchat** — All content intelligence handled by the Worker
+- **Zero cost** — Cloudflare Workers free (100K req/day) + Dialogflow ES free (1K req/day)
+- **No hardcoded content** — All posts, categories, links fetched live from WordPress
+- **XSS-safe** — All output sanitized via `escapeHtml()` / `escapeAttr()`
+- **Credentials in Cloudflare Secrets** — Google service account key never in source code
+
+### Deploy
+
+```bash
+cd workers/askme && npm install
+npx wrangler secret put GOOGLE_CLIENT_EMAIL    # service account email
+npx wrangler secret put DIALOGFLOW_PROJECT     # Dialogflow project ID
+npx wrangler secret put GOOGLE_PRIVATE_KEY     # PEM private key
+npx wrangler deploy                            # deploys to askme.healthcodeanalysis.workers.dev
+```
+
+CI/CD auto-deploys on every push to `main`.
+
 ## CI/CD Pipeline
 
 Every push to `main` triggers CI and automatic deployment:
@@ -154,8 +214,11 @@ git push to main
     ├── Coverage ───────────── 59% with threshold enforcement
     ├── Config Validation ──── Customer JSON schema check
     │
-    └── Deploy Plugin ─────── Uploads PHP/CSS/JS to cPanel via File Manager API
-                               then flushes Elementor cache
+    ├── Deploy Plugin ─────── Uploads PHP/CSS/JS to cPanel via File Manager API
+    │                          then flushes Elementor cache
+    │
+    └── Deploy Worker ─────── Deploys AskMe chatbot to Cloudflare Workers
+                               then verifies Worker responds to POST
 ```
 
 **Customer deployments** are triggered manually via `workflow_dispatch` with dry-run preview and approval gate.
@@ -190,7 +253,7 @@ Every CSP source verified from browser Console errors:
 | `style-src` | `'self' 'unsafe-inline'` + Google Fonts | Elementor inline styles |
 | `font-src` | `'self'` + Google Fonts + `data:` | Plugin base64 inline fonts |
 | `img-src` | `'self' data: https:` | External images + SVG data URIs |
-| `connect-src` | `'self'` + Google | reCAPTCHA verification |
+| `connect-src` | `'self'` + Google + `askme.healthcodeanalysis.workers.dev` | reCAPTCHA + AskMe chatbot |
 | `worker-src` | `blob:` | WordPress emoji detection worker |
 | `frame-src` | Google | reCAPTCHA iframe |
 | `frame-ancestors` | `'self'` | Prevents clickjacking |
@@ -276,7 +339,9 @@ All credentials stored in `.env` (gitignored) and GitHub Secrets for CI/CD. Neve
 
 **WordPress:** Elementor | Rank Math SEO | ACF | Astra | LiteSpeed Cache
 
-**CI/CD:** GitHub Actions | cPanel File Manager API | Dependabot
+**Chatbot:** Cloudflare Workers (free tier) | Dialogflow ES | WP REST API search
+
+**CI/CD:** GitHub Actions | cPanel File Manager API | Wrangler (Cloudflare) | Dependabot
 
 **Quality:** Ruff (lint + format + security) | 281 tests | Pre-commit hooks | Secret detection
 
