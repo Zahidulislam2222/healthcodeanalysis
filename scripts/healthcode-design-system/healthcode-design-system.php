@@ -72,6 +72,16 @@ function hc_design_exclude_rocket_loader(string $tag, string $handle): string {
     if (in_array($handle, $excluded, true)) {
         $tag = str_replace('<script ', '<script data-cfasync="false" ', $tag);
     }
+
+    // Subresource Integrity for external CDN scripts
+    $sri_hashes = [
+        'gsap-core'          => 'sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt',
+        'gsap-scrolltrigger' => 'sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d',
+    ];
+    if (isset($sri_hashes[$handle])) {
+        $tag = str_replace(' src=', ' integrity="' . $sri_hashes[$handle] . '" crossorigin="anonymous" src=', $tag);
+    }
+
     return $tag;
 }
 add_filter('script_loader_tag', 'hc_design_exclude_rocket_loader', 10, 2);

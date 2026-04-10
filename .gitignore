@@ -4,6 +4,7 @@
 .env
 .env.*
 !.env.sample
+!docker/.env.docker.sample
 *.local
 
 # ============================================================

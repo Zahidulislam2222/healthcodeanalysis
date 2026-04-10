@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HealthCode API Bridge
  * Description: Exposes Elementor data and cache flush via REST API for automation scripts.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: HealthCode Analysis
  * Requires PHP: 8.0
  */
@@ -74,6 +74,61 @@ function hc_check_admin_auth(): bool {
 
     return current_user_can('manage_options');
 }
+
+/**
+ * Send security headers on all responses.
+ * HSTS is intentionally omitted — Cloudflare handles it.
+ * Setting HSTS in PHP on cPanel shared hosting causes redirect loops.
+ */
+function hc_send_security_headers(): void {
+    if (headers_sent()) {
+        return;
+    }
+
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self';");
+}
+add_action('send_headers', 'hc_send_security_headers');
+
+/**
+ * Rate limit REST API requests using WordPress transients.
+ * GET: 60 req/min, POST: 20 req/min per IP.
+ * Only applies to /healthcode/v1/ routes.
+ */
+function hc_rate_limit_check($result, $server, $request) {
+    $route = $request->get_route();
+    if (strpos($route, '/healthcode/v1/') === false) {
+        return $result;
+    }
+
+    $method = $request->get_method();
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $window = 60;
+    $limit = ($method === 'GET') ? 60 : 20;
+    $key = 'hc_rl_' . md5($ip . '_' . $method);
+
+    $current = get_transient($key);
+    if ($current === false) {
+        set_transient($key, 1, $window);
+        return $result;
+    }
+
+    if ((int) $current >= $limit) {
+        $response = new WP_REST_Response(
+            ['code' => 'rate_limit_exceeded', 'message' => 'Too many requests. Please try again later.'],
+            429
+        );
+        $response->header('Retry-After', (string) $window);
+        return $response;
+    }
+
+    set_transient($key, (int) $current + 1, $window);
+    return $result;
+}
+add_filter('rest_pre_dispatch', 'hc_rate_limit_check', 10, 3);
 
 add_action('rest_api_init', function () {
 
@@ -160,7 +215,7 @@ add_action('rest_api_init', function () {
         'callback' => function () {
             return new WP_REST_Response([
                 'status'  => 'ok',
-                'version' => '1.1.0',
+                'version' => '1.2.0',
                 'site'    => get_bloginfo('name'),
                 'url'     => home_url(),
             ], 200);
