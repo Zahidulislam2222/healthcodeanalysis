@@ -2,7 +2,7 @@
 /**
  * Plugin Name: HealthCode API Bridge
  * Description: Exposes Elementor data and cache flush via REST API for automation scripts.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: HealthCode Analysis
  * Requires PHP: 8.0
  */
@@ -199,7 +199,7 @@ add_action('rest_api_init', function () {
         'callback' => function () {
             return new WP_REST_Response([
                 'status'  => 'ok',
-                'version' => '1.2.0',
+                'version' => '1.3.0',
                 'site'    => get_bloginfo('name'),
                 'url'     => home_url(),
             ], 200);

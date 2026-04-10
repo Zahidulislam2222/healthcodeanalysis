@@ -1,17 +1,4 @@
 ---
 deployment:
   tasks:
-    # API Bridge plugin
-    - export PLUGINDIR=/home/mehzsolu/public_html/wp-content/plugins/healthcode-api-bridge
-    - /bin/mkdir -p $PLUGINDIR
-    - /bin/cp scripts/healthcode-api-bridge.php $PLUGINDIR/healthcode-api-bridge.php
-    # Design System plugin (dark theme + GSAP animations)
-    - export DESIGNDIR=/home/mehzsolu/public_html/wp-content/plugins/healthcode-design-system
-    - /bin/mkdir -p $DESIGNDIR/css
-    - /bin/mkdir -p $DESIGNDIR/js
-    - /bin/cp scripts/healthcode-design-system/healthcode-design-system.php $DESIGNDIR/healthcode-design-system.php
-    - /bin/cp scripts/healthcode-design-system/css/healthcode-theme.css $DESIGNDIR/css/healthcode-theme.css
-    - /bin/cp scripts/healthcode-design-system/js/healthcode-animations.js $DESIGNDIR/js/healthcode-animations.js
-    # Must-use plugin: auto-activates the design system
-    - /bin/mkdir -p /home/mehzsolu/public_html/wp-content/mu-plugins
-    - /bin/cp scripts/hc-auto-activate.php /home/mehzsolu/public_html/wp-content/mu-plugins/hc-auto-activate.php
+    - /bin/bash scripts/deploy.sh
