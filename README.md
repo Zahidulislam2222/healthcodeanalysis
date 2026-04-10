@@ -45,7 +45,7 @@ healthcodeanalysis/
 │   ├── clone_site.py                   # cPanel site cloning + migration scripts
 │   ├── healthcode-api-bridge.php       # WP plugin: REST API for Elementor data + rate limiting
 │   ├── hc-auto-activate.php            # MU-plugin: security headers + auto-loads design system
-│   └── healthcode-design-system/       # Dark theme plugin (v3.4.0)
+│   └── healthcode-design-system/       # Dark theme plugin (v3.7.3)
 │       ├── healthcode-design-system.php  # Loader: fonts, Rocket Loader bypass
 │       ├── css/healthcode-theme.css      # 900+ lines dark glassmorphism CSS
 │       └── js/healthcode-animations.js   # Vanilla JS: IntersectionObserver, particles, counters
@@ -126,6 +126,9 @@ A WordPress plugin that applies a dark medical AI theme on top of any Elementor 
 - **Sticky header** — `position: fixed` on inner container. All animation selectors scoped to `[data-elementor-type="wp-page"]` to prevent animating header/footer templates
 - **Popup fix** — Custom popup (`#hca-custom-popup`) has inline `!important` transparent background set by JS. Overridden via MutationObserver
 - **CSS specificity management** — Nuclear dark overrides on Elementor elements with careful exclusions for popups, buttons, and social icons
+- **NeuroScan AJAX filter patch** — Code Snippets filter uses `container.next()` which fails due to Elementor container wrapping. Patched with global querySelector + direct AJAX call
+- **Smooth scrolling** — `scroll-behavior: smooth` on HTML element
+- **Dark theme overrides** — All CSS selectors verified from live DOM via `curl` and browser Console `getComputedStyle()` inspection
 
 ### WordPress Plugin Stack
 
@@ -173,9 +176,24 @@ Set at the mu-plugin level (`hc-auto-activate.php`) for earliest execution — f
 | `X-Content-Type-Options` | `nosniff` | Prevents MIME-type sniffing |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Controls referrer leakage |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | Restricts browser APIs |
-| `Content-Security-Policy` | Allowlist for self, Elementor inline, Google Fonts | Prevents XSS/injection |
+| `Content-Security-Policy` | Full allowlist (see below) | Prevents XSS/injection |
 
 > HSTS is intentionally omitted from PHP — Cloudflare handles it. Setting HSTS in PHP on cPanel shared hosting causes redirect loops.
+
+### Content Security Policy (CSP)
+
+Every CSP source verified from browser Console errors:
+
+| Directive | Sources | Why |
+|---|---|---|
+| `script-src` | `'self' 'unsafe-inline' 'unsafe-eval'` + Cloudflare + Google | MetForm templates, reCAPTCHA v3, Cloudflare Analytics |
+| `style-src` | `'self' 'unsafe-inline'` + Google Fonts | Elementor inline styles |
+| `font-src` | `'self'` + Google Fonts + `data:` | Plugin base64 inline fonts |
+| `img-src` | `'self' data: https:` | External images + SVG data URIs |
+| `connect-src` | `'self'` + Google | reCAPTCHA verification |
+| `worker-src` | `blob:` | WordPress emoji detection worker |
+| `frame-src` | Google | reCAPTCHA iframe |
+| `frame-ancestors` | `'self'` | Prevents clickjacking |
 
 ### REST API Rate Limiting
 
