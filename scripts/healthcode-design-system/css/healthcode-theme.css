@@ -1257,8 +1257,7 @@ html {
 
 /* --- I. Benchmark chart — gray bars invisible on dark bg (verified: .bar.gray) --- */
 .hc-dark-theme .bar.gray {
-    background-color: var(--hc-cyan) !important;
-    opacity: 0.7;
+    background-color: #0ea5e9 !important;
 }
 .hc-dark-theme .widget-card {
     background: var(--hc-glass-bg) !important;
@@ -1275,16 +1274,41 @@ html {
     color: var(--hc-text-muted) !important;
 }
 
-/* --- J. MED-TECH heading — center text inside background box --- */
+/* --- J. Category page headings — center text inside background box --- */
+/* Target the e-child, its inner wrapper, AND the heading widget + text */
 .hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .e-con.e-child,
 .hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .e-con.e-child,
 .hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .e-con.e-child,
 .hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .e-con.e-child,
 .hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .e-con.e-child {
-    display: flex !important;
-    flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
+    text-align: center !important;
+}
+.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
+.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
+.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
+.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .e-con.e-child .e-con-inner,
+.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .e-con.e-child .e-con-inner {
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .elementor-heading-title,
+.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .elementor-heading-title,
+.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .elementor-heading-title,
+.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .elementor-heading-title,
+.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .elementor-heading-title {
+    text-align: center !important;
+    width: 100% !important;
+}
+.hc-dark-theme .elementor-2847 .e-con.e-parent:first-child .elementor-widget-heading,
+.hc-dark-theme .elementor-2910 .e-con.e-parent:first-child .elementor-widget-heading,
+.hc-dark-theme .elementor-2928 .e-con.e-parent:first-child .elementor-widget-heading,
+.hc-dark-theme .elementor-2945 .e-con.e-parent:first-child .elementor-widget-heading,
+.hc-dark-theme .elementor-2956 .e-con.e-parent:first-child .elementor-widget-heading {
+    width: 100% !important;
     text-align: center !important;
 }
 
