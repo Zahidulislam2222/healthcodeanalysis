@@ -4,7 +4,7 @@
 </h1>
 
 <p align="center">
-  Clone a WordPress template site and swap all content — photos, text, SEO metas — in one command.
+  Clone a WordPress Elementor template site and swap all content — photos, text, SEO metadata, branding — in one command. Includes a dark glassmorphism design system with GSAP animations.
 </p>
 
 <p align="center">
@@ -21,48 +21,142 @@
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
 </p>
 
-<br>
+---
 
-## The Problem
+## Overview
 
-A medical WordPress site built with Elementor has 6 pages, each with photos, text, and SEO metadata. Creating the same site for a new customer means manually editing every page — slow, error-prone, and doesn't scale.
+A full-stack WordPress automation platform with two core capabilities:
 
-## The Solution
+1. **Content Automation** — Clone an Elementor template site and programmatically replace all content (photos, text, headings, SEO metadata) for multiple customers via a single command.
+2. **Dark Glassmorphism Design System** — A plugin-based visual overhaul with GSAP scroll animations, sticky header, glassmorphic cards, and responsive dark theme.
 
-```
-python scripts/deploy_customer.py configs/customer.json --dry-run   # preview
-python scripts/deploy_customer.py configs/customer.json             # deploy
-```
+**Live Site:** [healthcodeanalysis.com](https://healthcodeanalysis.com)
 
-One command reads a customer config, connects to WordPress via REST API, and swaps everything:
+## Architecture
 
 ```
-Customer JSON ──> deploy_customer.py ──> WordPress REST API
-                        |
-         ┌──────────────┼──────────────┐
-         |              |              |
-    Upload new     Replace text    Update Rank Math
-    photos &       & headings in   SEO title, desc,
-    swap URLs in   Elementor       keywords & OG
-    Elementor JSON widgets         tags
-         |              |              |
-         └──────────────┼──────────────┘
-                        |
-                  Flush cache
-                  (Elementor + LiteSpeed)
+healthcodeanalysis/
+├── scripts/
+│   ├── wp_client.py                    # WordPress REST API client
+│   ├── elementor_parser.py             # Elementor JSON tree parser/modifier
+│   ├── content_swapper.py              # Image, text, SEO swap orchestrator
+│   ├── config_validator.py             # Customer config schema validation
+│   ├── deploy_customer.py              # One-command customer deployment
+│   ├── clone_site.py                   # cPanel site cloning + migration scripts
+│   ├── healthcode-api-bridge.php       # WP plugin: REST API for Elementor data
+│   ├── hc-auto-activate.php            # MU-plugin: auto-loads design system
+│   └── healthcode-design-system/       # Dark theme plugin (v3.4.0)
+│       ├── healthcode-design-system.php  # Loader: GSAP, fonts, Rocket Loader bypass
+│       ├── css/healthcode-theme.css      # 900+ lines dark glassmorphism CSS
+│       └── js/healthcode-animations.js   # GSAP scroll reveals, particles, counters
+├── configs/
+│   └── customer-template.json          # Config template with real page IDs
+├── tests/                              # 281 tests (4 suites)
+├── .github/workflows/
+│   ├── ci.yml                          # CI + auto-deploy to cPanel on push
+│   └── deploy.yml                      # Manual customer deployment with approval
+├── .env.sample                         # Environment variable template
+└── .cpanel.yml                         # cPanel deployment task mapping
 ```
 
-## What It Does
+## Content Automation Engine
+
+### The Problem
+A medical WordPress site built with Elementor has 6+ pages, each with photos, text, and SEO metadata. Manually recreating the same site for each new customer is slow, error-prone, and doesn't scale.
+
+### The Solution
+
+```bash
+python scripts/deploy_customer.py configs/customer.json --dry-run   # preview changes
+python scripts/deploy_customer.py configs/customer.json             # deploy live
+```
+
+One command reads a customer config and executes the full pipeline:
 
 | Capability | Details |
 |---|---|
-| **Swap photos** | Upload images via REST API, replace URLs in Elementor JSON (filename or exact match) |
-| **Swap text** | Replace headings and text-editor widgets by index or Elementor widget ID |
-| **Swap SEO metas** | Update Rank Math title, description, keywords, Open Graph tags per page |
-| **Update site identity** | Change site title, tagline, upload and activate logo + favicon |
-| **Clone sites** | Create cPanel databases, generate full migration bash scripts |
-| **Dry-run mode** | Preview every change without modifying the live site |
-| **Validate configs** | Catch errors in customer JSON before deployment |
+| **Image swap** | Upload photos via REST API, replace URLs in Elementor JSON (filename or exact match) |
+| **Text swap** | Replace headings and text-editor widgets by index or widget ID |
+| **SEO swap** | Update Rank Math title, description, keywords, Open Graph tags per page |
+| **Site identity** | Change title, tagline, upload and activate logo + favicon |
+| **Site cloning** | cPanel UAPI: create databases, users, generate migration bash scripts |
+| **Dry-run** | Preview every change without modifying the live site |
+| **Config validation** | Catch errors in customer JSON before deployment |
+
+### Customer Config Format
+
+```json
+{
+  "customer_name": "MediCare Plus",
+  "site_settings": {
+    "title": "MediCare Plus",
+    "description": "Your trusted health partner",
+    "logo_file": "assets/medicare/logo.png"
+  },
+  "pages": [
+    {
+      "page_id": 1210,
+      "page_name": "About Us",
+      "headings": [{"index": 0, "new_text": "About MediCare Plus"}],
+      "images": [{"old_url": "About-US.webp", "new_file": "assets/medicare/about.webp", "match_mode": "filename"}],
+      "meta": {"rank_math_title": "About Us - MediCare Plus"}
+    }
+  ]
+}
+```
+
+Full template: [`configs/customer-template.json`](configs/customer-template.json)
+
+## Dark Glassmorphism Design System
+
+A WordPress plugin that applies a dark medical AI theme on top of any Elementor site. Activates/deactivates per customer clone — no Elementor template editing required.
+
+### Design
+
+- **Colors:** Deep navy base (#0a0e1a), cyan-blue gradient accents, emerald health, purple AI
+- **Typography:** Space Grotesk (headings), Inter (body)
+- **Effects:** Glassmorphic cards, scroll reveal animations, counter animations, ECG pulse line, floating particles
+- **Responsive:** Mobile-first, breakpoints at 1024/768/480px, respects `prefers-reduced-motion`
+
+### Technical Highlights
+
+- **Cloudflare Rocket Loader bypass** — `data-cfasync="false"` via `script_loader_tag` filter keeps GSAP loading normally while Rocket Loader optimizes everything else
+- **Elementor container system** — All CSS verified against live DOM. Targets new flexbox containers (`e-con`, `e-parent`, `e-child`), not legacy sections
+- **Sticky header** — `position: fixed` on inner container. All GSAP selectors scoped to `[data-elementor-type="wp-page"]` to prevent animating header/footer templates
+- **Popup fix** — Custom popup (`#hca-custom-popup`) has inline `!important` transparent background set by JS. Overridden via MutationObserver
+- **CSS specificity management** — Nuclear dark overrides on Elementor elements with careful exclusions for popups, buttons, and social icons
+
+### WordPress Plugin Stack
+
+| Plugin | Role |
+|---|---|
+| Elementor | Page builder (all layouts) |
+| Rank Math SEO | SEO metadata, Open Graph |
+| Jeg Elementor Kit | Nav menu widget (`jkit_nav_menu`) |
+| Royal Elementor Addons | Additional widgets, popup |
+| Advanced Custom Fields | Custom data fields |
+| MetForm | Contact/login forms |
+| Astra | Theme (Header Footer Builder) |
+
+## CI/CD Pipeline
+
+Every push to `main` triggers CI and automatic deployment:
+
+```
+git push to main
+    │
+    ├── Lint & Security ────── Ruff linter + Bandit security scan + PHP syntax
+    ├── Tests ──────────────── 281 tests across 4 suites
+    ├── Coverage ───────────── 59% with threshold enforcement
+    ├── Config Validation ──── Customer JSON schema check
+    │
+    └── Deploy Plugin ─────── Uploads PHP/CSS/JS to cPanel via File Manager API
+                               then flushes Elementor cache
+```
+
+**Customer deployments** are triggered manually via `workflow_dispatch` with dry-run preview and approval gate.
+
+**Quality gates:** Pre-commit hooks (Ruff lint/format, secret detection) | Dependabot (weekly) | GitHub Secrets for all credentials
 
 ## Quick Start
 
@@ -70,121 +164,58 @@ Customer JSON ──> deploy_customer.py ──> WordPress REST API
 git clone https://github.com/Zahidulislam2222/healthcodeanalysis.git
 cd healthcodeanalysis
 pip install -r requirements.txt
-cp .env.sample .env   # Add your WordPress credentials
+cp .env.sample .env   # Add your credentials
 ```
 
 ```bash
-# Deploy content for a customer
+# Deploy content
 python scripts/deploy_customer.py configs/customer-template.json --dry-run
 
-# Clone template to a new domain
+# Clone to new domain
 python scripts/clone_site.py --source healthcodeanalysis.com --target newcustomer.com --generate-script
 
-# Validate a config
-python scripts/config_validator.py configs/customer-template.json
+# Run tests
+python tests/test_phase1.py && python tests/test_phase2_4.py && python tests/test_phase6.py && python tests/test_e2e_swap.py
 ```
 
-## Scripts
+## Environment Variables
 
-| Script | What It Does |
-|---|---|
-| `deploy_customer.py` | Master orchestrator — one command runs all swaps for a customer |
-| `content_swapper.py` | Handles image upload/replace, text swap, SEO meta update |
-| `elementor_parser.py` | Parses and modifies Elementor JSON data (nested widget tree) |
-| `wp_client.py` | WordPress REST API client with auth, media upload, cache flush |
-| `config_validator.py` | Validates customer config JSON before deployment |
-| `clone_site.py` | cPanel UAPI — creates databases, users, generates migration scripts |
-| `healthcode-api-bridge.php` | WordPress plugin — exposes Elementor data and Rank Math via REST |
+```bash
+# WordPress (required)
+WP_SITE_URL=https://example.com
+WP_USERNAME=admin
+WP_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
+HC_API_KEY=your_healthcode_api_key
 
-## CI/CD Pipeline
-
-Every push triggers **4 parallel CI jobs** and an automatic plugin deployment:
-
-```
-git push to main
-    │
-    ├── CI (automatic, ~30s)
-    │   ├── Lint & Security ──── Ruff + Bandit + PHP syntax
-    │   ├── Tests ───────────── 281 tests across 4 suites
-    │   ├── Coverage ────────── 59% with enforcement
-    │   └── Validate ────────── Customer config schema check
-    │
-    ├── CD: Plugin Deploy (automatic)
-    │   └── .cpanel.yml ──────── Copies PHP plugin to live site via SSH deploy key
-    │
-    └── CD: Customer Deploy (manual trigger with approval gate)
-        ├── Validate config
-        ├── Dry-run preview
-        ├── Manual approval
-        └── Live deploy + verification
+# cPanel (for cloning + CI/CD deploy)
+CPANEL_URL=https://your-server.com:2083
+CPANEL_USERNAME=your_user
+CPANEL_API_TOKEN=your_token
 ```
 
-**Quality gates:** Pre-commit hooks (Ruff, secret detection) | Dependabot (weekly) | Branch protection
+All credentials stored in `.env` (gitignored) and GitHub Secrets for CI/CD. Never hardcoded.
 
 ## Testing
 
-```bash
-python tests/test_phase1.py        # 71 unit tests
-python tests/test_phase2_4.py      # 46 content swap tests
-python tests/test_phase6.py        # 38 site cloning tests
-python tests/test_e2e_swap.py      # 126 end-to-end tests
-```
-
-Tests verify: image swapping (4 photos, filename match), heading/text replacement, SEO meta updates, bulk domain replace, nested Elementor widgets, repeater fields, config validation, dry-run mode, and clone script generation.
-
-## Customer Config
-
-```json
-{
-  "customer_name": "MediCare Plus",
-  "domain": "medicareplus.com",
-  "site_settings": {
-    "title": "MediCare Plus",
-    "description": "Your trusted health partner",
-    "logo_file": "assets/medicare/logo.png",
-    "favicon_file": "assets/medicare/favicon.png"
-  },
-  "pages": [
-    {
-      "page_id": 1210,
-      "page_name": "About Us",
-      "headings": [{"index": 0, "new_text": "About MediCare Plus"}],
-      "texts": [{"index": 0, "new_html": "<p>Leading healthcare provider.</p>"}],
-      "images": [{"old_url": "About-US.webp", "new_file": "assets/medicare/about-bg.webp", "match_mode": "filename"}],
-      "meta": {"rank_math_title": "About Us - MediCare Plus", "rank_math_description": "Learn about our team."}
-    }
-  ]
-}
-```
-
-Full template with all 6 pages: [`configs/customer-template.json`](configs/customer-template.json)
-
-## Project Structure
-
-```
-healthcodeanalysis/
-├── .github/workflows/
-│   ├── ci.yml                 # 4 parallel CI jobs
-│   └── deploy.yml             # Manual customer deployment
-├── .cpanel.yml                # Auto-deploy PHP plugin on push
-├── scripts/                   # 6 Python scripts + 1 PHP plugin
-├── tests/                     # 281 tests (unit + e2e)
-├── configs/                   # Customer config templates
-├── docker/                    # Local dev environment
-├── .pre-commit-config.yaml    # Ruff, JSON/YAML check, secret detection
-├── pyproject.toml             # Ruff + coverage config
-└── requirements.txt           # Dependencies
-```
+| Suite | Tests | Covers |
+|---|---|---|
+| Phase 1 | 71 | Core utilities: API client, Elementor parser, config validator |
+| Phase 2-4 | 46 | Image upload/swap, text replacement, SEO meta updates |
+| Phase 6 | 38 | cPanel cloning, database creation, migration scripts |
+| E2E | 126 | Full content swap verification across all widget types |
+| **Total** | **281** | All operations idempotent and safe to re-run |
 
 ## Tech Stack
 
 **Automation:** Python 3.10+ | Requests | WordPress REST API | cPanel UAPI
 
+**Design System:** GSAP 3.12 + ScrollTrigger | CSS Custom Properties | Google Fonts
+
 **WordPress:** Elementor | Rank Math SEO | ACF | Astra | LiteSpeed Cache
 
-**CI/CD:** GitHub Actions | cPanel Git Deploy (SSH) | Dependabot
+**CI/CD:** GitHub Actions | cPanel File Manager API | Dependabot
 
-**Quality:** Ruff (lint + format + security) | 281 tests | 59% coverage | Pre-commit hooks
+**Quality:** Ruff (lint + format + security) | 281 tests | Pre-commit hooks | Secret detection
 
 ## License
 

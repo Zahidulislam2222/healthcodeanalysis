@@ -139,7 +139,7 @@ jobs:
           username = os.environ['CPANEL_USERNAME']
           token = os.environ['CPANEL_API_TOKEN']
           headers = {'Authorization': f'cpanel {username}:{token}'}
-          wp = '/home/mehzsolu/public_html/wp-content'
+          wp = f'/home/{username}/public_html/wp-content'
 
           files = [
               ('healthcode-api-bridge.php', f'{wp}/plugins/healthcode-api-bridge', 'scripts/healthcode-api-bridge.php'),
