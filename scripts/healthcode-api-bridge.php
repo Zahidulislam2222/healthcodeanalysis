@@ -75,24 +75,7 @@ function hc_check_admin_auth(): bool {
     return current_user_can('manage_options');
 }
 
-/**
- * Send security headers on all responses.
- * HSTS is intentionally omitted — Cloudflare handles it.
- * Setting HSTS in PHP on cPanel shared hosting causes redirect loops.
- */
-function hc_send_security_headers(): void {
-    if (headers_sent()) {
-        return;
-    }
-
-    header('X-Frame-Options: SAMEORIGIN');
-    header('X-Content-Type-Options: nosniff');
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-    header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self';");
-}
-add_action('init', 'hc_send_security_headers');
-add_action('rest_api_init', 'hc_send_security_headers');
+// Security headers are set in hc-auto-activate.php (mu-plugin) for earliest execution.
 
 /**
  * Rate limit REST API requests using WordPress transients.
