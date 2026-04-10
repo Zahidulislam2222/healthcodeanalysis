@@ -513,48 +513,71 @@
     }
 
     /* ------------------------------------------------------------------
-       ASKME CHATBOT — Force light theme via inline styles
-       CSS specificity wars can't override element.style
+       ASKME CHATBOT — Force light theme on bot bubbles
+       Another script sets inline background:transparent after us,
+       so we use MutationObserver on style attribute to always win.
        ------------------------------------------------------------------ */
-    function fixChatbotTheme() {
-        var win = document.getElementById('medibot-window');
-        if (!win) return;
+    function applyBubbleFix(el) {
+        el.style.setProperty('background', '#ffffff', 'important');
+        el.style.setProperty('color', '#1e293b', 'important');
+        el.style.setProperty('border', '1px solid #e2e8f0', 'important');
+    }
 
+    function fixChatbotTheme() {
         var msgs = document.getElementById('mb-messages');
-        if (msgs) msgs.style.cssText += 'background:#f8fafc!important;';
+        if (!msgs) return;
 
         // Fix all existing bot bubbles
-        var botBubbles = win.querySelectorAll('.msg-bubble.bot');
-        botBubbles.forEach(function(el) {
-            el.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
-        });
+        msgs.querySelectorAll('.msg-bubble.bot').forEach(applyBubbleFix);
 
-        // Watch for new bubbles added dynamically
+        // Watch for style changes on existing + new bubbles
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(m) {
-                m.addedNodes.forEach(function(node) {
-                    if (node.nodeType !== 1) return;
-                    var bots = node.querySelectorAll ? node.querySelectorAll('.msg-bubble.bot') : [];
-                    bots.forEach(function(el) {
-                        el.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
+                // New nodes added (new chat messages)
+                if (m.type === 'childList') {
+                    m.addedNodes.forEach(function(node) {
+                        if (node.nodeType !== 1) return;
+                        if (node.classList && node.classList.contains('msg-bubble') && node.classList.contains('bot')) {
+                            applyBubbleFix(node);
+                            watchStyle(node);
+                        }
+                        var bots = node.querySelectorAll ? node.querySelectorAll('.msg-bubble.bot') : [];
+                        bots.forEach(function(b) { applyBubbleFix(b); watchStyle(b); });
                     });
-                    if (node.classList && node.classList.contains('msg-bubble') && node.classList.contains('bot')) {
-                        node.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
+                }
+                // Style attribute changed (something overwrote our fix)
+                if (m.type === 'attributes' && m.attributeName === 'style') {
+                    var t = m.target;
+                    if (t.classList && t.classList.contains('msg-bubble') && t.classList.contains('bot')) {
+                        if (getComputedStyle(t).backgroundColor === 'rgba(0, 0, 0, 0)') {
+                            applyBubbleFix(t);
+                        }
                     }
-                });
+                }
             });
         });
 
-        observer.observe(msgs, { childList: true, subtree: true });
+        // Watch children added + style changes on the whole messages area
+        observer.observe(msgs, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+        // Also individually watch each existing bubble's style
+        function watchStyle(el) {
+            var so = new MutationObserver(function(muts) {
+                if (getComputedStyle(el).backgroundColor === 'rgba(0, 0, 0, 0)') {
+                    applyBubbleFix(el);
+                }
+            });
+            so.observe(el, { attributes: true, attributeFilter: ['style'] });
+        }
+        msgs.querySelectorAll('.msg-bubble.bot').forEach(watchStyle);
     }
 
-    // Run after chatbot loads (Code Snippets may inject it late)
     if (document.readyState === 'complete') {
         fixChatbotTheme();
     } else {
         window.addEventListener('load', fixChatbotTheme);
     }
-    // Also retry after 2s in case Rocket Loader delays it
     setTimeout(fixChatbotTheme, 2000);
+    setTimeout(fixChatbotTheme, 5000);
 
 })();
