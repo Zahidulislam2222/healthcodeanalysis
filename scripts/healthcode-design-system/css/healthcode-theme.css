@@ -485,12 +485,25 @@ body.hc-dark-theme {
     -webkit-text-fill-color: transparent !important;
     background-clip: text !important;
 }
-/* Hero "Blogs, reviews & toolbox" badge — dark version */
-.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child h6 .elementor-heading-title,
-.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-widget-heading:first-child .elementor-widget-container {
+/* Hero "Blogs, reviews & toolbox" badge — HOME PAGE ONLY (elementor-2471) */
+.hc-dark-theme .elementor-2471 > .e-con.e-parent:first-child h6 .elementor-heading-title,
+.hc-dark-theme .elementor-2471 > .e-con.e-parent:first-child .elementor-widget-heading:first-child .elementor-widget-container {
     background-color: rgba(6, 182, 212, 0.1) !important;
     border-color: rgba(6, 182, 212, 0.2) !important;
     color: var(--hc-cyan) !important;
+}
+/* Category page headings — remove badge bg, add proper glass box with padding */
+.hc-dark-theme .elementor-2847 .elementor-widget-heading .elementor-widget-container,
+.hc-dark-theme .elementor-2910 .elementor-widget-heading .elementor-widget-container,
+.hc-dark-theme .elementor-2928 .elementor-widget-heading .elementor-widget-container,
+.hc-dark-theme .elementor-2945 .elementor-widget-heading .elementor-widget-container,
+.hc-dark-theme .elementor-2956 .elementor-widget-heading .elementor-widget-container {
+    background-color: rgba(6, 182, 212, 0.08) !important;
+    border: 1px solid rgba(6, 182, 212, 0.15) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    padding: 30px 50px !important;
+    margin: 0 !important;
+    text-align: center !important;
 }
 
 /* Hero text */
