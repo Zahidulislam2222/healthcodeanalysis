@@ -512,4 +512,49 @@
         init();
     }
 
+    /* ------------------------------------------------------------------
+       ASKME CHATBOT — Force light theme via inline styles
+       CSS specificity wars can't override element.style
+       ------------------------------------------------------------------ */
+    function fixChatbotTheme() {
+        var win = document.getElementById('medibot-window');
+        if (!win) return;
+
+        var msgs = document.getElementById('mb-messages');
+        if (msgs) msgs.style.cssText += 'background:#f8fafc!important;';
+
+        // Fix all existing bot bubbles
+        var botBubbles = win.querySelectorAll('.msg-bubble.bot');
+        botBubbles.forEach(function(el) {
+            el.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
+        });
+
+        // Watch for new bubbles added dynamically
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(m) {
+                m.addedNodes.forEach(function(node) {
+                    if (node.nodeType !== 1) return;
+                    var bots = node.querySelectorAll ? node.querySelectorAll('.msg-bubble.bot') : [];
+                    bots.forEach(function(el) {
+                        el.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
+                    });
+                    if (node.classList && node.classList.contains('msg-bubble') && node.classList.contains('bot')) {
+                        node.style.cssText += 'background:#ffffff!important;color:#1e293b!important;border:1px solid #e2e8f0!important;';
+                    }
+                });
+            });
+        });
+
+        observer.observe(msgs, { childList: true, subtree: true });
+    }
+
+    // Run after chatbot loads (Code Snippets may inject it late)
+    if (document.readyState === 'complete') {
+        fixChatbotTheme();
+    } else {
+        window.addEventListener('load', fixChatbotTheme);
+    }
+    // Also retry after 2s in case Rocket Loader delays it
+    setTimeout(fixChatbotTheme, 2000);
+
 })();
