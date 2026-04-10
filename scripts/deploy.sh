@@ -4,10 +4,8 @@
 
 WPROOT="$HOME/public_html/wp-content"
 
-# API Bridge plugin
-PLUGINDIR="$WPROOT/plugins/healthcode-api-bridge"
-mkdir -p "$PLUGINDIR"
-cp scripts/healthcode-api-bridge.php "$PLUGINDIR/healthcode-api-bridge.php"
+# API Bridge plugin (standalone file — WP activates it from plugins root)
+cp scripts/healthcode-api-bridge.php "$WPROOT/plugins/healthcode-api-bridge.php"
 
 # Design System plugin (dark theme + GSAP animations)
 DESIGNDIR="$WPROOT/plugins/healthcode-design-system"

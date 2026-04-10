@@ -316,6 +316,14 @@ function hc_update_elementor_data(WP_REST_Request $request): WP_REST_Response {
 function hc_flush_elementor_cache(): WP_REST_Response {
     $results = [];
 
+    // Flush PHP OPcache so updated plugin files take effect immediately
+    if (function_exists('opcache_reset')) {
+        opcache_reset();
+        $results['opcache'] = 'OPcache reset';
+    } else {
+        $results['opcache'] = 'OPcache not available';
+    }
+
     if (class_exists('\Elementor\Plugin')) {
         \Elementor\Plugin::$instance->files_manager->clear_cache();
         $results['elementor'] = 'Cache cleared';

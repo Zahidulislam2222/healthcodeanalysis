@@ -144,7 +144,7 @@ jobs:
           wp = f'/home/{username}/public_html/wp-content'
 
           files = [
-              ('healthcode-api-bridge.php', f'{wp}/plugins/healthcode-api-bridge', 'scripts/healthcode-api-bridge.php'),
+              ('healthcode-api-bridge.php', f'{wp}/plugins', 'scripts/healthcode-api-bridge.php'),
               ('healthcode-design-system.php', f'{wp}/plugins/healthcode-design-system', 'scripts/healthcode-design-system/healthcode-design-system.php'),
               ('healthcode-theme.css', f'{wp}/plugins/healthcode-design-system/css', 'scripts/healthcode-design-system/css/healthcode-theme.css'),
               ('healthcode-animations.js', f'{wp}/plugins/healthcode-design-system/js', 'scripts/healthcode-design-system/js/healthcode-animations.js'),
