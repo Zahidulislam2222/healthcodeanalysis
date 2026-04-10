@@ -173,11 +173,13 @@ jobs:
       - name: Flush cache
         env:
           HC_API_KEY: ${{ secrets.HC_API_KEY }}
+          WP_SITE_URL: ${{ secrets.WP_SITE_URL }}
         run: |
           python -c "
           import requests, os
+          site_url = os.environ['WP_SITE_URL'].rstrip('/')
           resp = requests.post(
-              'https://healthcodeanalysis.com/wp-json/healthcode/v1/flush-elementor-cache',
+              f'{site_url}/wp-json/healthcode/v1/flush-elementor-cache',
               headers={'X-HC-API-Key': os.environ['HC_API_KEY']},
               timeout=30
           )

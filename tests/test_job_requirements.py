@@ -377,7 +377,7 @@ def test_requirement_6_clone_site():
     """JOB: "clone my template" — generate clone script for cPanel."""
     requirement("CLONE SITE to new domain")
 
-    cpanel = CPanelClient(url="https://bdix.aridserver.com:2083", username="mehzsolu", dry_run=True)
+    cpanel = CPanelClient(url="https://server.example.com:2083", username="testuser", dry_run=True)
     cloner = SiteCloner(cpanel, verbose=False)
 
     # Test clone command generation
@@ -415,7 +415,7 @@ def test_requirement_7_repeatable():
     requirement("REPEATABLE — works for multiple customers")
 
     # Customer 1
-    cpanel = CPanelClient(url="https://bdix.aridserver.com:2083", username="mehzsolu", dry_run=True)
+    cpanel = CPanelClient(url="https://server.example.com:2083", username="testuser", dry_run=True)
     cloner = SiteCloner(cpanel, verbose=False)
 
     script1 = cloner.generate_full_pipeline_script("healthcodeanalysis.com", "customer1.com", "configs/customer1.json")

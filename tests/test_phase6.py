@@ -62,14 +62,14 @@ def test_cpanel_uapi_dry_run():
 def test_site_cloner_clone():
     """Test site cloning in dry-run."""
     print("\n=== Test: SiteCloner.clone (dry-run) ===")
-    client = CPanelClient(url="https://server.com:2083", username="mehzsolu", dry_run=True)
+    client = CPanelClient(url="https://server.com:2083", username="testuser", dry_run=True)
     cloner = SiteCloner(client, verbose=False)
 
     results = cloner.clone(
         source_domain="healthcodeanalysis.com",
         target_domain="newcustomer.com",
-        target_db_name="mehzsolu_newcust",
-        target_db_user="mehzsolu_newcust",
+        target_db_name="testuser_newcust",
+        target_db_user="testuser_newcust",
         target_db_pass="securepass123",
     )
 
@@ -82,35 +82,35 @@ def test_site_cloner_clone():
     test("Commands include search-replace", any("search-replace" in cmd for cmd in results["commands"]))
     test("Commands reference source domain", any("healthcodeanalysis.com" in cmd for cmd in results["commands"]))
     test("Commands reference target domain", any("newcustomer.com" in cmd for cmd in results["commands"]))
-    test("Commands reference mehzsolu path", any("mehzsolu" in cmd for cmd in results["commands"]))
+    test("Commands reference testuser path", any("testuser" in cmd for cmd in results["commands"]))
 
 
 def test_site_cloner_auto_db_name():
     """Test automatic DB name generation."""
     print("\n=== Test: SiteCloner auto DB name ===")
-    client = CPanelClient(url="https://server.com:2083", username="mehzsolu", dry_run=True)
+    client = CPanelClient(url="https://server.com:2083", username="testuser", dry_run=True)
     cloner = SiteCloner(client, verbose=False)
 
     results = cloner.clone("healthcodeanalysis.com", "customer-site.com")
     commands = results["commands"]
     commands_str = "\n".join(commands)
 
-    test("Auto-generated DB name present", "mehzsolu_" in commands_str)
+    test("Auto-generated DB name present", "testuser_" in commands_str)
     test("Commands are non-empty", len(commands) > 5)
 
 
 def test_generate_full_pipeline_script():
     """Test full pipeline bash script generation."""
     print("\n=== Test: SiteCloner pipeline script ===")
-    client = CPanelClient(url="https://server.com:2083", username="mehzsolu", dry_run=True)
+    client = CPanelClient(url="https://server.com:2083", username="testuser", dry_run=True)
     cloner = SiteCloner(client, verbose=False)
 
     script = cloner.generate_full_pipeline_script(
         source_domain="healthcodeanalysis.com",
         target_domain="newcustomer.com",
         config_path="configs/customer-newcustomer.json",
-        db_name="mehzsolu_newcust",
-        db_user="mehzsolu_newcust",
+        db_name="testuser_newcust",
+        db_user="testuser_newcust",
         db_pass="testpass123",
     )
 
@@ -119,7 +119,7 @@ def test_generate_full_pipeline_script():
     test("Script has set -e", "set -e" in script)
     test("Script has source domain", "healthcodeanalysis.com" in script)
     test("Script has target domain", "newcustomer.com" in script)
-    test("Script has DB name", "mehzsolu_newcust" in script)
+    test("Script has DB name", "testuser_newcust" in script)
     test("Script has cp command", "cp -r" in script)
     test("Script has search-replace", "search-replace" in script)
     test("Script has wp-config update", "wp-config.php" in script)

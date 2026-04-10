@@ -183,9 +183,11 @@ class SiteCloner:
             f"wp db export /tmp/{source.replace('.', '_')}_dump.sql --path={source_path}",
             "",
             "# Step 3: Update wp-config.php for new database",
+            f'DB_PASS="{db_pass}"',
             f"sed -i \"s/define.*DB_NAME.*/define('DB_NAME', '{db_name}');/\" {target_path}/wp-config.php",
             f"sed -i \"s/define.*DB_USER.*/define('DB_USER', '{db_user}');/\" {target_path}/wp-config.php",
-            f"sed -i \"s/define.*DB_PASSWORD.*/define('DB_PASSWORD', '{db_pass}');/\" {target_path}/wp-config.php",
+            f"sed -i \"s/define.*DB_PASSWORD.*/define('DB_PASSWORD', '$DB_PASS');/\" {target_path}/wp-config.php",
+            'unset DB_PASS',
             "",
             "# Step 4: Import database to new DB",
             f"wp db import /tmp/{source.replace('.', '_')}_dump.sql --path={target_path}",
@@ -270,6 +272,7 @@ echo "Domain replaced."
 echo "=== Step 6: Flush Caches ==="
 wp rewrite flush --path="$TARGET_PATH"
 wp cache flush --path="$TARGET_PATH"
+unset DB_PASS
 echo "Caches flushed."
 
 echo "=== Step 7: Swap Content via API ==="

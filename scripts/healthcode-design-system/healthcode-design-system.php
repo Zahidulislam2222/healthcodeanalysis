@@ -14,7 +14,8 @@ define('HC_DESIGN_PATH', plugin_dir_path(__FILE__));
 define('HC_DESIGN_URL', plugin_dir_url(__FILE__));
 
 /**
- * Enqueue all frontend assets: fonts, GSAP, theme CSS, animations JS.
+ * Enqueue all frontend assets: fonts, theme CSS, animations JS.
+ * No external animation libraries — uses vanilla IntersectionObserver + CSS transitions.
  */
 function hc_design_enqueue_assets(): void {
     // Google Fonts — Space Grotesk (headings) + Inter (body)
@@ -25,24 +26,6 @@ function hc_design_enqueue_assets(): void {
         null
     );
 
-    // GSAP 3.12 core
-    wp_enqueue_script(
-        'gsap-core',
-        'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
-        [],
-        '3.12.5',
-        true
-    );
-
-    // GSAP ScrollTrigger plugin
-    wp_enqueue_script(
-        'gsap-scrolltrigger',
-        'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
-        ['gsap-core'],
-        '3.12.5',
-        true
-    );
-
     // Theme CSS
     wp_enqueue_style(
         'hc-dark-theme',
@@ -51,11 +34,11 @@ function hc_design_enqueue_assets(): void {
         HC_DESIGN_VERSION
     );
 
-    // Animations JS
+    // Animations JS (vanilla — no dependencies)
     wp_enqueue_script(
         'hc-animations',
         HC_DESIGN_URL . 'js/healthcode-animations.js',
-        ['gsap-core', 'gsap-scrolltrigger'],
+        [],
         HC_DESIGN_VERSION,
         true
     );
@@ -63,25 +46,13 @@ function hc_design_enqueue_assets(): void {
 add_action('wp_enqueue_scripts', 'hc_design_enqueue_assets');
 
 /**
- * Exclude GSAP + animations from Cloudflare Rocket Loader.
- * Adds data-cfasync="false" so these scripts load normally while
- * Rocket Loader continues optimizing everything else.
+ * Exclude animations JS from Cloudflare Rocket Loader.
+ * Adds data-cfasync="false" so animations load normally.
  */
 function hc_design_exclude_rocket_loader(string $tag, string $handle): string {
-    $excluded = ['gsap-core', 'gsap-scrolltrigger', 'hc-animations'];
-    if (in_array($handle, $excluded, true)) {
+    if ($handle === 'hc-animations') {
         $tag = str_replace('<script ', '<script data-cfasync="false" ', $tag);
     }
-
-    // Subresource Integrity for external CDN scripts
-    $sri_hashes = [
-        'gsap-core'          => 'sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt',
-        'gsap-scrolltrigger' => 'sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d',
-    ];
-    if (isset($sri_hashes[$handle])) {
-        $tag = str_replace(' src=', ' integrity="' . $sri_hashes[$handle] . '" crossorigin="anonymous" src=', $tag);
-    }
-
     return $tag;
 }
 add_filter('script_loader_tag', 'hc_design_exclude_rocket_loader', 10, 2);
@@ -103,7 +74,6 @@ add_filter('body_class', 'hc_design_body_class');
 function hc_design_resource_hints(): void {
     echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
     echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-    echo '<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>' . "\n";
 }
 add_action('wp_head', 'hc_design_resource_hints', 1);
 

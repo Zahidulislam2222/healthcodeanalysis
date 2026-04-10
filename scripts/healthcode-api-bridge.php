@@ -16,13 +16,8 @@ defined('ABSPATH') || exit;
  * Or in the database via Settings > General (added by this plugin).
  */
 function hc_check_api_auth(): bool {
-    // Method 1: Check X-HC-API-Key header
+    // Header-only API key auth (query params removed — they leak in logs)
     $api_key = $_SERVER['HTTP_X_HC_API_KEY'] ?? '';
-
-    // Method 2: Check query parameter (fallback)
-    if (empty($api_key)) {
-        $api_key = $_GET['hc_api_key'] ?? '';
-    }
 
     if (!empty($api_key)) {
         $stored_key = defined('HC_API_KEY') ? HC_API_KEY : get_option('hc_api_key', '');
@@ -52,7 +47,7 @@ function hc_check_api_auth(): bool {
  */
 function hc_check_admin_auth(): bool {
     // API key auth grants admin access for our endpoints
-    $api_key = $_SERVER['HTTP_X_HC_API_KEY'] ?? $_GET['hc_api_key'] ?? '';
+    $api_key = $_SERVER['HTTP_X_HC_API_KEY'] ?? '';
     if (!empty($api_key)) {
         $stored_key = defined('HC_API_KEY') ? HC_API_KEY : get_option('hc_api_key', '');
         if (!empty($stored_key) && hash_equals($stored_key, $api_key)) {
@@ -89,7 +84,15 @@ function hc_rate_limit_check($result, $server, $request) {
     }
 
     $method = $request->get_method();
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    // Use real client IP behind Cloudflare/proxies, fall back to REMOTE_ADDR
+    $ip = $_SERVER['HTTP_CF_CONNECTING_IP']
+        ?? $_SERVER['HTTP_X_FORWARDED_FOR']
+        ?? $_SERVER['REMOTE_ADDR']
+        ?? 'unknown';
+    // X-Forwarded-For may contain a chain — use the first (client) IP
+    if (strpos($ip, ',') !== false) {
+        $ip = trim(explode(',', $ip)[0]);
+    }
     $window = 60;
     $limit = ($method === 'GET') ? 60 : 20;
     $key = 'hc_rl_' . md5($ip . '_' . $method);
@@ -222,10 +225,15 @@ function hc_activate_plugin(WP_REST_Request $request): WP_REST_Response {
         return new WP_REST_Response(['error' => 'Missing "plugin" field (e.g. "healthcode-design-system/healthcode-design-system.php")'], 400);
     }
 
-    // Validate plugin file exists
+    // Block path traversal — plugin must be "folder/file.php" format, no ".."
+    if (strpos($plugin, '..') !== false || !preg_match('#^[\w-]+/[\w-]+\.php$#', $plugin)) {
+        return new WP_REST_Response(['error' => 'Invalid plugin path format'], 400);
+    }
+
+    // Validate plugin file exists (don't expose server paths in error)
     $plugin_path = WP_PLUGIN_DIR . '/' . $plugin;
     if (!file_exists($plugin_path)) {
-        return new WP_REST_Response(['error' => 'Plugin file not found: ' . $plugin, 'path' => $plugin_path], 404);
+        return new WP_REST_Response(['error' => 'Plugin not found'], 404);
     }
 
     if ($action === 'activate') {
@@ -351,14 +359,21 @@ function hc_get_page_map(): WP_REST_Response {
     global $wpdb;
 
     $results = $wpdb->get_results(
-        "SELECT p.ID, p.post_title, p.post_status, p.post_type,
-                LENGTH(pm.meta_value) as elementor_data_size
-         FROM {$wpdb->posts} p
-         INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = '_elementor_data'
-         WHERE p.post_status IN ('publish', 'draft')
-           AND pm.meta_value != '[]'
-           AND LENGTH(pm.meta_value) > 10
-         ORDER BY p.post_type, p.post_title"
+        $wpdb->prepare(
+            "SELECT p.ID, p.post_title, p.post_status, p.post_type,
+                    LENGTH(pm.meta_value) as elementor_data_size
+             FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+             WHERE p.post_status IN (%s, %s)
+               AND pm.meta_value != %s
+               AND LENGTH(pm.meta_value) > %d
+             ORDER BY p.post_type, p.post_title",
+            '_elementor_data',
+            'publish',
+            'draft',
+            '[]',
+            10
+        )
     );
 
     $pages = [];
