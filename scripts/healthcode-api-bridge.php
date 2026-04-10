@@ -91,7 +91,8 @@ function hc_send_security_headers(): void {
     header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
     header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self';");
 }
-add_action('send_headers', 'hc_send_security_headers');
+add_action('init', 'hc_send_security_headers');
+add_action('rest_api_init', 'hc_send_security_headers');
 
 /**
  * Rate limit REST API requests using WordPress transients.
