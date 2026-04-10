@@ -77,7 +77,14 @@
        ------------------------------------------------------------------ */
     function initPageEntrance() {
         if (prefersReducedMotion) return;
-        gsap.fromTo('body', { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out' });
+        /* Do NOT animate body — GSAP sets transform/will-change on animated elements,
+           which creates a new containing block and breaks position:fixed on ALL children.
+           Animate the page content wrapper instead. */
+        var pageContent = document.querySelector('[data-elementor-type="wp-page"]') ||
+                          document.querySelector('.elementor-page .elementor');
+        if (pageContent) {
+            gsap.fromTo(pageContent, { opacity: 0 }, { opacity: 1, duration: 0.6, ease: 'power2.out', clearProps: 'opacity' });
+        }
     }
 
     /* ------------------------------------------------------------------
@@ -86,8 +93,8 @@
     function initScrollReveals() {
         if (prefersReducedMotion) return;
 
-        /* Parent containers = main sections */
-        var sections = document.querySelectorAll('.e-con.e-parent');
+        /* Parent containers = main page sections only (not header/footer templates) */
+        var sections = document.querySelectorAll('[data-elementor-type="wp-page"] .e-con.e-parent');
         sections.forEach(function (section, index) {
             if (index === 0) return; /* Skip hero */
 
@@ -137,8 +144,7 @@
     function initHero() {
         if (prefersReducedMotion) return;
 
-        var hero = document.querySelector('.elementor-page .elementor > .e-con.e-parent:first-child') ||
-                   document.querySelector('.elementor > .e-con.e-parent:first-child');
+        var hero = document.querySelector('[data-elementor-type="wp-page"] > .e-con.e-parent:first-child');
         if (!hero) return;
 
         var heroHeadings = hero.querySelectorAll('.elementor-heading-title');
@@ -148,38 +154,15 @@
 
         var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-        /* Word-by-word text reveal */
-        heroHeadings.forEach(function (heading) {
-            var text = heading.textContent.trim();
-            if (!text) return;
-            heading.innerHTML = '';
-            heading.style.opacity = '1';
-
-            var words = text.split(' ');
-            words.forEach(function (word, i) {
-                var wordSpan = document.createElement('span');
-                wordSpan.style.display = 'inline-block';
-                wordSpan.style.overflow = 'hidden';
-
-                var innerSpan = document.createElement('span');
-                innerSpan.textContent = word;
-                innerSpan.style.display = 'inline-block';
-                innerSpan.className = 'hc-word-reveal';
-
-                wordSpan.appendChild(innerSpan);
-                heading.appendChild(wordSpan);
-
-                if (i < words.length - 1) {
-                    heading.appendChild(document.createTextNode('\u00A0'));
-                }
-            });
-
-            tl.fromTo(heading.querySelectorAll('.hc-word-reveal'),
-                { y: '110%', opacity: 0 },
-                { y: '0%', opacity: 1, duration: 0.8, stagger: 0.06, ease: 'power3.out' },
-                0.3
+        /* Simple fade-in for headings — do NOT destroy innerHTML (it contains
+           <span class="gradient-text">, <br> tags, etc. that CSS depends on) */
+        if (heroHeadings.length) {
+            tl.fromTo(heroHeadings,
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 1, stagger: 0.15 },
+                0.2
             );
-        });
+        }
 
         if (heroTexts.length) {
             tl.fromTo(heroTexts,
@@ -203,12 +186,7 @@
             );
         }
 
-        /* Parallax on hero */
-        gsap.to(hero, {
-            y: function () { return window.innerHeight * CONFIG.heroParallaxSpeed; },
-            ease: 'none',
-            scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 1 }
-        });
+        /* No parallax on hero — it shifts the section and mispositions the ECG wave */
 
         /* ECG pulse line */
         injectECGPulse(hero);
@@ -397,36 +375,13 @@
     /* ------------------------------------------------------------------
        9. STICKY HEADER — Glassmorphic, always visible
        ------------------------------------------------------------------ */
+    /* initHeaderEffects REMOVED — sticky header handled by
+       "Sticky Header Effects for Elementor" plugin.
+       DO NOT set backdrop-filter on .elementor-1904 from JS.
+       backdrop-filter on the outer wrapper creates a containing block
+       that traps the inner element's position:fixed. */
     function initHeaderEffects() {
-        var header = document.querySelector('[data-elementor-type="header"]') ||
-                     document.querySelector('.site-header') ||
-                     document.querySelector('#masthead');
-        if (!header) return;
-
-        /* Ensure header is fixed positioned */
-        header.style.setProperty('position', 'fixed', 'important');
-        header.style.setProperty('top', '0', 'important');
-        header.style.setProperty('left', '0', 'important');
-        header.style.setProperty('right', '0', 'important');
-        header.style.setProperty('z-index', '9999', 'important');
-        header.style.setProperty('width', '100%', 'important');
-
-        /* Increase blur on scroll */
-        if (!prefersReducedMotion) {
-            ScrollTrigger.create({
-                start: 'top -50',
-                end: 'max',
-                onUpdate: function (self) {
-                    if (self.scroll() > 50) {
-                        header.style.setProperty('background', 'rgba(10, 14, 26, 0.95)', 'important');
-                        header.style.setProperty('box-shadow', '0 4px 30px rgba(0,0,0,0.5)', 'important');
-                    } else {
-                        header.style.setProperty('background', 'rgba(10, 14, 26, 0.85)', 'important');
-                        header.style.setProperty('box-shadow', '0 2px 8px rgba(0,0,0,0.3)', 'important');
-                    }
-                }
-            });
-        }
+        /* no-op — plugin handles sticky */
     }
 
     /* ------------------------------------------------------------------
@@ -434,7 +389,7 @@
        ------------------------------------------------------------------ */
     function initColumnStagger() {
         if (prefersReducedMotion) return;
-        var parents = document.querySelectorAll('.e-con.e-parent');
+        var parents = document.querySelectorAll('[data-elementor-type="wp-page"] .e-con.e-parent');
         parents.forEach(function (parent, index) {
             if (index === 0) return;
             var children = parent.querySelectorAll(':scope > .e-con-inner > .e-con.e-child');
@@ -456,6 +411,39 @@
     /* ------------------------------------------------------------------
        INIT
        ------------------------------------------------------------------ */
+    /* ------------------------------------------------------------------
+       11. POPUP BACKGROUND FIX
+       WPR sets inline background-color: transparent !important on .wpr-popup-container.
+       Only JS can override an !important inline style.
+       ------------------------------------------------------------------ */
+    function initPopupFix() {
+        function fixPopup() {
+            /* Fix the CUSTOM popup (#hca-custom-popup) */
+            var content = document.querySelector('.hca-popup-content');
+            if (content) {
+                content.style.setProperty('background-color', 'rgba(15, 18, 37, 0.97)', 'important');
+                content.style.setProperty('border', '1px solid rgba(255,255,255,0.1)', '');
+                content.style.setProperty('border-radius', '16px', '');
+                content.style.setProperty('padding', '32px', '');
+                content.style.setProperty('max-width', '440px', '');
+                content.style.setProperty('width', '100%', '');
+                content.style.setProperty('box-shadow', '0 20px 60px rgba(0,0,0,0.6)', '');
+            }
+        }
+
+        /* Observe DOM for popup appearing */
+        var obs = new MutationObserver(function() { fixPopup(); });
+        obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+        /* Also check periodically for first 10 seconds */
+        var checks = 0;
+        var interval = setInterval(function() {
+            fixPopup();
+            checks++;
+            if (checks > 20) clearInterval(interval);
+        }, 500);
+    }
+
     function init() {
         forceDarkBackgrounds();
         initPageEntrance();
@@ -467,6 +455,7 @@
         initMagneticButtons();
         initParticles();
         initHeaderEffects();
+        initPopupFix();
 
         /* Re-force dark backgrounds after a short delay (for lazy-loaded content) */
         setTimeout(forceDarkBackgrounds, 1000);

@@ -2,14 +2,14 @@
 /**
  * Plugin Name: HealthCode Design System
  * Description: Dark glassmorphism theme with GSAP animations for a modern medical AI aesthetic.
- * Version: 1.0.0
+ * Version: 3.0.0
  * Author: HealthCode Analysis
  * Requires PHP: 8.0
  */
 
 defined('ABSPATH') || exit;
 
-define('HC_DESIGN_VERSION', '1.0.0');
+define('HC_DESIGN_VERSION', '3.3.1');
 define('HC_DESIGN_PATH', plugin_dir_path(__FILE__));
 define('HC_DESIGN_URL', plugin_dir_url(__FILE__));
 
@@ -61,6 +61,20 @@ function hc_design_enqueue_assets(): void {
     );
 }
 add_action('wp_enqueue_scripts', 'hc_design_enqueue_assets');
+
+/**
+ * Exclude GSAP + animations from Cloudflare Rocket Loader.
+ * Adds data-cfasync="false" so these scripts load normally while
+ * Rocket Loader continues optimizing everything else.
+ */
+function hc_design_exclude_rocket_loader(string $tag, string $handle): string {
+    $excluded = ['gsap-core', 'gsap-scrolltrigger', 'hc-animations'];
+    if (in_array($handle, $excluded, true)) {
+        $tag = str_replace('<script ', '<script data-cfasync="false" ', $tag);
+    }
+    return $tag;
+}
+add_filter('script_loader_tag', 'hc_design_exclude_rocket_loader', 10, 2);
 
 /**
  * Add dark-theme class to <body> on the frontend.

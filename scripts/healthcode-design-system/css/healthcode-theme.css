@@ -31,8 +31,8 @@
     --hc-gradient-mesh: linear-gradient(135deg, #0a0e1a 0%, #0f1225 25%, #1a1040 50%, #0f1225 75%, #0a0e1a 100%);
 
     --hc-text-primary: #f1f5f9;
-    --hc-text-secondary: #94a3b8;
-    --hc-text-muted: #64748b;
+    --hc-text-secondary: #cbd5e1;
+    --hc-text-muted: #94a3b8;
     --hc-text-accent: #06b6d4;
 
     --hc-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -63,7 +63,7 @@ body,
     --ast-global-color-0: #06b6d4 !important;
     --ast-global-color-1: #3b82f6 !important;
     --ast-global-color-2: #f1f5f9 !important;
-    --ast-global-color-3: #94a3b8 !important;
+    --ast-global-color-3: #cbd5e1 !important;
     --ast-global-color-4: #0a0e1a !important;
     --ast-global-color-5: #0f1225 !important;
     --ast-global-color-6: #0a0e1a !important;
@@ -83,7 +83,7 @@ body.hc-dark-theme {
     font-family: var(--hc-font-body) !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* Override ALL Elementor containers, sections, and columns */
@@ -103,7 +103,7 @@ body.hc-dark-theme {
 .hc-dark-theme [class*="elementor-element-"] {
     background-color: transparent !important;
 }
-/* Nuclear: override ALL Elementor page-specific generated CSS (e.g. .elementor-1904 .elementor-element...) */
+/* Nuclear: override ALL Elementor page-specific generated CSS */
 [class*="elementor-"] [class*="elementor-element-"]:not(.elementor-button):not(.elementor-widget-social-icons .elementor-icon) {
     background-color: transparent !important;
 }
@@ -113,6 +113,51 @@ body.hc-dark-theme {
 }
 [class*="elementor-"] .elementor-element > .elementor-motion-effects-container > .elementor-motion-effects-layer {
     background-color: transparent !important;
+}
+
+/* POPUP — Higher specificity overrides restore popup backgrounds.
+   :not() with descendant selectors is INVALID CSS. Use specificity instead. */
+.hc-dark-theme .wpr-template-popup .wpr-popup-container {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+.hc-dark-theme .wpr-popup-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+/* Restore popup element backgrounds.
+   Nuclear rule has specificity 0,4,0 due to :not() pseudo-classes.
+   Must exceed that here. 5 class-level selectors = 0,5,0. */
+.hc-dark-theme .wpr-template-popup .wpr-popup-container .wpr-popup-container-inner [class*="elementor-element-"] {
+    background-color: #ffffff !important;
+}
+.hc-dark-theme .wpr-template-popup .wpr-popup-container .wpr-popup-container-inner .elementor-element {
+    background-color: #ffffff !important;
+}
+.hc-dark-theme .wpr-template-popup .wpr-popup-container .elementor-widget-container {
+    color: #222 !important;
+}
+.hc-dark-theme .wpr-template-popup .wpr-popup-container .wpr-popup-container-inner .e-con {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    background-image: none !important;
+}
+.hc-dark-theme .wpr-popup-container-inner {
+    background: #ffffff !important;
+}
+.hc-dark-theme .wpr-template-popup h1,
+.hc-dark-theme .wpr-template-popup h2,
+.hc-dark-theme .wpr-template-popup h3,
+.hc-dark-theme .wpr-template-popup h4,
+.hc-dark-theme .wpr-template-popup p,
+.hc-dark-theme .wpr-template-popup label,
+.hc-dark-theme .wpr-template-popup a:not(.elementor-button) {
+    color: #222 !important;
+}
+.hc-dark-theme .wpr-template-popup input:not([type="submit"]) {
+    background: #fff !important;
+    color: #222 !important;
+    border-color: #ddd !important;
 }
 
 /* Override common white backgrounds from Astra + WP */
@@ -129,6 +174,24 @@ body.hc-dark-theme {
 .hc-dark-theme main {
     background: transparent !important;
     background-color: transparent !important;
+}
+
+/* Kill Elementor background-image gradients on ALL page containers (the nuclear CSS only kills background-color).
+   Exclude hero (first-child, has its own dark gradient) and popups. */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con:not(:first-child),
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-child {
+    background-image: none !important;
+}
+/* Also kill ::before overlays Elementor generates on containers */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con:not(:first-child)::before,
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-child::before {
+    background-image: none !important;
+    background: none !important;
+}
+/* Kill Elementor light backgrounds on ALL page sections that aren't the hero */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child):not(.elementor-motion-effects-element-type-background) {
+    background-color: transparent !important;
+    background-image: none !important;
 }
 
 /* Override Elementor kit/global white backgrounds */
@@ -232,41 +295,48 @@ body.hc-dark-theme {
 /* --------------------------------------------------------------------------
    5. HEADER — Glassmorphic dark header
    -------------------------------------------------------------------------- */
-/* Sticky glassmorphic header */
-.hc-dark-theme .site-header,
-.hc-dark-theme #masthead,
-.hc-dark-theme [data-elementor-type="header"] {
+/* Header — Sticky via position:fixed on the INNER container (.e-con.e-parent inside .elementor-1904).
+   DO NOT put position:fixed or backdrop-filter on the OUTER .elementor-1904 wrapper.
+   DO NOT use GSAP animations on the header — all GSAP selectors must use
+   [data-elementor-type="wp-page"] to exclude header/footer templates. */
+.hc-dark-theme .elementor-1904 .e-con.e-parent {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
-    right: 0 !important;
     width: 100% !important;
     z-index: 9999 !important;
-    background: rgba(10, 14, 26, 0.9) !important;
-    backdrop-filter: blur(24px) !important;
-    -webkit-backdrop-filter: blur(24px) !important;
+    background: rgba(10, 14, 26, 0.95) !important;
     border-bottom: 1px solid var(--hc-glass-border) !important;
     box-shadow: var(--hc-shadow-md) !important;
-    transition: transform 0.3s var(--hc-ease), background 0.3s var(--hc-ease) !important;
 }
-.hc-dark-theme .ast-primary-header-bar,
-.hc-dark-theme .ast-mobile-header-wrap .ast-primary-header-bar,
-.hc-dark-theme [data-elementor-type="header"] .e-con {
+
+/* Header inner containers transparent */
+.hc-dark-theme .elementor-1904 .e-con-inner {
     background: transparent !important;
 }
-/* Push page content below fixed header */
+
+/* Push page content below fixed header (header is 60px) */
 .hc-dark-theme .site-content,
 .hc-dark-theme #content,
-.hc-dark-theme .elementor-page .elementor {
-    padding-top: 80px !important;
+.hc-dark-theme [data-elementor-type="wp-page"] {
+    padding-top: 60px !important;
 }
 
 /* Header Elementor containers */
-.hc-dark-theme [data-elementor-type="header"] .e-con,
-.hc-dark-theme [data-elementor-type="header"] .e-con-inner,
-.hc-dark-theme [data-elementor-type="header"] .elementor-element {
+.hc-dark-theme .elementor-1904 .e-con,
+.hc-dark-theme .elementor-1904 .e-con-inner,
+.hc-dark-theme .elementor-1904 .elementor-element {
     background: transparent !important;
     background-color: transparent !important;
+}
+
+/* Logo — original is dark text on transparent bg, invert for dark theme */
+.hc-dark-theme .elementor-1904 .elementor-widget-image img,
+.hc-dark-theme header .custom-logo-link img,
+.hc-dark-theme .site-logo img,
+.hc-dark-theme .custom-logo {
+    filter: brightness(0) invert(1) !important;
+    transition: filter var(--hc-duration) var(--hc-ease) !important;
 }
 
 /* Site title */
@@ -277,64 +347,67 @@ body.hc-dark-theme {
     font-weight: 700 !important;
 }
 
-/* Navigation links */
-.hc-dark-theme .main-header-menu .menu-item a,
-.hc-dark-theme .ast-header-break-point .ast-mobile-popup-content a,
-.hc-dark-theme [data-elementor-type="header"] a,
-.hc-dark-theme .elementor-nav-menu a,
-.hc-dark-theme .elementor-nav-menu--main a {
+/* Navigation links — targets Jeg Elementor Kit nav (medisynth-menu-pro) */
+.hc-dark-theme .medisynth-menu-pro .menu-item a,
+.hc-dark-theme .jkit-nav-menu .jkit-menu > li > a,
+.hc-dark-theme [data-elementor-type="header"] a:not(.elementor-button) {
     color: var(--hc-text-secondary) !important;
-    font-family: var(--hc-font-body) !important;
-    font-weight: 500 !important;
-    font-size: 14px !important;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    transition: color var(--hc-duration) var(--hc-ease) !important;
+    transition: color var(--hc-duration) var(--hc-ease), background-color var(--hc-duration) var(--hc-ease) !important;
 }
-.hc-dark-theme .main-header-menu .menu-item a:hover,
-.hc-dark-theme .main-header-menu .current-menu-item > a,
-.hc-dark-theme .elementor-nav-menu a:hover,
-.hc-dark-theme .elementor-nav-menu .current-menu-item a {
+.hc-dark-theme .medisynth-menu-pro .menu-item a:hover,
+.hc-dark-theme .medisynth-menu-pro .menu-item.current-menu-item > a,
+.hc-dark-theme .medisynth-menu-pro .menu-item.current-menu-ancestor > a,
+.hc-dark-theme .jkit-nav-menu .jkit-menu > li > a:hover,
+.hc-dark-theme .jkit-nav-menu .jkit-menu > li.current-menu-item > a {
     color: var(--hc-cyan) !important;
+    background-color: rgba(6, 182, 212, 0.08) !important;
 }
 
-/* Nav hover underline */
-.hc-dark-theme .main-header-menu > .menu-item > a::after,
-.hc-dark-theme .elementor-nav-menu--main > ul > li > a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--hc-gradient-primary);
-    transition: width var(--hc-duration) var(--hc-ease), left var(--hc-duration) var(--hc-ease);
-    border-radius: 1px;
-}
-.hc-dark-theme .main-header-menu > .menu-item > a:hover::after,
-.hc-dark-theme .main-header-menu > .menu-item.current-menu-item > a::after,
-.hc-dark-theme .elementor-nav-menu--main > ul > li > a:hover::after {
-    width: 100%;
-    left: 0;
+/* Dropdown arrows */
+.hc-dark-theme .medisynth-menu-pro .fa-angle-down,
+.hc-dark-theme .medisynth-menu-pro .jeg-sub-arrow {
+    color: var(--hc-text-muted) !important;
 }
 
-/* Dropdown menus */
-.hc-dark-theme .sub-menu,
-.hc-dark-theme .elementor-nav-menu--dropdown {
-    background: rgba(15, 18, 37, 0.95) !important;
-    backdrop-filter: blur(var(--hc-glass-blur)) !important;
-    border: 1px solid var(--hc-glass-border) !important;
-    border-radius: var(--hc-radius-md) !important;
-    box-shadow: var(--hc-shadow-lg) !important;
-}
-.hc-dark-theme .sub-menu .menu-item a:hover {
-    background: var(--hc-glass-bg-hover) !important;
-}
-
-/* Mobile menu */
-.hc-dark-theme .ast-mobile-popup-drawer .ast-mobile-popup-inner,
-.hc-dark-theme .elementor-menu-toggle {
+/* Dropdown menus — solid dark, no transparency (page content was bleeding through) */
+.hc-dark-theme .medisynth-menu-pro .sub-menu,
+.hc-dark-theme .jkit-nav-menu .jkit-menu .sub-menu {
     background: var(--hc-bg-secondary) !important;
+    background-color: var(--hc-bg-secondary) !important;
+    background-image: none !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-top: 2px solid var(--hc-cyan) !important;
+    border-radius: 0 0 var(--hc-radius-sm) var(--hc-radius-sm) !important;
+    box-shadow: var(--hc-shadow-lg) !important;
+    z-index: 10000 !important;
+}
+.hc-dark-theme .medisynth-menu-pro .sub-menu .menu-item a {
+    color: var(--hc-text-secondary) !important;
+    background-color: transparent !important;
+    border-left: 3px solid transparent !important;
+}
+.hc-dark-theme .medisynth-menu-pro .sub-menu .menu-item a:hover,
+.hc-dark-theme .medisynth-menu-pro .sub-menu .menu-item a:active {
+    background-color: rgba(6, 182, 212, 0.08) !important;
+    color: var(--hc-cyan) !important;
+    border-left: 3px solid var(--hc-cyan) !important;
+}
+
+/* Right-side header tools (search icon, divider) */
+.hc-dark-theme .header-search-icon {
+    color: var(--hc-text-muted) !important;
+    border-right-color: var(--hc-glass-border) !important;
+}
+
+/* Mobile menu — jkit slide-in panel */
+.hc-dark-theme .jkit-nav-menu .jkit-menu-wrapper {
+    background-color: var(--hc-bg-secondary) !important;
+}
+.hc-dark-theme .jkit-nav-menu .jkit-nav-identity-panel {
+    background-color: var(--hc-bg-tertiary) !important;
+}
+.hc-dark-theme .jkit-hamburger-menu {
+    color: var(--hc-text-primary) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -363,8 +436,11 @@ body.hc-dark-theme {
 
 /* --------------------------------------------------------------------------
    7. HERO SECTION — First e-con.e-parent on the page
+   NOTE: Selectors use [data-elementor-type="wp-page"] NOT .elementor-page .elementor
+   because hc-dark-theme and elementor-page are both on <body> (same element),
+   so descendant combinator fails. data-elementor-type is on a real descendant DIV.
    -------------------------------------------------------------------------- */
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child {
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child {
     position: relative;
     min-height: 85vh;
     display: flex;
@@ -372,22 +448,27 @@ body.hc-dark-theme {
     overflow: hidden;
 }
 
-/* Hero dark overlay — covers any light Elementor background */
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child {
+/* Hero dark background — override Elementor's radial-gradient(#BCFFF1→#FFFFFF) */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child,
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child:not(.elementor-motion-effects-element-type-background) {
     background: linear-gradient(180deg, #0f1225 0%, #0a0e1a 40%, #0a0e1a 100%) !important;
+    background-image: linear-gradient(180deg, #0f1225 0%, #0a0e1a 40%, #0a0e1a 100%) !important;
     background-color: var(--hc-bg-primary) !important;
 }
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child > .elementor-background-overlay {
-    background: linear-gradient(180deg, rgba(10,14,26,0.4) 0%, rgba(10,14,26,0.7) 60%, var(--hc-bg-primary) 100%) !important;
+/* Kill Elementor's ::before overlay gradient (radial-gradient #B1D2FF) */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child::before {
+    background: none !important;
+    background-image: none !important;
+    background-color: transparent !important;
 }
 /* Hero child containers also transparent */
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child .e-con {
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .e-con {
     background: transparent !important;
     border: none !important;
 }
 
-/* Hero heading — large gradient */
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child .elementor-heading-title {
+/* Hero heading — large gradient text */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-heading-title {
     font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
     font-weight: 700 !important;
     background: linear-gradient(135deg, var(--hc-text-primary) 0%, var(--hc-cyan) 50%, var(--hc-blue) 100%) !important;
@@ -396,11 +477,40 @@ body.hc-dark-theme {
     background-clip: text !important;
     line-height: 1.1 !important;
 }
+/* The .gradient-text span inside the h1 */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .gradient-text {
+    background: linear-gradient(135deg, var(--hc-cyan) 0%, var(--hc-blue) 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+/* Hero "Blogs, reviews & toolbox" badge — dark version */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child h6 .elementor-heading-title,
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-widget-heading:first-child .elementor-widget-container {
+    background-color: rgba(6, 182, 212, 0.1) !important;
+    border-color: rgba(6, 182, 212, 0.2) !important;
+    color: var(--hc-cyan) !important;
+}
 
 /* Hero text */
-.hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child .elementor-text-editor {
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-text-editor {
     font-size: clamp(1rem, 1.5vw, 1.25rem) !important;
     color: var(--hc-text-secondary) !important;
+}
+
+/* Hero counters — override any white backgrounds on counter widgets */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-widget-counter .elementor-widget-container,
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-counter {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+/* Hero buttons — keep "Read Reviews" white button as glass variant */
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-button[style*="background-color:#FFFFFF"],
+.hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-button.elementor-button-link {
+    background: var(--hc-gradient-primary) !important;
+    color: #fff !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -408,6 +518,9 @@ body.hc-dark-theme {
    -------------------------------------------------------------------------- */
 
 /* --- Buttons --- */
+.hc-dark-theme .elementor-widget-button {
+    margin-top: 16px !important;
+}
 .hc-dark-theme .elementor-button {
     background: var(--hc-gradient-primary) !important;
     color: #ffffff !important;
@@ -640,40 +753,149 @@ body.hc-dark-theme {
     color: var(--hc-text-secondary);
 }
 
-/* --- Card-like e-child containers — auto glass card styling --- */
-.hc-dark-theme .e-con.e-child {
+/* --- Card-like e-child containers — SCOPED to page content only --- */
+/* Glass card styling for direct children of non-hero page sections. */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) > .e-con-inner > .e-con.e-child {
     background: var(--hc-glass-bg) !important;
     background-color: var(--hc-glass-bg) !important;
+    background-image: none !important;
     border: 1px solid var(--hc-glass-border) !important;
     border-radius: var(--hc-radius-lg) !important;
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
+    padding: 24px !important;
     transition: all var(--hc-duration) var(--hc-ease) !important;
     overflow: hidden;
 }
-.hc-dark-theme .e-con.e-child:hover {
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) > .e-con-inner > .e-con.e-child:hover {
     border-color: var(--hc-glass-border-hover) !important;
     box-shadow: var(--hc-shadow-md), var(--hc-glow-cyan) !important;
     transform: translateY(-4px);
 }
-/* Direct child containers of a parent (the main column/card layout) */
-.hc-dark-theme .e-con.e-parent > .e-con-inner > .e-con.e-child {
-    background: var(--hc-glass-bg) !important;
-    border: 1px solid var(--hc-glass-border) !important;
-    border-radius: var(--hc-radius-lg) !important;
-    padding: 24px !important;
-}
-/* Nested children inside children — keep transparent */
-.hc-dark-theme .e-con.e-child .e-con.e-child {
+
+/* Wrapper e-children that CONTAIN nested cards — make wrapper transparent, apply glass to inner cards.
+   This handles "Choose Your Path" where: e-parent > e-child (wrapper) > e-child (individual cards). */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) > .e-con-inner > .e-con.e-child:has(> .e-con-inner > .e-con.e-child) {
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
     backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     padding: 0 !important;
 }
-.hc-dark-theme .e-con.e-child .e-con.e-child:hover {
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) > .e-con-inner > .e-con.e-child:has(> .e-con-inner > .e-con.e-child):hover {
     box-shadow: none !important;
     transform: none !important;
+}
+
+/* Second-level e-children (actual cards inside wrapper) — apply glass */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) .e-con.e-child > .e-con-inner > .e-con.e-child {
+    background: var(--hc-glass-bg) !important;
+    background-color: var(--hc-glass-bg) !important;
+    background-image: none !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    padding: 24px !important;
+    transition: all var(--hc-duration) var(--hc-ease) !important;
+    overflow: hidden;
+}
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-parent:not(:first-child) .e-con.e-child > .e-con-inner > .e-con.e-child:hover {
+    border-color: var(--hc-glass-border-hover) !important;
+    box-shadow: var(--hc-shadow-md), var(--hc-glow-cyan) !important;
+    transform: translateY(-4px);
+}
+
+/* Add gap between sibling cards inside a wrapper */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-child > .e-con-inner {
+    gap: 20px;
+}
+
+/* Third level and deeper — keep transparent */
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-child .e-con.e-child .e-con.e-child {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding: 0 !important;
+}
+.hc-dark-theme [data-elementor-type="wp-page"] .e-con.e-child .e-con.e-child .e-con.e-child:hover {
+    box-shadow: none !important;
+    transform: none !important;
+}
+/* Header and footer children — explicitly NO glass card */
+.hc-dark-theme .elementor-1904 .e-con.e-child,
+.hc-dark-theme .elementor-1907 .e-con.e-child {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   8b. CUSTOM LOGIN/REGISTER POPUP (#hca-custom-popup)
+   -------------------------------------------------------------------------- */
+.hc-dark-theme #hca-custom-popup .hca-popup-content {
+    background: rgba(15, 18, 37, 0.97) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-lg) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
+    padding: 32px !important;
+    max-width: 440px !important;
+    color: var(--hc-text-primary) !important;
+}
+.hc-dark-theme .hca-popup-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+/* Tabs */
+.hc-dark-theme .hca-tab-link {
+    color: var(--hc-text-muted) !important;
+    border-bottom: 2px solid transparent !important;
+}
+.hc-dark-theme .hca-tab-link.active,
+.hc-dark-theme .hca-tab-link:hover {
+    color: var(--hc-cyan) !important;
+    border-bottom-color: var(--hc-cyan) !important;
+}
+/* Form inputs inside popup */
+.hc-dark-theme .hca-popup-content input:not([type="submit"]):not([type="button"]) {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid var(--hc-glass-border) !important;
+    border-radius: var(--hc-radius-sm) !important;
+    color: var(--hc-text-primary) !important;
+    padding: 12px 16px !important;
+}
+.hc-dark-theme .hca-popup-content input:focus {
+    border-color: var(--hc-cyan) !important;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15) !important;
+}
+.hc-dark-theme .hca-popup-content input::placeholder {
+    color: var(--hc-text-muted) !important;
+}
+/* Close button */
+.hc-dark-theme .hca-popup-close {
+    color: var(--hc-text-muted) !important;
+}
+.hc-dark-theme .hca-popup-close:hover {
+    color: var(--hc-text-primary) !important;
+}
+/* OR divider text */
+.hc-dark-theme .hca-popup-content {
+    color: var(--hc-text-secondary) !important;
+}
+/* Subscribe/login button */
+.hc-dark-theme .hca-popup-content button[type="submit"],
+.hc-dark-theme .hca-popup-content .hca-submit-btn {
+    background: var(--hc-gradient-primary) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: var(--hc-radius-md) !important;
+    padding: 12px 32px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -786,15 +1008,15 @@ body.hc-dark-theme {
    14. RESPONSIVE
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
-    .hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child {
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child {
         min-height: 70vh;
     }
 }
 @media (max-width: 768px) {
-    .hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child {
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child {
         min-height: 60vh;
     }
-    .hc-dark-theme .elementor-page .elementor > .e-con.e-parent:first-child .elementor-heading-title {
+    .hc-dark-theme [data-elementor-type="wp-page"] > .e-con.e-parent:first-child .elementor-heading-title {
         font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
     }
     #hc-particles-canvas { display: none; }

@@ -109,3 +109,75 @@ jobs:
 
       - name: Validate JSON syntax
         run: python -c "import json, glob; [json.load(open(f)) for f in glob.glob('configs/*.json')]"
+
+  deploy-plugin:
+    name: Deploy Plugin to Live Site
+    needs: [lint, test]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Deploy plugin files via cPanel API
+        env:
+          CPANEL_URL: ${{ secrets.CPANEL_URL }}
+          CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
+          CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
+          HC_API_KEY: ${{ secrets.HC_API_KEY }}
+        run: |
+          python -c "
+          import requests, os
+
+          cpanel_url = os.environ['CPANEL_URL']
+          username = os.environ['CPANEL_USERNAME']
+          token = os.environ['CPANEL_API_TOKEN']
+          headers = {'Authorization': f'cpanel {username}:{token}'}
+          wp = '/home/mehzsolu/public_html/wp-content'
+
+          files = [
+              ('healthcode-api-bridge.php', f'{wp}/plugins/healthcode-api-bridge', 'scripts/healthcode-api-bridge.php'),
+              ('healthcode-design-system.php', f'{wp}/plugins/healthcode-design-system', 'scripts/healthcode-design-system/healthcode-design-system.php'),
+              ('healthcode-theme.css', f'{wp}/plugins/healthcode-design-system/css', 'scripts/healthcode-design-system/css/healthcode-theme.css'),
+              ('healthcode-animations.js', f'{wp}/plugins/healthcode-design-system/js', 'scripts/healthcode-design-system/js/healthcode-animations.js'),
+              ('hc-auto-activate.php', f'{wp}/mu-plugins', 'scripts/hc-auto-activate.php'),
+          ]
+
+          for filename, remote_dir, local_path in files:
+              with open(local_path, 'r', encoding='utf-8') as f:
+                  content = f.read()
+              resp = requests.post(
+                  f'{cpanel_url}/execute/Fileman/save_file_content',
+                  headers=headers,
+                  data={'dir': remote_dir, 'file': filename, 'content': content},
+                  timeout=30
+              )
+              result = resp.json()
+              status = result.get('status', 0)
+              if status != 1:
+                  print(f'FAILED: {filename} - {result.get(\"errors\")}')
+                  exit(1)
+              print(f'Deployed: {filename}')
+
+          print('All plugin files deployed successfully')
+          "
+
+      - name: Flush cache
+        env:
+          HC_API_KEY: ${{ secrets.HC_API_KEY }}
+        run: |
+          python -c "
+          import requests, os
+          resp = requests.post(
+              'https://healthcodeanalysis.com/wp-json/healthcode/v1/flush-elementor-cache',
+              headers={'X-HC-API-Key': os.environ['HC_API_KEY']},
+              timeout=30
+          )
+          print('Cache flush:', resp.json())
+          "
