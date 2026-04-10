@@ -4,7 +4,7 @@
 </h1>
 
 <p align="center">
-  Clone a WordPress Elementor template site and swap all content — photos, text, SEO metadata, branding — in one command. Includes a dark glassmorphism design system with GSAP animations.
+  Clone a WordPress Elementor template site and swap all content — photos, text, SEO metadata, branding — in one command. Includes a dark glassmorphism design system with vanilla JS scroll animations.
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@
 A full-stack WordPress automation platform with two core capabilities:
 
 1. **Content Automation** — Clone an Elementor template site and programmatically replace all content (photos, text, headings, SEO metadata) for multiple customers via a single command.
-2. **Dark Glassmorphism Design System** — A plugin-based visual overhaul with GSAP scroll animations, sticky header, glassmorphic cards, and responsive dark theme.
+2. **Dark Glassmorphism Design System** — A plugin-based visual overhaul with vanilla JS scroll animations, sticky header, glassmorphic cards, and responsive dark theme. Zero external dependencies.
 
 **Live Site:** [healthcodeanalysis.com](https://healthcodeanalysis.com)
 
@@ -46,9 +46,9 @@ healthcodeanalysis/
 │   ├── healthcode-api-bridge.php       # WP plugin: REST API for Elementor data + rate limiting
 │   ├── hc-auto-activate.php            # MU-plugin: security headers + auto-loads design system
 │   └── healthcode-design-system/       # Dark theme plugin (v3.4.0)
-│       ├── healthcode-design-system.php  # Loader: GSAP, fonts, Rocket Loader bypass
+│       ├── healthcode-design-system.php  # Loader: fonts, Rocket Loader bypass
 │       ├── css/healthcode-theme.css      # 900+ lines dark glassmorphism CSS
-│       └── js/healthcode-animations.js   # GSAP scroll reveals, particles, counters
+│       └── js/healthcode-animations.js   # Vanilla JS: IntersectionObserver, particles, counters
 ├── configs/
 │   └── customer-template.json          # Config template with real page IDs
 ├── tests/                              # 281 tests (4 suites)
@@ -120,9 +120,10 @@ A WordPress plugin that applies a dark medical AI theme on top of any Elementor 
 
 ### Technical Highlights
 
-- **Cloudflare Rocket Loader bypass** — `data-cfasync="false"` via `script_loader_tag` filter keeps GSAP loading normally while Rocket Loader optimizes everything else
+- **Zero dependencies** — All animations use vanilla IntersectionObserver + CSS transitions. No GSAP, no animation libraries, no license concerns for multi-domain deployment
+- **Cloudflare Rocket Loader bypass** — `data-cfasync="false"` via `script_loader_tag` filter keeps animation JS loading normally
 - **Elementor container system** — All CSS verified against live DOM. Targets new flexbox containers (`e-con`, `e-parent`, `e-child`), not legacy sections
-- **Sticky header** — `position: fixed` on inner container. All GSAP selectors scoped to `[data-elementor-type="wp-page"]` to prevent animating header/footer templates
+- **Sticky header** — `position: fixed` on inner container. All animation selectors scoped to `[data-elementor-type="wp-page"]` to prevent animating header/footer templates
 - **Popup fix** — Custom popup (`#hca-custom-popup`) has inline `!important` transparent background set by JS. Overridden via MutationObserver
 - **CSS specificity management** — Nuclear dark overrides on Elementor elements with careful exclusions for popups, buttons, and social icons
 
@@ -172,7 +173,7 @@ Set at the mu-plugin level (`hc-auto-activate.php`) for earliest execution — f
 | `X-Content-Type-Options` | `nosniff` | Prevents MIME-type sniffing |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Controls referrer leakage |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | Restricts browser APIs |
-| `Content-Security-Policy` | Allowlist for self, Elementor inline, GSAP CDN, Google Fonts | Prevents XSS/injection |
+| `Content-Security-Policy` | Allowlist for self, Elementor inline, Google Fonts | Prevents XSS/injection |
 
 > HSTS is intentionally omitted from PHP — Cloudflare handles it. Setting HSTS in PHP on cPanel shared hosting causes redirect loops.
 
@@ -182,19 +183,25 @@ All `/healthcode/v1/` endpoints are rate-limited using WordPress transients:
 
 - **GET endpoints:** 60 requests/minute per IP
 - **POST endpoints:** 20 requests/minute per IP
+- Uses `CF-Connecting-IP` header for accurate IP detection behind Cloudflare
 - Returns `HTTP 429` with `Retry-After` header when exceeded
 - Standard WP REST routes (`/wp/v2/`) are unaffected
 
-### Subresource Integrity (SRI)
+### API Security
 
-External CDN scripts (GSAP core + ScrollTrigger) include `integrity` and `crossorigin` attributes to prevent CDN tampering.
+- **Header-only authentication** — API key accepted only via `X-HC-API-Key` header (query string fallback removed to prevent log exposure)
+- **Path traversal protection** — Plugin activation endpoint validates paths with regex whitelist (`folder/file.php` format only)
+- **Generic error messages** — Server filesystem paths never exposed in API responses
+- **SQL parameterization** — All queries use `$wpdb->prepare()`
 
 ### Additional Measures
 
 - All credentials in `.env` (gitignored) and GitHub Secrets — never committed to git
+- No hardcoded usernames, server paths, or domains in tracked files
 - Pre-commit hook detects private keys before commit
 - Ruff security scanner (Bandit rules) runs in CI
 - Docker dev environment: pinned image versions, parameterized passwords, resource limits, healthchecks
+- All scripts are open-source (MIT) with zero commercial library dependencies
 
 ## Quick Start
 
@@ -247,7 +254,7 @@ All credentials stored in `.env` (gitignored) and GitHub Secrets for CI/CD. Neve
 
 **Automation:** Python 3.10+ | Requests | WordPress REST API | cPanel UAPI
 
-**Design System:** GSAP 3.12 + ScrollTrigger | CSS Custom Properties | Google Fonts
+**Design System:** Vanilla JS (IntersectionObserver + CSS transitions) | CSS Custom Properties | Google Fonts
 
 **WordPress:** Elementor | Rank Math SEO | ACF | Astra | LiteSpeed Cache
 
