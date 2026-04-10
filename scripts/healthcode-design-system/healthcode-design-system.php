@@ -9,7 +9,7 @@
 
 defined('ABSPATH') || exit;
 
-define('HC_DESIGN_VERSION', '3.3.1');
+define('HC_DESIGN_VERSION', '3.4.0');
 define('HC_DESIGN_PATH', plugin_dir_path(__FILE__));
 define('HC_DESIGN_URL', plugin_dir_url(__FILE__));
 
