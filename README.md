@@ -43,8 +43,8 @@ healthcodeanalysis/
 │   ├── config_validator.py             # Customer config schema validation
 │   ├── deploy_customer.py              # One-command customer deployment
 │   ├── clone_site.py                   # cPanel site cloning + migration scripts
-│   ├── healthcode-api-bridge.php       # WP plugin: REST API for Elementor data
-│   ├── hc-auto-activate.php            # MU-plugin: auto-loads design system
+│   ├── healthcode-api-bridge.php       # WP plugin: REST API for Elementor data + rate limiting
+│   ├── hc-auto-activate.php            # MU-plugin: security headers + auto-loads design system
 │   └── healthcode-design-system/       # Dark theme plugin (v3.4.0)
 │       ├── healthcode-design-system.php  # Loader: GSAP, fonts, Rocket Loader bypass
 │       ├── css/healthcode-theme.css      # 900+ lines dark glassmorphism CSS
@@ -157,6 +157,44 @@ git push to main
 **Customer deployments** are triggered manually via `workflow_dispatch` with dry-run preview and approval gate.
 
 **Quality gates:** Pre-commit hooks (Ruff lint/format, secret detection) | Dependabot (weekly) | GitHub Secrets for all credentials
+
+## Security Hardening
+
+The platform includes layered security protections:
+
+### HTTP Security Headers
+
+Set at the mu-plugin level (`hc-auto-activate.php`) for earliest execution — fires before LiteSpeed Cache or any other plugin:
+
+| Header | Value | Purpose |
+|---|---|---|
+| `X-Frame-Options` | `SAMEORIGIN` | Prevents clickjacking |
+| `X-Content-Type-Options` | `nosniff` | Prevents MIME-type sniffing |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Controls referrer leakage |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | Restricts browser APIs |
+| `Content-Security-Policy` | Allowlist for self, Elementor inline, GSAP CDN, Google Fonts | Prevents XSS/injection |
+
+> HSTS is intentionally omitted from PHP — Cloudflare handles it. Setting HSTS in PHP on cPanel shared hosting causes redirect loops.
+
+### REST API Rate Limiting
+
+All `/healthcode/v1/` endpoints are rate-limited using WordPress transients:
+
+- **GET endpoints:** 60 requests/minute per IP
+- **POST endpoints:** 20 requests/minute per IP
+- Returns `HTTP 429` with `Retry-After` header when exceeded
+- Standard WP REST routes (`/wp/v2/`) are unaffected
+
+### Subresource Integrity (SRI)
+
+External CDN scripts (GSAP core + ScrollTrigger) include `integrity` and `crossorigin` attributes to prevent CDN tampering.
+
+### Additional Measures
+
+- All credentials in `.env` (gitignored) and GitHub Secrets — never committed to git
+- Pre-commit hook detects private keys before commit
+- Ruff security scanner (Bandit rules) runs in CI
+- Docker dev environment: pinned image versions, parameterized passwords, resource limits, healthchecks
 
 ## Quick Start
 
