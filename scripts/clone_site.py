@@ -187,7 +187,7 @@ class SiteCloner:
             f"sed -i \"s/define.*DB_NAME.*/define('DB_NAME', '{db_name}');/\" {target_path}/wp-config.php",
             f"sed -i \"s/define.*DB_USER.*/define('DB_USER', '{db_user}');/\" {target_path}/wp-config.php",
             f"sed -i \"s/define.*DB_PASSWORD.*/define('DB_PASSWORD', '$DB_PASS');/\" {target_path}/wp-config.php",
-            'unset DB_PASS',
+            "unset DB_PASS",
             "",
             "# Step 4: Import database to new DB",
             f"wp db import /tmp/{source.replace('.', '_')}_dump.sql --path={target_path}",
