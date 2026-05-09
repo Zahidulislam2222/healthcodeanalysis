@@ -6,6 +6,7 @@
 !.env.sample
 !docker/.env.docker.sample
 *.local
+CREDENTIALS.md
 
 # ============================================================
 # Debug files (DOM snapshots, CSS analysis)
@@ -115,5 +116,6 @@ node_modules/
 *.tmp
 *.bak
 *.log
+*.csv
 *.cache
 .ruff_cache/
