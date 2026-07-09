@@ -1,0 +1,77 @@
+name: Configure Admin Demo DNS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  configure:
+    name: Configure Cloudflare DNS
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      ZONE_NAME: healthcodeanalysis.com
+      RECORD_NAME: admin-demo.healthcodeanalysis.com
+      RECORD_TARGET: fdda85c9-cdc9-4135-a83a-001abcc53c84.cfargotunnel.com
+    steps:
+      - name: Create or update DNS record
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            echo "CLOUDFLARE_API_TOKEN secret is not set."
+            exit 1
+          fi
+
+          api() {
+            curl -fsS \
+              -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              -H "Content-Type: application/json" \
+              "$@"
+          }
+
+          zone_response="$(api "https://api.cloudflare.com/client/v4/zones?name=${ZONE_NAME}")"
+          zone_id="$(python3 -c '
+import json, sys
+data=json.load(sys.stdin)
+if not data.get("success") or not data.get("result"):
+    print("")
+    sys.exit(1)
+print(data["result"][0]["id"])
+' <<< "$zone_response")"
+
+          existing_response="$(api "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records?type=CNAME&name=${RECORD_NAME}")"
+          record_id="$(python3 -c '
+import json, sys
+data=json.load(sys.stdin)
+items=data.get("result") or []
+print(items[0]["id"] if items else "")
+' <<< "$existing_response")"
+
+          payload="$(python3 -c '
+import json, os
+print(json.dumps({
+    "type": "CNAME",
+    "name": os.environ["RECORD_NAME"],
+    "content": os.environ["RECORD_TARGET"],
+    "ttl": 1,
+    "proxied": True,
+    "comment": "Local WordPress admin demo tunnel"
+}))
+')"
+
+          if [ -n "$record_id" ]; then
+            api -X PUT --data "$payload" "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records/${record_id}" >/dev/null
+            echo "Updated ${RECORD_NAME}"
+          else
+            api -X POST --data "$payload" "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records" >/dev/null
+            echo "Created ${RECORD_NAME}"
+          fi
+
+      - name: Show DNS result
+        shell: bash
+        run: |
+          dig +short CNAME "${RECORD_NAME}" @1.1.1.1 || true
