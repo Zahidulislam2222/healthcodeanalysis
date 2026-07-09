@@ -39,34 +39,19 @@ jobs:
           }
 
           zone_response="$(api "https://api.cloudflare.com/client/v4/zones?name=${ZONE_NAME}")"
-          zone_id="$(python3 -c '
-import json, sys
-data=json.load(sys.stdin)
-if not data.get("success") or not data.get("result"):
-    print("")
-    sys.exit(1)
-print(data["result"][0]["id"])
-' <<< "$zone_response")"
+          zone_id="$(jq -r '.result[0].id // empty' <<< "$zone_response")"
+          if [ -z "$zone_id" ]; then
+            echo "Cloudflare zone was not found for ${ZONE_NAME}."
+            exit 1
+          fi
 
           existing_response="$(api "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records?type=CNAME&name=${RECORD_NAME}")"
-          record_id="$(python3 -c '
-import json, sys
-data=json.load(sys.stdin)
-items=data.get("result") or []
-print(items[0]["id"] if items else "")
-' <<< "$existing_response")"
+          record_id="$(jq -r '.result[0].id // empty' <<< "$existing_response")"
 
-          payload="$(python3 -c '
-import json, os
-print(json.dumps({
-    "type": "CNAME",
-    "name": os.environ["RECORD_NAME"],
-    "content": os.environ["RECORD_TARGET"],
-    "ttl": 1,
-    "proxied": True,
-    "comment": "Local WordPress admin demo tunnel"
-}))
-')"
+          payload="$(jq -n \
+            --arg name "$RECORD_NAME" \
+            --arg content "$RECORD_TARGET" \
+            '{type:"CNAME", name:$name, content:$content, ttl:1, proxied:true, comment:"Local WordPress admin demo tunnel"}')"
 
           if [ -n "$record_id" ]; then
             api -X PUT --data "$payload" "https://api.cloudflare.com/client/v4/zones/${zone_id}/dns_records/${record_id}" >/dev/null
