@@ -8,7 +8,8 @@ updates:
       - Zahidulislam2222
     labels:
       - dependencies
-    open-pull-requests-limit: 5
+    # Preserve the configuration while automatic version updates are paused.
+    open-pull-requests-limit: 0
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -16,3 +17,5 @@ updates:
       interval: weekly
     labels:
       - ci
+    # Preserve the configuration while automatic version updates are paused.
+    open-pull-requests-limit: 0
