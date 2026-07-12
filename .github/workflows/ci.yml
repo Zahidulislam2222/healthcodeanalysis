@@ -150,7 +150,12 @@ jobs:
   deploy-plugin:
     name: Deploy Plugin to Live Site
     needs: [lint, test]
-    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    # Legacy / preserved as portfolio proof. This job deploys to the retired
+    # cPanel (AridHost) host on the expiring custom domain healthcodeanalysis.com.
+    # That hosting/domain is being decommissioned, so the job is muted with
+    # `if: false` and can never run. The cPanel deploy code is kept intact as
+    # client-reviewable evidence. Do NOT delete.
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

@@ -44,7 +44,12 @@ Local WordPress -> static exporter -> Cloudflare Pages
 
 - Public frontend: `https://healthcodeanalysis.pages.dev`
 - Local authoring: `http://127.0.0.1:8889/wp-admin/`
-- Chatbot: `https://askme.regenai-workers.workers.dev`
+- Chatbot: `https://askme.regenai-workers.workers.dev` (the frontend calls it through a same-origin `/askme-proxy`, so the page never hard-codes a Worker host)
+
+> **Domain status:** The former custom domain `healthcodeanalysis.com` (and its cPanel hosting) is
+> retired and is **not** part of the runtime. The Pages frontend, the AskMe Worker, and the bundled
+> content index all serve independently of it. The cPanel deploy path is preserved in the workflows
+> as history but disabled.
 
 Publish all frontend and chatbot content from PowerShell:
 

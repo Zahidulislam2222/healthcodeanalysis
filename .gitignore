@@ -130,6 +130,7 @@ node_modules/
 
 # Private implementation/recovery planning
 /DEMO_HOSTING_BUILD_PLAN.md
+/DOMAIN_MIGRATION_BUILD_PLAN.md
 
 # Private project dossier (Rule 11) — never commit
 PROJECT-DOSSIER.md

@@ -16,8 +16,11 @@ from elementor_parser import ElementorParser
 from wp_client import WPClient
 
 API_KEY = os.getenv("HC_API_KEY", "test-api-key-not-set")
-LOCAL_URL = "http://localhost:8889"
-LIVE_URL = "https://healthcodeanalysis.com"
+LOCAL_URL = os.getenv("LOCAL_WP_URL", "http://localhost:8889")
+# The public custom domain healthcodeanalysis.com is retired/expiring and no longer
+# serves a live WordPress backend. Point LIVE_WP_URL at a reachable WordPress origin
+# to exercise the live suite; when unset the live tests are skipped automatically.
+LIVE_URL = os.getenv("LIVE_WP_URL", "")
 
 PASSED = 0
 FAILED = 0
