@@ -2,14 +2,14 @@
  * AskMe Assistant — Cloudflare Worker v3
  *
  * Proxies chat to Dialogflow ES for greetings/chitchat.
- * Handles all content questions by querying the WordPress REST API on demand.
- * Scales to any number of posts — fetches only what's needed per request.
+ * Handles content questions from the static index generated during publishing.
  *
  * Secrets (set via `npx wrangler secret put <NAME>`):
  *   GOOGLE_PRIVATE_KEY, GOOGLE_CLIENT_EMAIL, DIALOGFLOW_PROJECT
  */
 
-const WP_API = "https://healthcodeanalysis.com/wp-json/wp/v2";
+import contentIndex from "../content-index.json";
+
 const MAX_QUERY = 500;
 const MAX_SESSION = 50;
 const DEFAULT_COUNT = 3;
@@ -50,10 +50,16 @@ export default {
         return json({ queryResult: { fulfillmentText: "Please type a message." } });
       }
 
-      // Classify intent via Dialogflow
-      const token = await getAccessToken(env);
-      const dfData = await callDialogflow(env, token, query, sessionId);
-      const intent = dfData.queryResult?.intent?.displayName || "";
+      let dfData = { queryResult: { fulfillmentText: "" } };
+      let intent = "";
+
+      try {
+        const token = await getAccessToken(env);
+        dfData = await callDialogflow(env, token, query, sessionId);
+        intent = dfData.queryResult?.intent?.displayName || "";
+      } catch (dialogflowError) {
+        console.error("Dialogflow unavailable:", dialogflowError.message);
+      }
 
       // Handle chitchat locally if Dialogflow misses it
       const smallTalk = detectSmallTalk(query);
@@ -174,19 +180,11 @@ async function searchAndAnswer(term, preferredCat) {
 
   if (!posts || posts.length === 0) {
     // Retry with individual words (e.g. "blood pressure wearable" → try "blood pressure", then "wearable")
-    const words = term.split(/\s+/).filter((w) => w.length > 2);
-    if (words.length > 1) {
-      // Try the longest sub-phrase first, then individual words
-      for (let len = words.length - 1; len >= 1; len--) {
-        for (let i = 0; i <= words.length - len; i++) {
-          const sub = words.slice(i, i + len).join(" ");
-          const subPosts = await wpGet(`/posts?search=${encodeURIComponent(sub)}&per_page=3&_fields=id,title,link,excerpt`);
-          if (subPosts?.length > 0) {
-            posts = subPosts;
-            break;
-          }
-        }
-        if (posts?.length > 0) break;
+    for (const sub of fallbackSearchTerms(term)) {
+      const subPosts = await wpGet(`/posts?search=${encodeURIComponent(sub)}&per_page=3&_fields=id,title,link,excerpt`);
+      if (subPosts?.length > 0) {
+        posts = subPosts;
+        break;
       }
     }
     if (!posts || posts.length === 0) {
@@ -214,6 +212,18 @@ async function searchAndAnswer(term, preferredCat) {
   }
 
   return html;
+}
+
+export function fallbackSearchTerms(term) {
+  const words = term.split(/\s+/).filter((word) => word.length > 2);
+  const terms = [];
+  for (let length = words.length - 1; length >= 1; length--) {
+    for (let index = 0; index <= words.length - length; index++) {
+      terms.push(words.slice(index, index + length).join(" "));
+    }
+  }
+  if (words.length === 1 && words[0] !== term) terms.push(words[0]);
+  return [...new Set(terms)];
 }
 
 // Fetch a single post's content and pull out the relevant sentence
@@ -287,17 +297,41 @@ async function findCategory(input) {
 }
 
 // ==========================================================================
-// WordPress REST API helper
+// Static content adapter. It preserves the small WP-shaped surface used above.
 // ==========================================================================
 async function wpGet(endpoint) {
   try {
-    const resp = await fetch(`${WP_API}${endpoint}`);
-    if (!resp.ok) return null;
-    return resp.json();
+    const index = contentIndex;
+    const url = new URL(endpoint, "https://content.invalid");
+    const parts = url.pathname.split("/").filter(Boolean);
+    const resource = parts[0];
+    let items = resource === "categories" ? index.categories : index.posts;
+    if (!Array.isArray(items)) return null;
+
+    if (parts[1]) return items.find((item) => String(item.id) === parts[1]) || null;
+    const search = (url.searchParams.get("search") || "").toLowerCase();
+    if (search) {
+      items = items.filter((item) => {
+        const value = resource === "categories"
+          ? `${item.name || ""} ${item.slug || ""}`
+          : `${item.title?.rendered || ""} ${item.excerpt?.rendered || ""} ${item.content?.text || ""}`;
+        return stripHtml(value).toLowerCase().includes(search);
+      });
+    }
+    const category = url.searchParams.get("categories");
+    if (category && resource === "posts") {
+      items = items.filter((item) => (item.categories || []).map(String).includes(category));
+    }
+    if (url.searchParams.get("orderby") === "date") {
+      items = [...items].sort((a, b) => String(b.date).localeCompare(String(a.date)));
+    }
+    const perPage = Math.min(parseInt(url.searchParams.get("per_page") || "10", 10), 100);
+    return items.slice(0, perPage);
   } catch {
     return null;
   }
 }
+
 
 // ==========================================================================
 // Dialogflow

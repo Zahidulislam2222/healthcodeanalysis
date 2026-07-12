@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  # Intentionally manual while GitHub Actions are not in active use.
+  # Preserve the workflow as client evidence and for future reactivation.
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,6 +11,7 @@ permissions:
 jobs:
   lint:
     name: Lint & Security
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -39,6 +39,7 @@ jobs:
 
   test:
     name: Tests
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -65,6 +66,7 @@ jobs:
 
   coverage:
     name: Coverage
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -94,6 +96,7 @@ jobs:
 
   validate:
     name: Validate Configs
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -115,7 +118,7 @@ jobs:
   deploy-worker:
     name: Deploy AskMe Worker to Cloudflare
     needs: [lint, test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -147,7 +150,7 @@ jobs:
   deploy-plugin:
     name: Deploy Plugin to Live Site
     needs: [lint, test]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

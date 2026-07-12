@@ -1421,3 +1421,11 @@ html {
     }
     #hc-particles-canvas, .hc-ecg-container { display: none !important; }
 }
+/* Keep the single-post share/bookmark rail below the fixed desktop header. */
+@media (min-width: 1025px) {
+    .my-sticky-col.jkit-sticky-position--sticky {
+        top: 90px !important;
+        align-self: flex-start;
+        z-index: 20;
+    }
+}

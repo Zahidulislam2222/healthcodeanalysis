@@ -1,12 +1,8 @@
 name: Configure Admin Demo DNS
 
 on:
+  # Intentionally manual while GitHub Actions are not in active use.
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/configure-admin-demo-dns.yml
 
 permissions:
   contents: read
@@ -14,6 +10,7 @@ permissions:
 jobs:
   configure:
     name: Configure Cloudflare DNS
+    if: ${{ vars.HEALTHCODE_ACTIONS_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

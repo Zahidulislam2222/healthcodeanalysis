@@ -41,6 +41,8 @@ configs/customer-*.json
 *.docx
 *.pdf
 *.xlsx
+/HealthCode Analysis/
+/my-project-view/
 
 # ============================================================
 # Python
@@ -109,6 +111,10 @@ $RECYCLE.BIN/
 node_modules/
 .wrangler/
 .dev.vars
+/workers/askme/content-index.json
+
+# Generated static deployment bundle (rebuild with export_static_site.py)
+/pages-demo/
 
 # ============================================================
 # Temp & Logs
@@ -119,3 +125,11 @@ node_modules/
 *.csv
 *.cache
 .ruff_cache/
+/tmp-*.html
+/NUL
+
+# Private implementation/recovery planning
+/DEMO_HOSTING_BUILD_PLAN.md
+
+# Private project dossier (Rule 11) — never commit
+PROJECT-DOSSIER.md

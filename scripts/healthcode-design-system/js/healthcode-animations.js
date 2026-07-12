@@ -66,6 +66,7 @@
                 if (el.classList.contains('elementor-button')) return;
                 if (el.classList.contains('nsl-button-svg-container')) return;
                 if (el.closest && (el.closest('.elementor-button') || el.closest('.nsl-button'))) return;
+                if (el.closest && el.closest('.wpr-template-popup')) return;
 
                 el.style.setProperty('background-color', 'transparent', 'important');
             }
@@ -405,6 +406,15 @@
                 content.style.setProperty('width', '100%', '');
                 content.style.setProperty('box-shadow', '0 20px 60px rgba(0,0,0,0.6)', '');
             }
+
+            document.querySelectorAll(
+                '.wpr-template-popup .wpr-popup-container, ' +
+                '.wpr-template-popup .wpr-popup-container-inner'
+            ).forEach(function (element) {
+                if (element.style.getPropertyValue('background-color') !== 'rgb(255, 255, 255)') {
+                    element.style.setProperty('background-color', 'rgb(255, 255, 255)', 'important');
+                }
+            });
         }
 
         var obs = new MutationObserver(function () { fixPopup(); });

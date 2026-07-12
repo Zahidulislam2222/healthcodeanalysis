@@ -31,7 +31,55 @@ A full-stack WordPress automation platform with three core capabilities:
 2. **Dark Glassmorphism Design System** — A plugin-based visual overhaul with vanilla JS scroll animations, sticky header, glassmorphic cards, and responsive dark theme. Zero external dependencies.
 3. **AskMe AI Chatbot** — A Cloudflare Worker-powered chatbot that answers visitor questions using live WordPress content. Queries the WP REST API on demand (scales to any post count), with Dialogflow ES for greetings/chitchat.
 
-**Live Site:** [healthcodeanalysis.com](https://healthcodeanalysis.com)
+**Frontend:** [healthcodeanalysis.pages.dev](https://healthcodeanalysis.pages.dev)
+
+**WP Admin Demo:** [local wp-admin](http://127.0.0.1:8889/wp-admin/)
+
+## Domain-Independent Demo Publishing
+
+The durable demo does not depend on `healthcodeanalysis.com` or a running WordPress server:
+
+```text
+Local WordPress -> static exporter -> Cloudflare Pages
+                         +---------> bundled AskMe content index
+```
+
+- Public frontend: `https://healthcodeanalysis.pages.dev`
+- Local authoring: `http://127.0.0.1:8889/wp-admin/`
+- Chatbot: `https://askme.regenai-workers.workers.dev`
+
+Publish all frontend and chatbot content from PowerShell:
+
+```powershell
+.\scripts\publish-static-site.ps1
+```
+
+The command exports every published page, post, category archive, referenced WordPress asset, and a public-only content index. It validates AskMe, deploys Pages, and then deploys the Worker with the same index bundled into it. Wrangler OAuth must already be logged in; credentials stay in ignored local files or Cloudflare secrets.
+
+For export-only validation:
+
+```bash
+python scripts/export_static_site.py --source http://127.0.0.1:8889 --clean
+```
+
+The public site and AskMe continue working when WordPress and Docker are offline. WordPress changes become public only after running the publish command.
+
+The connection is intentionally one-way: WordPress is the authoring source and Pages is a static published snapshot. Editing generated files does not write back to WordPress. WordPress-only MetForm controls are visibly blocked in the static export instead of submitting to dead REST endpoints; use the local WordPress demo when testing those forms.
+
+### Local Demo Tunnel
+
+The public tunnel is optional and must not run unless Cloudflare Access protects WP Admin. Start the normal local stack without a public tunnel:
+
+```bash
+cd docker
+docker compose up -d
+```
+
+Start the tunnel only for a protected client demo:
+
+```bash
+docker compose --profile demo-tunnel up -d cloudflared
+```
 
 ## Architecture
 

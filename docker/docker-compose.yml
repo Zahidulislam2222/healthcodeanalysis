@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: mysql:8.0
@@ -55,6 +53,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: hc-cloudflared
+    profiles: ["demo-tunnel"]
+    restart: unless-stopped
+    depends_on:
+      wordpress:
+        condition: service_healthy
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
 
   phpmyadmin:
     image: phpmyadmin:5.2.3
