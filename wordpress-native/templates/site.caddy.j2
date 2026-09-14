@@ -1,0 +1,18 @@
+{{ hostname }} {
+    header Strict-Transport-Security "max-age={{ policy.security.hsts_seconds }}"
+    # Keep original asset URLs available to already-open reference pages.
+    handle /assets/* {
+        reverse_proxy 127.0.0.1:{{ legacy_port }}
+    }
+    @cloudflare remote_ip {{ cloudflare_networks | join(' ') }}
+    handle @cloudflare {
+        reverse_proxy 127.0.0.1:{{ port }} {
+            header_up X-HealthCode-Client-IP {http.request.header.CF-Connecting-IP}
+        }
+    }
+    handle {
+        reverse_proxy 127.0.0.1:{{ port }} {
+            header_up X-HealthCode-Client-IP {http.request.remote.host}
+        }
+    }
+}

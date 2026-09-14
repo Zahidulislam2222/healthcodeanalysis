@@ -1,0 +1,357 @@
+{
+  "bmi": {
+    "name": "BMI calculator",
+    "description": "A quick measurement, with the right context.",
+    "icon": "scale",
+    "kind": "numbers",
+    "action": "Calculate BMI",
+    "result_label": "Body mass index · kg/m²",
+    "note": "For adults aged 20 and over. BMI is a screening measure, not a diagnosis; it does not distinguish muscle from fat.",
+    "fields": [
+      {
+        "name": "weight",
+        "label": "Weight · kg",
+        "min": 1,
+        "max": 600,
+        "step": "any"
+      },
+      {
+        "name": "height",
+        "label": "Height · cm",
+        "min": 30,
+        "max": 300,
+        "step": "any"
+      }
+    ],
+    "coefficients": {
+      "centimeters_per_meter": 100
+    },
+    "source": "https://www.cdc.gov/growth-chart-training/hcp/using-bmi/calculating-bmi.html",
+    "source_label": "CDC · calculating BMI",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "A measurement, in context."
+      },
+      {
+        "type": "paragraph",
+        "text": "Enter weight in kilograms and height in centimeters. The calculator divides weight by height in meters squared and displays the result to one decimal place."
+      },
+      {
+        "type": "heading",
+        "text": "Know its limits."
+      },
+      {
+        "type": "paragraph",
+        "text": "This adult worksheet does not assess body composition, pregnancy, growth, or individual health. A single BMI value cannot establish a diagnosis. See the CDC source above for the measurement method."
+      }
+    ]
+  },
+  "egfr": {
+    "name": "eGFR calculator",
+    "description": "Explore the race-free CKD-EPI 2021 equation.",
+    "icon": "pulse",
+    "kind": "numbers",
+    "action": "Calculate eGFR",
+    "result_label": "Estimated GFR · mL/min/1.73 m²",
+    "note": "Adults 18 and over. An estimate based on serum creatinine, age, and the equation’s sex coefficient. Accuracy varies with muscle mass, diet, and other factors; this is not a clinical decision tool.",
+    "fields": [
+      {
+        "name": "age",
+        "label": "Age · years",
+        "min": 18,
+        "max": 120,
+        "step": "1"
+      },
+      {
+        "name": "creatinine",
+        "label": "Serum creatinine · mg/dL",
+        "min": 0.1,
+        "max": 30,
+        "step": "any"
+      }
+    ],
+    "coefficients": {
+      "base": 142,
+      "age_factor": 0.9938,
+      "high_exponent": -1.2,
+      "female": {
+        "k": 0.7,
+        "alpha": -0.241,
+        "factor": 1.012
+      },
+      "male": {
+        "k": 0.9,
+        "alpha": -0.302,
+        "factor": 1
+      }
+    },
+    "source": "https://www.niddk.nih.gov/research-funding/research-programs/kidney-clinical-research-epidemiology/laboratory/glomerular-filtration-rate-equations/adults",
+    "source_label": "NIDDK · adult eGFR equations",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "The equation, made visible."
+      },
+      {
+        "type": "paragraph",
+        "text": "Enter adult age in completed years and serum creatinine in mg/dL, then select the sex coefficient used by the CKD-EPI 2021 creatinine equation. The worksheet displays an estimate to one decimal place."
+      },
+      {
+        "type": "heading",
+        "text": "An estimate has limits."
+      },
+      {
+        "type": "paragraph",
+        "text": "The equation does not use a race coefficient. Creatinine-based estimates can be affected by muscle mass, diet, and changing kidney function. This worksheet does not stage disease or recommend treatment. Consult the NIDDK source above for context and limitations."
+      }
+    ]
+  },
+  "scores": {
+    "name": "AF score worksheet",
+    "description": "Explore two classic scoring systems, one component at a time.",
+    "icon": "pulse",
+    "kind": "scores",
+    "action": "Calculate scores",
+    "note": "Educational reconstruction of CHA₂DS₂-VASc and HAS-BLED. These scores alone must not be used to start or withhold anticoagulation. Check the source definitions; this worksheet gives totals without treatment recommendations.",
+    "groups": [
+      {
+        "id": "stroke",
+        "name": "CHA₂DS₂-VASc",
+        "fields": [
+          {
+            "name": "failure",
+            "label": "Heart failure / left ventricular dysfunction",
+            "value": 1
+          },
+          {
+            "name": "hypertension",
+            "label": "Hypertension history",
+            "value": 1
+          },
+          {
+            "name": "diabetes",
+            "label": "Diabetes mellitus",
+            "value": 1
+          },
+          {
+            "name": "stroke",
+            "label": "Prior stroke, TIA, or systemic embolism",
+            "value": 2
+          },
+          {
+            "name": "vascular",
+            "label": "Vascular disease",
+            "value": 1
+          },
+          {
+            "name": "female",
+            "label": "Female sex category",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": "bleed",
+        "name": "HAS-BLED",
+        "fields": [
+          {
+            "name": "pressure",
+            "label": "Uncontrolled systolic blood pressure >160 mmHg",
+            "value": 1
+          },
+          {
+            "name": "renal",
+            "label": "Abnormal renal function (see source definition)",
+            "value": 1
+          },
+          {
+            "name": "liver",
+            "label": "Abnormal liver function (see source definition)",
+            "value": 1
+          },
+          {
+            "name": "stroke",
+            "label": "Previous stroke",
+            "value": 1
+          },
+          {
+            "name": "bleeding",
+            "label": "Bleeding history or predisposition",
+            "value": 1
+          },
+          {
+            "name": "inr",
+            "label": "Labile INR",
+            "value": 1
+          },
+          {
+            "name": "drugs",
+            "label": "Antiplatelet or NSAID use",
+            "value": 1
+          },
+          {
+            "name": "alcohol",
+            "label": "Alcohol: 8 or more drinks per week",
+            "value": 1
+          }
+        ]
+      }
+    ],
+    "age": {
+      "min": 18,
+      "max": 120,
+      "stroke_high": 75,
+      "stroke_low": 65,
+      "bleed_above": 65
+    },
+    "source": "https://www.acc.org/~/media/Non-Clinical/Files-PDFs-Excel-MS-Word-etc/Meetings/2016/Course%20PDFs/Core%20Curriculum/Friday/Fri%2012%2005%20pm%20Parra%20pdfp.pdf",
+    "source_label": "American College of Cardiology · classic score definitions",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "Work through the components."
+      },
+      {
+        "type": "paragraph",
+        "text": "Enter age once. The worksheet assigns mutually exclusive age points for CHA₂DS₂-VASc and the separate age point for HAS-BLED. Select each applicable component; unchecked boxes contribute no points."
+      },
+      {
+        "type": "heading",
+        "text": "A total is not a treatment plan."
+      },
+      {
+        "type": "paragraph",
+        "text": "Read the linked source definitions before choosing components such as abnormal renal or liver function and labile INR. These classic scores are presented for learning. The worksheet deliberately does not convert totals into treatment instructions or a personal risk forecast."
+      }
+    ]
+  },
+  "pico": {
+    "name": "PICO research worksheet",
+    "description": "Turn a broad question into a focused starting point.",
+    "icon": "layers",
+    "kind": "text",
+    "action": "Build my question",
+    "fields": [
+      {
+        "name": "population",
+        "label": "Population",
+        "placeholder": "Who is the study about?"
+      },
+      {
+        "name": "intervention",
+        "label": "Intervention",
+        "placeholder": "What treatment or exposure?"
+      },
+      {
+        "name": "comparison",
+        "label": "Comparison",
+        "placeholder": "Compared with what?"
+      },
+      {
+        "name": "outcome",
+        "label": "Outcome",
+        "placeholder": "What would you measure?"
+      }
+    ],
+    "template": "In {population}, how does {intervention}, compared with {comparison}, affect {outcome}?",
+    "note": "A manual worksheet. It does not read a paper or extract evidence automatically.",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "Four parts. One focused question."
+      },
+      {
+        "type": "paragraph",
+        "text": "Describe the population, intervention, comparison, and outcome in your own words. Build your question, review the draft, and copy it into your research notes."
+      },
+      {
+        "type": "heading",
+        "text": "Keep the evidence in view."
+      },
+      {
+        "type": "paragraph",
+        "text": "This worksheet formats what you enter. It does not read a study, verify its methods, or identify its findings. Return to the original paper to check whether your question reflects the actual study design."
+      }
+    ]
+  },
+  "prompt": {
+    "name": "Medical prompt studio",
+    "description": "Start with context. Ask a more useful question.",
+    "icon": "spark",
+    "kind": "text",
+    "action": "Build my prompt",
+    "fields": [
+      {
+        "name": "topic",
+        "label": "Topic",
+        "placeholder": "What are you exploring?"
+      },
+      {
+        "name": "audience",
+        "label": "Audience",
+        "placeholder": "Who is the explanation for?"
+      },
+      {
+        "name": "format",
+        "label": "Output format",
+        "placeholder": "A table, brief, or study outline?"
+      }
+    ],
+    "template": "Create an educational {format} about {topic} for {audience}. Distinguish established evidence from uncertainty. Cite verifiable primary sources, include their dates, and do not invent citations. Avoid patient-specific diagnosis or treatment advice. State limitations and what requires professional review.",
+    "note": "A local template builder, not an AI model. Do not include identifiable patient information in prompts sent to external services.",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "Give your question a useful shape."
+      },
+      {
+        "type": "paragraph",
+        "text": "Choose a topic, describe your audience, and name an output format. The studio creates a draft that asks for sources, uncertainty, and an educational scope."
+      },
+      {
+        "type": "heading",
+        "text": "Review before you reuse."
+      },
+      {
+        "type": "paragraph",
+        "text": "No model runs here. Copy the draft only after reviewing it. If you later use an external AI service, verify its privacy terms and costs, keep patient information out of the prompt, and independently check the answer and citations."
+      }
+    ]
+  },
+  "image": {
+    "name": "Image workbench",
+    "description": "A lighter image, without leaving your browser.",
+    "icon": "image",
+    "kind": "image",
+    "action": "Optimize image",
+    "note": "Convert JPEG, PNG, or WebP to a smaller WebP. Processing stays on this device. Use non-diagnostic artwork only: lossy conversion may remove clinically important detail.",
+    "accept": "image/jpeg,image/png,image/webp",
+    "download": "healthcode-optimized.webp",
+    "guide": [
+      {
+        "type": "heading",
+        "text": "Less weight. The same local workflow."
+      },
+      {
+        "type": "paragraph",
+        "text": "Choose a JPEG, PNG, or WebP within the displayed limits. The workbench keeps the aspect ratio, reduces oversized images to the configured maximum width, and creates a WebP download. It never enlarges a smaller image."
+      },
+      {
+        "type": "heading",
+        "text": "Use it for illustration."
+      },
+      {
+        "type": "paragraph",
+        "text": "Lossy conversion is intended for non-diagnostic artwork, presentation graphics, and editorial images. Keep the original file. Do not use the converted output for diagnostic interpretation or measurements. The download is created locally without an upload."
+      }
+    ]
+  },
+  "_messages": {
+    "input": "Check the input values and units.",
+    "sex": "Choose a sex coefficient.",
+    "age": "Enter an adult age in the supported range.",
+    "fields": "Complete every field to build your draft.",
+    "unavailable": "This tool is unavailable."
+  }
+}

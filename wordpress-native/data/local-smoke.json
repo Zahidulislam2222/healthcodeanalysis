@@ -1,0 +1,10 @@
+{
+  "requests": 40,
+  "concurrency": 4,
+  "timeout_seconds": 10,
+  "pause_seconds": 0.05,
+  "maximum_requests": 200,
+  "maximum_concurrency": 8,
+  "path": "/",
+  "expected_status": 200
+}

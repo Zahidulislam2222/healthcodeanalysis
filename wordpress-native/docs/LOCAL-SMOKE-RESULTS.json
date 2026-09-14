@@ -1,0 +1,19 @@
+{
+  "status": "LOCAL_SMOKE_NOT_PRODUCTION_CAPACITY",
+  "observed_at": "2026-09-14T13:42:10.643425+00:00",
+  "requests": 40,
+  "concurrency": 4,
+  "successful_responses": 40,
+  "warmup_success": true,
+  "elapsed_seconds": 0.589,
+  "observed_requests_per_second": 67.91,
+  "median_ms": 6.994999999999999,
+  "p95_ms": 9.75,
+  "cache_status_counts": {
+    "HIT": 40
+  },
+  "http_status_counts": {
+    "200": 40
+  },
+  "limitations": "Loopback HTTP only; no browser/media load or failover exercise. No production capacity or uptime claim."
+}

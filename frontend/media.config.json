@@ -1,0 +1,36 @@
+{
+  "base_url": "https://openrouter.ai/api/v1",
+  "image_endpoint": "/images",
+  "video_endpoint": "/videos",
+  "key_env": "OPENROUTER_API_KEY",
+  "key_file": ".env",
+  "ledger": "debug/frontend-tests/media-pilot-ledger.json",
+  "timeout_seconds": 600,
+  "poll_seconds": 20,
+  "budget_usd": 5.0,
+  "image_reserve_usd": 1.0,
+  "video_estimate_usd": 1.84896,
+  "image_output": "frontend/artwork/neural-generated.png",
+  "video_output": "frontend/artwork/neural-generated.mp4",
+  "image": {
+    "model": "openai/gpt-image-2.5-sunburst",
+    "quality": "high",
+    "aspect_ratio": "16:9",
+    "n": 1,
+    "provider": {
+      "only": [
+        "openai"
+      ],
+      "allow_fallbacks": false
+    },
+    "prompt": "Create a cinematic scientific art photograph for a medical AI publication called HealthCode Analysis. One anatomically recognizable but explicitly illustrative human brain, suspended in a near-black graphite studio, three-quarter lateral view. Highly detailed organic cortical folds constructed from pale titanium tissue-like strands and translucent optical fibers; sparse mint-colored light travels through fine internal pathways. Copper rim lighting from the upper right, cool white softbox from the left, convincing shadows and volumetric depth. Premium scientific visualization, tangible material detail, macro lens clarity, subtle natural imperfections. The brain occupies the right 55 percent of a wide 16:9 frame, with the left 45 percent clean near-black negative space for a large HTML headline. Keep the complete silhouette visible and leave breathing room around it. No text, symbols, interface panels, numbers, logos, neon city, stock medical icons, circuit-board globe, floating glass plates, fake data, or cartoon styling. This is editorial illustration, not a diagnostic image."
+  },
+  "video": {
+    "model": "bytedance/seedance-2.5",
+    "duration": 8,
+    "resolution": "720p",
+    "aspect_ratio": "16:9",
+    "generate_audio": false,
+    "prompt": "Use the approved neural illustration as the first-frame reference. Eight seconds, 16:9, 720p, no audio. A single deliberate scientific camera shot. Seconds 0\u20132: a very slow clockwise camera orbit around the suspended titanium-and-optical-fiber brain, preserving its recognizable shape and the dark studio. Seconds 2\u20135: a controlled dolly toward the cortical surface, revealing fine illuminated pathways without changing the object's anatomy or inventing text. Seconds 5\u20138: a gentle pullback settles into a three-quarter view with the sculpture on the right and clear negative space on the left. Copper rim light and sparse mint pathway illumination remain consistent. No cuts, no flashes, no additional objects, no readable text, no medical claims, no morphing into a different object. Stable camera, consistent studio, no audio."
+  }
+}

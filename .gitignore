@@ -4,6 +4,7 @@
 .env
 .env.*
 !.env.sample
+!.env.example
 !docker/.env.docker.sample
 *.local
 CREDENTIALS.md
@@ -134,3 +135,20 @@ node_modules/
 
 # Private project dossier (Rule 11) — never commit
 PROJECT-DOSSIER.md
+
+# Private project research and working memory
+/memory/
+/frontend-preview/
+/frontend/artwork/*.blend*
+/frontend/artwork/render-*.png
+/frontend/artwork/frames/
+/debug/frontend-tests/
+!/frontend/assets/fonts/
+!/frontend/assets/fonts/**
+!/frontend/assets/images/
+!/frontend/assets/images/**
+
+/frontend/artwork/neural-generated.png
+/frontend/artwork/neural-generated.mp4
+/wordpress-native/build/
+/wordpress-native/.env

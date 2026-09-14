@@ -1,3 +1,20 @@
+# HealthCode Analysis
+
+A medical-technology publication demonstration with native Elementor Free authoring. The original visual design is preserved separately for comparison. The native site is deployed, with public interaction, motion, security, MFA/editor and141-file parity checks passed. Owner visual acceptance remains. The historical implementation below describes retained tooling, not the current public runtime.
+
+- **Live site:** https://healthcodeanalysis.zahidul-islam.com · [Native verification record](wordpress-native/docs/VERIFICATION.md).
+- **Capacity and availability:** [10k–1M reader roadmap and 99% SLO](docs/SCALABILITY-AND-RELIABILITY.md). Targets only; production capacity and long-term uptime are not measured.
+- **US/EU applicability:** [Research and activation gates](wordpress-native/docs/US-EU-RESEARCH.md). No blanket compliance claim; future collection and monetization remain disabled.
+- **Native implementation criteria:** [Acceptance checklist](wordpress-native/ACCEPTANCE.md).
+- **Planning configuration:** [Capacity model inputs](wordpress-native/data/capacity-plan.json) and [publishing/privacy feature policy](wordpress-native/data/publishing-policy.json).
+- **Original preview:** http://127.0.0.1:8765/ · **Native local WordPress:** http://127.0.0.1:8890/.
+
+No paid infrastructure or integrations are added by the roadmap. Implemented, verified and planned capabilities are explicitly distinguished in the register.
+
+## Historical automation documentation
+
+The following describes earlier project tooling and endpoints. It is retained for recovery and historical context; its historical test counts and deployment topology do not certify the current native build.
+
 <h1 align="center">
   HealthCode Analysis<br>
   <sub>WordPress Elementor Automation Engine</sub>
@@ -9,8 +26,6 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/GitHub%20Actions-disabled%20by%20default-lightgrey?style=flat-square" alt="GitHub Actions disabled by default">
-  <img src="https://img.shields.io/badge/tests-281%20passing-brightgreen?style=flat-square" alt="Tests">
-  <img src="https://img.shields.io/badge/coverage-59%25-yellow?style=flat-square" alt="Coverage">
   <img src="https://img.shields.io/badge/python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
   <img src="https://img.shields.io/badge/wordpress-REST%20API-21759B?style=flat-square&logo=wordpress&logoColor=white" alt="WordPress">
   <a href="https://docs.astral.sh/ruff/">

@@ -1,0 +1,37 @@
+/* Adapt core-widget wrappers without replacing native editable page content. */
+.hc-native .elementor-widget-heading,
+.hc-native .elementor-widget-text-editor,
+.hc-native .elementor-widget-image,
+.hc-native .elementor-widget-button { display: contents; }
+.hc-native .elementor-widget-container { display: contents; }
+.hc-native .elementor-button-wrapper { display: contents; }
+.hc-native .elementor-button-content-wrapper { display: contents; }
+.hc-native .elementor-button-text { flex-grow:0; }
+.hc-native .elementor-widget-image a { display: contents; }
+.hc-native .hc-inline-icon { display:inline-block; width:20px; height:20px; object-fit:contain; flex-shrink:0; }
+.hc-native .frontier-object .elementor-widget-video,
+.hc-native .frontier-object .elementor-wrapper { position:absolute; inset:0; width:100%; height:100%; }
+.hc-native .frontier-object video { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
+.hc-native .site-main { padding:0; }
+.hc-native .page-header { display:none; }
+.hc-native .elementor-element:focus { outline-offset:4px; }
+.hc-native .site-header .brand { flex-direction:row; }
+.hc-native .elementor-widget:not(:last-child) { margin-block-end:0; }
+.hc-native .frontier-copy h1 { font-family:var(--sans); }
+.hc-native .site-header, .hc-native .main-nav, .hc-native .header-actions, .hc-native .hero-actions { flex-direction:row; }
+.hc-native .frontier-object .elementor-wrapper { background:transparent; }
+.hc-native .site-header { display:flex; max-width:none; }
+.hc-native .site-header:not(.dynamic-header) { padding:0; }
+.hc-native .main-nav, .hc-native .header-actions, .hc-native .hero-actions { display:flex; width:auto; }
+.hc-native .site-header .brand { display:inline-flex; width:auto; }
+.hc-native .e-con.wrap { max-width:none; width:min(var(--wrap),calc(100% - 112px)); margin-inline:auto; }
+@media(max-width:700px) {
+ .hc-native .e-con.wrap { width:calc(100% - 40px); }
+ .hc-native .main-nav:not(.open) { display:none; }
+ .hc-native.hc-native.hc-native .frontier-annotation { left:20px; right:20px; width:auto; max-width:calc(100% - 40px); text-align:right; line-height:1.5; }
+}
+
+.hc-native .brand-mark .hc-inline-icon { width:26px; height:26px; }
+
+/* The editor renders widgets on the client; show the editable still while editing. */
+.hc-native.elementor-editor-active .frontier-object .elementor-widget-video { visibility:hidden; }

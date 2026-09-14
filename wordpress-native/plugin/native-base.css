@@ -1,0 +1,10 @@
+/* Reset only Elementor layout defaults; source design rules follow this sheet. */
+.e-con { --display: block; --gap: 0px; --padding-top:0px; --padding-right:0px; --padding-bottom:0px; --padding-left:0px; --container-default-padding:0; }
+.elementor-widget { margin:0; }
+:where(.elementor-widget-heading .elementor-heading-title) { padding:0; margin:0; color:inherit; }
+.elementor-widget-image img { vertical-align:middle; }
+.elementor-widget-text-editor { color:inherit; font:inherit; }
+.elementor-button { color:inherit; background:transparent; border:0; padding:0; font:inherit; }
+.elementor-button-content-wrapper { align-items:center; }
+
+.hc-native .e-con.e-flex { display:block; }

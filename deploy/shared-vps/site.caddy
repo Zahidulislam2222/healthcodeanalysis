@@ -1,0 +1,4 @@
+healthcodeanalysis.zahidul-islam.com {
+    reverse_proxy 127.0.0.1:18084
+    log
+}
