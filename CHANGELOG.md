@@ -17,6 +17,7 @@ All notable changes to this project are documented here. The format follows [Kee
 - GitHub Actions: `actions/checkout` v6 → v7 and `actions/setup-node` v4 → v6 across all workflows (reviewed release notes; workflows remain manual and guarded). Supersedes Dependabot pull requests #3 and #4. setup-node v7 exists; v6 was kept to match the reviewed Dependabot change, and v7 is left for a separate update once CI is active.
 - Fixed missing-space typos in the native README, verification, acceptance and scalability documents.
 - `requirements-dev.txt` now includes mypy and bandit so the documented gates run from a clean install.
+- Public technical overview (`docs/PUBLIC-TECHNICAL-OVERVIEW.md`) extended in place with 24 September 2026 additions: the new documentation set, threat model and vulnerability reporting, UK/Bangladesh and further US compliance rows, the legal pack, accessibility statement, error-budget policy, incident response, proposed recovery objectives, the 316-check offline rerun, the still-public legacy AskMe route and the phased roadmap. No existing text was removed.
 
 ### Security
 - `out.txt` (local scratch output) is now git-ignored to prevent committing private correspondence.
