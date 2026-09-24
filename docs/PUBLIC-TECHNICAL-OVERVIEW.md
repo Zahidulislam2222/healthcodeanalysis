@@ -4,7 +4,7 @@ Native Elementor publishing, verified security boundaries, US/EU activation requ
 
 A public reference for clients and developers. This edition reflects the deployed native WordPress release and its recorded verification. It separates working features from future architecture and business decisions.
 
-Developed by Zahidul Islam. Edition verified: 14 September 2026
+Developed by Zahidul Islam. Edition verified: 14 September 2026 · Documentation updated: 24 September 2026
 
 [Open the live demonstration](https://healthcodeanalysis.zahidul-islam.com) · [Source repository](https://github.com/Zahidulislam2222/healthcodeanalysis)
 
@@ -13,6 +13,8 @@ Developed by Zahidul Islam. Edition verified: 14 September 2026
 Clients can start with the product, design, editable-content, legal, capacity and acceptance sections. Developers should also read configuration ownership, delivery, recovery, security and verification. The repository contains a current native implementation alongside retained automation and the original design; those components have different operating roles.
 
 Implemented means a capability exists in the inspected code. Verified means a named check exercised it in the stated environment. Planned means additional engineering or infrastructure remains. A target is not a measured result. No part of this document promises an unhackable system, universal legal compliance, guaranteed search placement or demonstrated million-user capacity.
+
+The 24 September 2026 documentation update adds a public engineering and compliance set to the repository: architecture, roadmap, threat model, incident response, backup and disaster recovery, operations runbook, development guide and a legal pack. That update covered documentation, repository settings and offline re-verification only; it made no production server, routing or content change. The release evidence in this overview remains the recorded 14 September verification unless a paragraph states a later check.
 
 ## 2. Executive overview and current release
 
@@ -120,6 +122,8 @@ The gateway denies configuration, hidden and backup-like paths, directory listin
 
 The proxy trusts a specifically configured host gateway, while the outer routing overwrites the application client-IP header. Official CDN address ranges constrain when the provider's connecting-address header is accepted. A 28-request production test used forged application headers: 11 requests succeeded and 17 received HTTP429, with the actual client identity confirmed privately in limiter logs. This is a bounded trust-boundary test, not a denial-of-service resistance benchmark.
 
+A published [STRIDE threat model](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/THREAT-MODEL.md) records 17 threats with their controls and status. It marks partial controls openly, including single-origin denial-of-service exposure, the absence of central audit-log retention and CI actions pinned by tag rather than commit SHA. Vulnerabilities are reported privately through the repository's [security policy](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/SECURITY.md), which defines scope and safe harbor, or through GitHub private vulnerability reporting, which is enabled.
+
 ## 14. Browser policy, caching and privacy isolation
 
 Public responses include a content security policy, MIME-sniffing protection, same-origin framing policy, restricted browser permissions, referrer policy and HTTPS transport policy. Registered WordPress inline scripts receive hashes so public HTML can remain cacheable without allowing arbitrary inline scripts. Inline style compatibility remains a conscious Elementor constraint; this is not a claim of perfect browser isolation.
@@ -170,6 +174,10 @@ FDA clinical-decision-support guidance is relevant before commercial patient-spe
 
 This assessment uses primary regulator guidance and the cited technical sources. Direct retrieval of the GDPR legislative text was blocked by browser verification; Washington guidance was available through official indexed material while direct retrieval returned403. The report does not claim a complete statutory review of every US state or EU Member State. Real launch requires current jurisdiction-specific review.
 
+The public [compliance register](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/legal/COMPLIANCE-REGISTER.md) adds further US rows. COPPA is not applicable while the site remains general-audience with no accounts; reassess before accounts or age-specific content. CAN-SPAM applies once a commercial newsletter exists: sender identification, a physical address and unsubscribe requests honored within 10 business days. DMCA §512 safe harbor requires a designated agent registered with the US Copyright Office before user uploads are hosted; a copyright-takedown process is already documented.
+
+Other jurisdictions are recorded in the same register. UK GDPR and the Data Protection Act 2018 impose GDPR-equivalent duties, an ICO fee/registration assessment and UK transfer mechanisms where the operator is UK-established or targets people in the UK. Bangladesh's Personal Data Protection Act 2026, reported to replace the 2025 Ordinance, is relevant if the operator is established there; secondary sources report phased implementation through 2027, the text has not been verified against the official gazette, and local counsel review is required.
+
 ## 18. Commercial feature activation gates
 
 Real publication requires claim verification, source/media rights, truthful authorship, conflict disclosure and an editorial approval record. Medical authority must not be invented to fill a template. Eligible-only indexing is a working boundary, not a replacement for editorial review.
@@ -180,11 +188,15 @@ Public accounts require authorization tests, secure recovery, abuse controls, de
 
 These features remain disabled. No placeholder policy should be presented to a client as proof that a future business is already legally operational. No new paid integration is activated by this roadmap.
 
+A repository [legal pack](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/legal/README.md) supports these gates: a medical disclaimer, a verified cookie and browser-storage inventory, a service-provider register, an AI-transparency statement, an accessibility statement, an editorial and copyright policy, and launch templates for a privacy policy and terms of use. The templates are not in force, the operator fields remain to be completed, and none of the pack is legal advice. The live demonstration notices continue to be maintained separately.
+
 ## 19. Accessibility and resilient interaction
 
 The implementation includes keyboard navigation, visible focus, search-dialog focus restoration, a skip link, responsive navigation, readable fallback states and reduced-motion handling. Hidden duplicate image links are removed from the tab order. Long imported URLs wrap within narrow article columns rather than being concealed with overflow clipping.
 
 Actual browser tests exercised these behaviors, including stacked review links and mobile navigation. They are useful engineering evidence, not a full screen-reader, physical-device, cross-browser or WCAG conformance assessment. A client-facing accessibility statement must distinguish tested features from known limitations and provide a real contact once the operator is established.
+
+A published [accessibility statement](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/legal/ACCESSIBILITY.md) now targets WCAG 2.2 Level AA and makes no conformance claim. It lists known limitations, including no recorded screen-reader or physical-device testing and unaudited alternative text and contrast in imported articles, and sets an audit roadmap: automated checks across all 63 routes, manual keyboard and screen-reader passes on key journeys, a contrast audit and published remediation results.
 
 ## 20. Capacity target: 10k–1M concurrent readers
 
@@ -216,6 +228,10 @@ The 99% target is an SLO, not a contractual SLA or measured achievement. As cont
 
 External monitoring, automated failover and long-term availability evidence are planned. Backups establish recoverability, not instantaneous availability. Recovery-point and recovery-time commitments should follow repeated representative restore exercises. Maintenance and outages must be reported honestly; agree any contractual exclusions explicitly. [Google SRE guidance](https://sre.google/workbook/implementing-slos/)
 
+A proposed error-budget policy governs releases within each 30-day window. Below 50% of the budget consumed, releases proceed normally; from 50% to 75%, each release needs a reviewed rollback plan; from 75% to 100%, only reliability and security fixes ship; beyond 100%, a feature freeze applies until a post-incident review is complete, and the miss is reported publicly. Details are in the [scalability and reliability plan](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/SCALABILITY-AND-RELIABILITY.md).
+
+An [incident response plan](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/INCIDENT-RESPONSE.md) defines four severity levels, with SEV-1 incidents (site down, tampered content or a suspected personal-data breach) acknowledged within one hour. It includes a personal-data breach decision tree and a post-incident review template. The plan is documented, not yet exercised under a live monitoring window.
+
 ## 23. Backup, restoration and rollback evidence
 
 A fresh local SQL/content snapshot was taken with authoring writes stopped and then restored on a separate isolated server runtime. The restored database contained 68 published pages and 156 valid Elementor layouts. Public interactions, film behavior, MFA and the native editor worked on that restored runtime before production activation.
@@ -223,6 +239,8 @@ A fresh local SQL/content snapshot was taken with authoring writes stopped and t
 Database readiness requires an authenticated TCP query against the configured database. A process ping was insufficient because the image briefly runs a socket-only initialization server. Transformed WordPress exports also required connection-scoped SQL compatibility for older zero-date defaults; global database modes were not relaxed. The exact failed import was reproduced and the compatible restore verified separately.
 
 The production transition saved another database backup and compared editable facts before applying the prepared production-origin export. The restore policy is included in the 141-file recovery manifest. The original static release remains available for routing rollback; recovering WordPress content and rolling back public routing are distinct operations.
+
+The [backup and disaster-recovery plan](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/BACKUP-AND-DISASTER-RECOVERY.md) proposes recovery objectives: a broken deploy restored within 30 minutes with no data loss by release rollback; database corruption within 4 hours and host loss within 24 hours, each from a backup no older than 24 hours; and a CDN/DNS misconfiguration within 1 hour. These are proposals. They become commitments only after two consecutive timed drills meet them. Scheduled automated backups and off-site retention enforcement are planned.
 
 ## 24. Verification, security scanning and limitations
 
@@ -234,6 +252,8 @@ The original frontend suite passed seven tests. Retained offline automation grou
 
 The current security workflow is manual and guarded, with no executed CI run claimed and no paid AI review job enabled. Real HTTP, browser and editor checks complement code tests. Fresh-context review corrected deployment, importer, social metadata and workflow defects before acceptance and found no outstanding material source blocker in the final reviewed change.
 
+A 24 September 2026 offline rerun passed 316 checks: 11 native behavior/configuration, seven frontend, five tool-calculation, 11 static-export and one admin-header test, plus 281 retained automation checks (71, 46, 38 and 126 end-to-end). Scoped Ruff lint, Mypy across six native Python files and the Bandit gate passed, and Gitleaks found no leaks in the staged documentation diff or the 46-commit history. The retained AskMe content-search test fails under plain Node because its JSON import and generated index are missing; that failure is logged in the defect log and is not counted as a pass. Two integration suites that need a running stack were not run.
+
 ## 25. Retained automation and optional publication tooling
 
 The repository retains customer-schema validation, deterministic planning/dry-run behavior, structural Elementor parsing, content/media orchestration, a centralized WordPress client, an authenticated legacy REST bridge, static export and bounded AskMe retrieval tooling. These are separate from the current native reader path and must be revalidated before reuse against another customer or environment.
@@ -243,6 +263,8 @@ The intended automation sequence is configuration → validation → reviewable 
 The optional static exporter validates origin/path scope, rewrites nested asset references and excludes unsupported dynamic submissions. Its public content index must contain only approved public material and be released with the matching snapshot. The retained AskMe worker is bounded retrieval, not unrestricted clinical reasoning, and is not called by the current browser library.
 
 Application authentication required by legacy bridge tooling conflicts with the native runtime's deliberate application-password disablement. Do not enable old workflows merely because their files exist. Review the intended authority, credentials, exposed routes and tests as a separate activation.
+
+The 24 September documentation review found that a legacy static snapshot deployment still exposes the retained AskMe route publicly, independently of the native site. The native reader path still does not call it. Decommissioning that snapshot, or restricting the route's origins and adding rate limiting, is an open owner decision tracked in the roadmap's quality track and the threat model. Until it is resolved, the route is treated as a current exposure, not as a retired component.
 
 ## 26. Developer handoff and configuration audit
 
@@ -268,8 +290,12 @@ Scale work proceeds from measured workload and delivery strategy to redundant st
 
 Keep release notes and the public overview synchronized with actual evidence. Do not convert a planned feature into a verified claim because code or a diagram mentions it. Preserve tested rollback assets and update recovery records as each meaningful stage completes.
 
+The published [roadmap](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/ROADMAP.md) formalizes this sequence. Phase 0 (foundation) is complete. Phase 1 establishes observability and the 99% SLO window, Phase 2 edge delivery for 10k–100k concurrent readers, Phase 3 a redundant origin and database high availability, and Phase 4 1M concurrent-reader qualification. Track L activates legal and commercial features one at a time. Track Q collects quality and CI work, including enabling the guarded workflows, pinning actions by SHA, moving CI off end-of-life Node 20, fixing the AskMe test harness, removing machine-specific paths, binding local Docker ports to loopback, an accessibility audit and resuming Dependabot. A phase is complete only when its exit criteria have evidence.
+
 ## 29. Reference material and maintenance entry points
 
 The repository's native verification record, US/EU research report and capacity/availability roadmap provide the detailed supporting evidence. Configuration files contain the executable assumptions; test results identify what was actually exercised. The public overview is a scrubbed derivative of the private project record and excludes recovery secrets and infrastructure exposure.
 
 Useful primary technical references include [WordPress hardening](https://developer.wordpress.org/advanced-administration/security/hardening/), [WordPress performance](https://developer.wordpress.org/advanced-administration/performance/optimization/), [NGINX request limiting](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html), [Google structured-data guidance](https://developers.google.com/search/docs/appearance/structured-data/article) and the inline regulator sources above. Research and release checks are time-bound; refresh them before a materially different client launch.
+
+The repository [documentation index](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/README.md) links every current document, including the [architecture](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/ARCHITECTURE.md), [operations runbook](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/OPERATIONS-RUNBOOK.md) and [development guide](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/docs/DEVELOPMENT.md). Project history is kept in the [changelog](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/CHANGELOG.md) and [defect log](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/DEFECT-LOG.md); contribution and support routes are in [CONTRIBUTING.md](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/CONTRIBUTING.md) and [SUPPORT.md](https://github.com/Zahidulislam2222/healthcodeanalysis/blob/main/SUPPORT.md).

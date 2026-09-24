@@ -21,7 +21,7 @@ Every document here separates what is **Live/Verified** from what is **Planned**
 | [ROADMAP.md](ROADMAP.md) | Phases 0–4 (foundation → 1M-reader qualification), legal and quality tracks, exit criteria |
 | [THREAT-MODEL.md](THREAT-MODEL.md) | STRIDE analysis, controls and residual risks |
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Setup, repository map, quality gates, configuration rules |
-| [PUBLIC-TECHNICAL-OVERVIEW.md](PUBLIC-TECHNICAL-OVERVIEW.md) | Long-form release narrative and evidence (edition of 14 September 2026) |
+| [PUBLIC-TECHNICAL-OVERVIEW.md](PUBLIC-TECHNICAL-OVERVIEW.md) | Long-form release narrative and evidence (release edition of 14 September 2026; documentation update of 24 September 2026) |
 
 ## Operations
 
