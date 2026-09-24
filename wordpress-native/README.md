@@ -42,7 +42,7 @@ The publisher excludes unverified demonstration articles from indexing, emits tr
 
 ## Evidence and limitations
 
-Local and public evidence includes the representative editor round trip, 13 interaction scenarios, 11 motion/accessibility states, 21 HTTP security checks and11 native/configuration regression tests. Full separate-host SQL/content restoration passed before native production activation. Final141-file and project-Caddy SHA256 parity passed. A28-request public proxy test verified real-client rate limiting despite forged application headers. See docs/VERIFICATION.md for scope and exceptions.
+Local and public evidence includes the representative editor round trip, 13 interaction scenarios, 11 motion/accessibility states, 21 HTTP security checks and 11 native/configuration regression tests. Full separate-host SQL/content restoration passed before native production activation. Final 141-file and project-Caddy SHA256 parity passed. A 28-request public proxy test verified real-client rate limiting despite forged application headers. See docs/VERIFICATION.md for scope and exceptions.
 
 Two Factor 0.16.0 is installed locally and on the verified public release. Password-only access is withheld; invalid TOTP is rejected; valid TOTP opens the dashboard and Elementor. Recovery values are private. Do not disable MFA for convenience when updating browser tests.
 
@@ -51,3 +51,9 @@ The implementation includes an anonymous NGINX HTML cache, bounded cache storage
 ## Security pipeline activation
 
 The repository contains a separate native security workflow covering the native build, configuration/behavior contracts, lint, types, Bandit, Semgrep, PHP syntax and Gitleaks. It is manual and guarded by `HEALTHCODE_ACTIONS_ENABLED`; it has not been activated or billed by this work. Review runner availability, action licensing and account billing before enabling it. There is no paid AI-review job. Local results and the machine's mandatory edit scan remain separate evidence; a workflow definition is not a successful CI run.
+
+## Related documentation
+
+- [Architecture](../docs/ARCHITECTURE.md) · [Threat model](../docs/THREAT-MODEL.md) · [Roadmap](../docs/ROADMAP.md)
+- [Operations runbook](../docs/OPERATIONS-RUNBOOK.md) · [Backup and disaster recovery](../docs/BACKUP-AND-DISASTER-RECOVERY.md)
+- [Legal and compliance pack](../docs/legal/README.md): the published notices are owned by `data/public-notices.json`

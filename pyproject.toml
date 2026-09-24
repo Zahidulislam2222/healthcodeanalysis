@@ -1,7 +1,7 @@
 [project]
 name = "healthcode-analysis"
 version = "1.0.0"
-description = "WordPress Elementor site cloning and content automation via REST API"
+description = "Native WordPress + Elementor Free medical-technology publication, with design source, build tooling and retained Elementor automation"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}

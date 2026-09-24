@@ -152,3 +152,6 @@ PROJECT-DOSSIER.md
 /frontend/artwork/neural-generated.mp4
 /wordpress-native/build/
 /wordpress-native/.env
+
+# Local scratch output (may contain private correspondence) — never commit
+/out.txt

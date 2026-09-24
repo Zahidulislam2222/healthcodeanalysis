@@ -37,3 +37,10 @@ node --check frontend/scripts/app.mjs
 ```
 
 See `VALIDATION.md` for the recorded local verification and its limits.
+
+## Related documentation
+
+- [Design notes](DESIGN.md) · [Validation](VALIDATION.md)
+- [Architecture](../docs/ARCHITECTURE.md): how this design source relates to the live native build
+- [Accessibility statement](../docs/legal/ACCESSIBILITY.md) · [AI transparency](../docs/legal/AI-TRANSPARENCY.md)
+- Font licences: [THIRD-PARTY-NOTICES.md](../THIRD-PARTY-NOTICES.md)

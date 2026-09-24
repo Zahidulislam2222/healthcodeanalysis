@@ -2,14 +2,14 @@
 
 The owner requires the approved design, including the neural brain and slower balanced hero, reproduced almost exactly in Elementor Free. These criteria were established before migration. The native release is now deployed; the preserved static release remains the visual reference and rollback option. Recorded verification and remaining owner acceptance are listed in `docs/VERIFICATION.md`.
 
-1. All63 routes preserved in WordPress; layouts stored as real Elementor containers and free heading/text/image/button/video widgets. No whole-page HTML or iframe workaround.
+1. All 63 routes preserved in WordPress; layouts stored as real Elementor containers and free heading/text/image/button/video widgets. No whole-page HTML or iframe workaround.
 2. Header/footer are editable Elementor templates managed by the current free Ultimate Addons header/footer builder; no Elementor Pro dependency.
-3. Desktop1903×905/1440×1000, laptop1280×720 and mobile390/320 side-by-side screenshot comparisons; fix visual differences in hierarchy, spacing, media, cards, controls and footer.
+3. Desktop 1903×905/1440×1000, laptop 1280×720 and mobile 390/320 side-by-side screenshot comparisons; fix visual differences in hierarchy, spacing, media, cards, controls and footer.
 4. Real Elementor editor opens and saves representative heading, button and image edits; revert the test edits and verify frontend output. Inventory widget types and explicitly account for every shortcode/HTML exception.
 5. Search, saved list, six tools, video seeking/pause, responsive navigation, keyboard use, failed media and reduced motion work in WordPress. Custom behavior belongs in a small plugin; layout remains native widgets.
 6. Latest stable PHP/core/plugins verified from official sources; no prerelease or nulled paid packages. ACF only where content editing benefits.
 7. Isolated local build first. Snapshot/database/uploads recovery, persistent-volume recreation and tested off-server restore before replacing the public static reference. Loopback server binding and TLS/DNS remain scoped.
-8. Update checkpoint/dossier/credentials and shared registry as state changes; report tests/types/lint/security/build/native validators, real flows, review, and local/live parity. Visual acceptance is the owner's decision; do not invent a100% match.
+8. Update checkpoint/dossier/credentials and shared registry as state changes; report tests/types/lint/security/build/native validators, real flows, review, and local/live parity. Visual acceptance is the owner's decision; do not invent a 100% match.
 
 ## Search, security and legal extension
 

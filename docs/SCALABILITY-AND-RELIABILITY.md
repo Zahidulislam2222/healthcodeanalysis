@@ -2,6 +2,8 @@
 
 **Status: architecture roadmap. Not a demonstrated capacity claim or a contractual SLA.**
 
+Phased delivery plan and exit criteria: [ROADMAP.md](ROADMAP.md). Stages 1–4 below map to roadmap Phases 1–4. System design: [ARCHITECTURE.md](ARCHITECTURE.md).
+
 The target is 10,000–1,000,000 concurrent readers and a 99% availability SLO. Current measured maximum concurrency and long-term availability are **not established**. The single-server demo must not be presented as having passed those targets. Implementing the planned components alone would still not prove capacity; representative testing is required.
 
 ## Capability register
@@ -9,7 +11,7 @@ The target is 10,000–1,000,000 concurrent readers and a 99% availability SLO. 
 | Capability | Status | Evidence or remaining work |
 |---|---|---|
 | Preserved original design | VERIFIED | Source/rendered snapshot, 205 SHA256-verified files; private recovery record. |
-| Native Elementor Free authoring | IMPLEMENTED AND VERIFIED | Representative editor save/restore and13 public interaction scenarios passed locally and publicly; owner visual acceptance remains. |
+| Native Elementor Free authoring | IMPLEMENTED AND VERIFIED | Representative editor save/restore and 13 public interaction scenarios passed locally and publicly; owner visual acceptance remains. |
 | Isolated local WordPress/database | IMPLEMENTED | Dedicated Compose project and volumes; not a high-availability cluster. |
 | Browser-side search and educational tools | IMPLEMENTED | All six browser tool flows passed locally; no external requests in the exercised public flows. |
 | 10k concurrent readers | TARGET, NOT MEASURED | Workload definition, capacity tests and delivery limits required. |
@@ -17,9 +19,9 @@ The target is 10,000–1,000,000 concurrent readers and a 99% availability SLO. 
 | 99% availability | TARGET, NOT MEASURED | External observation window, incident history and failover evidence required. |
 | Multiple origin replicas | PLANNED | Shared state and failover have not been deployed. |
 | Database high availability | PLANNED | Replication, recovery and consistency have not been deployed. |
-| Anonymous page cache | IMPLEMENTED AND VERIFIED | NGINX cache lock, bounded storage and explicit private-route bypass;21 local and public HTTP checks passed, including cache HIT and private headers. |
+| Anonymous page cache | IMPLEMENTED AND VERIFIED | NGINX cache lock, bounded storage and explicit private-route bypass; 21 local and public HTTP checks passed, including cache HIT and private headers. |
 | Automatic scaling | PLANNED | No autoscaler or additional paid resources provisioned. |
-| Bounded local HTTP smoke | VERIFIED LOCALLY |40/40 successful responses,4workers,40cacheHITs. [Measured artifact](../wordpress-native/docs/LOCAL-SMOKE-RESULTS.json); not production capacity. |
+| Bounded local HTTP smoke | VERIFIED LOCALLY |40/40 successful responses, 4 workers, 40 cache HITs. [Measured artifact](../wordpress-native/docs/LOCAL-SMOKE-RESULTS.json); not production capacity. |
 | High-load test results | NOT AVAILABLE | A local smoke test cannot establish production-scale capacity. |
 
 ## Define the workload first
@@ -73,6 +75,40 @@ Run gradual, authorized load tests against a dedicated environment with producti
 
 Grafana k6 supports explicit pass/fail thresholds; a script is tooling, not evidence that it ran or passed. No large test should be pointed at the shared live server by default. [k6 thresholds](https://grafana.com/docs/k6/latest/using-k6/thresholds/)
 
+## Target reference architecture for 1M concurrent readers
+
+**Status: PLANNED.** This is the design the staged work converges on. It is not deployed. Phase-by-phase exit criteria are in [ROADMAP.md](ROADMAP.md).
+
+```mermaid
+flowchart TB
+    Readers([Readers worldwide]) --> Edge[Global CDN<br/>HTML + assets cached at edge<br/>WAF + bot management]
+    Edge -->|~1% misses| LB[Health-checked load balancer]
+    LB --> O1[Origin 1<br/>gateway + WordPress]
+    LB --> O2[Origin 2<br/>gateway + WordPress]
+    LB --> On[Origin N]
+    O1 & O2 & On --> OC[(Shared object cache)]
+    O1 & O2 & On --> DBP[(Database primary)]
+    DBP -->|replication| DBR[(Replica / standby)]
+    O1 & O2 & On --> OBJ[(Object storage<br/>uploads + media)]
+    OBJ --> Edge
+    Editors([Editors]) --> Admin[Isolated authoring origin<br/>uncached, MFA]
+    Admin --> DBP
+    Admin -->|publish| Purge[Targeted cache purge]
+    Purge --> Edge
+    Probes[External synthetic probes<br/>2+ regions] -.-> Edge
+```
+
+| Layer | Scaling mechanism | Failure behavior |
+|---|---|---|
+| Edge | CDN serves nearly all anonymous HTML and assets; the origin sees only misses and purges. | Can serve stale content while the origin is down (freshness becomes its own SLI). |
+| Origins | Stateless replicas; add instances horizontally. | The load balancer removes unhealthy origins. |
+| Object cache | Shared cache reduces database reads on misses. | Loss degrades latency, not correctness. |
+| Database | Primary for writes (editors only); replicas for reads if needed. | Tested failover to the standby; RPO follows replication lag. |
+| Media | Object storage behind the CDN, with range requests and immutable URLs. | Independent of the origin pool. |
+| Authoring | Separate uncached origin, so reader spikes cannot starve editors. | Editing can pause without affecting reading. |
+
+Anonymous reading is almost entirely read-only, so the design needs **no database write scaling** for readers. Write load comes only from editors. That is why the 1M target is realistic in principle for this workload, and it becomes a claim only after the Stage 4 qualification.
+
 ## Availability SLO and error budget
 
 **Proposed primary SLI:** successful synthetic public-page probes divided by all scheduled eligible probes, observed externally over a rolling 30-day window. A successful probe requires a valid TLS connection, expected HTTP status and expected page marker within the documented deadline. Report monitoring gaps separately; missing observations are not successful probes. Keep administrative availability and publication freshness as separate indicators.
@@ -80,6 +116,26 @@ Grafana k6 supports explicit pass/fail thresholds; a script is tooling, not evid
 **Target:** at least 99% successful eligible probes. This is an SLO, not a warranty or a client SLA. Where measured as continuous time, 99% over 30 days permits 432 minutes (7 hours 12 minutes) of unavailability. Probe sampling only estimates time availability, so do not confuse a request-based or sampled SLI with exact outage duration.
 
 Define independent locations, schedule, timeout, retry treatment and incident ownership before starting the measurement window. Include maintenance in the public availability report unless an explicitly agreed contract states otherwise. Freeze risky feature releases when the agreed error budget is exhausted; prioritize remediation and recovery tests. [Google SRE: implementing SLOs](https://sre.google/workbook/implementing-slos/)
+
+### Error budget policy (proposed)
+
+| Budget consumed in the 30-day window | Action |
+|---|---|
+| < 50% | Normal releases. |
+| 50–75% | Releases require a rollback plan reviewed in the pull request. |
+| 75–100% | Only fixes that improve reliability or security ship. |
+| > 100% (SLO missed) | Feature freeze until a post-incident review is complete and the corrective actions are scheduled. The miss is reported publicly. |
+
+### Supporting indicators (not part of the 99% SLI)
+
+| Indicator | Proposed objective |
+|---|---|
+| Public page latency | p95 time to first byte under 800 ms from probe locations for cached pages. |
+| Publication freshness | Published edits visible to readers within 5 minutes. |
+| Authoring availability | Tracked separately; editor downtime does not count against the reader SLO. |
+| Recovery | RTO and RPO targets in [BACKUP-AND-DISASTER-RECOVERY.md](BACKUP-AND-DISASTER-RECOVERY.md), validated by drills. |
+
+These objectives are proposals to be confirmed with measured baselines in roadmap Phase 1.
 
 Backups protect recoverability, not instantaneous availability. Agree recovery point and recovery time targets only after representative restore tests. Multiple replicas without failure testing do not establish high availability. [WordPress performance guidance](https://developer.wordpress.org/advanced-administration/performance/optimization/)
 
@@ -93,7 +149,7 @@ No additional paid resources, subscriptions or high-volume test services are aut
 
 ## Reproduce the bounded local check
 
-The local-only tool validates its environment and request/concurrency bounds, disables environment proxies, and does not follow redirects. Its default plan sends40 requests with4 workers after a warmup. It measures anonymous HTTP/cache behavior only; it does not load browser assets or simulate40 simultaneous people.
+The local-only tool validates its environment and request/concurrency bounds, disables environment proxies, and does not follow redirects. Its default plan sends 40 requests with 4 workers after a warmup. It measures anonymous HTTP/cache behavior only; it does not load browser assets or simulate 40 simultaneous people.
 
 ```bash
 python wordpress-native/scripts/local_smoke.py --environment wordpress-native/.env --plan wordpress-native/data/local-smoke.json --policy wordpress-native/data/publishing-policy.json

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/Zahidulislam2222/healthcodeanalysis/security/policy
+    about: Please report security issues privately. Do not open a public issue.
+  - name: Documentation
+    url: https://github.com/Zahidulislam2222/healthcodeanalysis/tree/main/docs
+    about: Architecture, roadmap, operations and legal documentation.
