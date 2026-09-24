@@ -1,0 +1,80 @@
+pid /tmp/nginx.pid;
+worker_processes auto;
+events { worker_connections {{ delivery.worker_connections }}; }
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    proxy_hide_header X-Content-Type-Options;
+    proxy_hide_header X-Frame-Options;
+    proxy_hide_header Referrer-Policy;
+    proxy_hide_header Permissions-Policy;
+    access_log off;
+    error_log /dev/stderr warn;
+    client_body_temp_path /tmp/client;
+    proxy_temp_path /tmp/proxy;
+    fastcgi_temp_path /tmp/fastcgi;
+    uwsgi_temp_path /tmp/uwsgi;
+    scgi_temp_path /tmp/scgi;
+    client_body_timeout {{ delivery.client_body_timeout_seconds }}s;
+    keepalive_timeout {{ delivery.keepalive_timeout_seconds }}s;
+    client_max_body_size {{ policy.security.maximum_upload_mb }}m;
+    proxy_cache_path /tmp/cache levels=1:2 keys_zone=public:{{ delivery.cache_zone_mb }}m max_size={{ delivery.cache_max_mb }}m inactive={{ delivery.cache_inactive_minutes }}m use_temp_path=off;
+    map $request_method $private_method { default 1; GET 0; HEAD 0; }
+    map $http_cookie $private_cookie { default 1; "" 0; }
+    map $http_authorization $private_auth { default 1; "" 0; }
+    map $args $private_query { default 1; "" 0; }
+    map $uri $private_path {
+        default 0;
+        ~^/(wp-admin|wp-login\.php|wp-json|wp-cron\.php|xmlrpc\.php|my-reading-list)(/|$) 1;
+    }
+    map "$private_method$private_cookie$private_auth$private_query$private_path" $skip_cache { default 1; "00000" 0; }
+    # Only the explicitly configured host proxy may supply this overwritten header.
+    real_ip_header X-HealthCode-Client-IP;
+    real_ip_recursive off;
+{% for network in delivery.trusted_proxy_cidrs %}    set_real_ip_from {{ network }};
+{% endfor %}    limit_req_zone $binary_remote_addr zone=login:1m rate={{ delivery.login_requests_per_minute }}r/m;
+    # Container-loopback process check; never published on the host or public server.
+    server { listen 127.0.0.1:8081; location / { return 200 'gateway ready'; } }
+    server {
+        listen {{ delivery.listen_port }};
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-Frame-Options SAMEORIGIN always;
+        add_header Referrer-Policy "{{ policy.security.referrer_policy }}" always;
+        add_header Permissions-Policy "{{ policy.security.permissions_policy }}" always;
+        add_header X-HealthCode-Cache $upstream_cache_status always;
+        location ~ /\.(?!well-known/) { return 404; }
+        location ~ ^/(wp-content|wp-includes)/(?:.*/)?$ { return 404; }
+        location ~* ^/(wp-config[^/]*\.php|readme\.html|license\.txt|composer\.(json|lock)|package(-lock)?\.json) { return 404; }
+        location ~* \.(sql|bak|env|ini|log|git|ya?ml)$ { return 404; }
+        location ~* ^/wp-content/uploads/.*\.(php[0-9]*|phtml|phar)(/|$) { return 403; }
+        location = /xmlrpc.php { return 403; }
+        location = /wp-login.php {
+            limit_req zone=login burst={{ delivery.login_burst }} nodelay;
+            limit_req_status 429;
+            proxy_pass http://{{ delivery.upstream }};
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_cache off;
+        }
+        location / {
+            proxy_pass http://{{ delivery.upstream }};
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_connect_timeout {{ delivery.connect_timeout_seconds }}s;
+            proxy_read_timeout {{ delivery.read_timeout_seconds }}s;
+            proxy_buffer_size 16k;
+            proxy_buffers 8 16k;
+            proxy_cache public;
+            proxy_cache_key "$http_host$request_uri";
+            proxy_cache_bypass $skip_cache;
+            proxy_no_cache $skip_cache $upstream_http_set_cookie;
+            proxy_cache_lock on;
+            proxy_cache_background_update on;
+            proxy_cache_use_stale updating;
+        }
+    }
+}

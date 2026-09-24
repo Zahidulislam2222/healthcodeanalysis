@@ -1,0 +1,50 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Security vulnerabilities must not be reported here.** Follow SECURITY.md instead.
+        Do not include credentials, personal data or patient information.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Live site (native WordPress / Elementor)
+        - Frontend design source (frontend/)
+        - Native build / import tooling (wordpress-native/)
+        - AskMe Worker (workers/askme/)
+        - Automation toolkit (scripts/)
+        - Documentation
+        - CI / GitHub Actions
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Include the exact error text or a screenshot.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Click …
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Browser/OS, or Python/Node version and command used

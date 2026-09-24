@@ -1,0 +1,38 @@
+{
+  "default": "#edf2ef",
+  "ancestor_classes": [
+    {
+      "class": "brand-mark",
+      "color": "#080e12"
+    },
+    {
+      "class": "button-outline",
+      "color": "#edf2ef"
+    },
+    {
+      "class": "button",
+      "color": "#080e12"
+    },
+    {
+      "class": "feature-arrow",
+      "color": "#080e12"
+    },
+    {
+      "class": "image-arrow",
+      "color": "#080e12"
+    },
+    {
+      "class": "path-link",
+      "color": "#c0ff8c"
+    },
+    {
+      "class": "tool-icon",
+      "color": "#244132",
+      "within": "frontier-workbench"
+    },
+    {
+      "class": "frontier-workbench",
+      "color": "#10241e"
+    }
+  ]
+}

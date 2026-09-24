@@ -1,0 +1,66 @@
+{
+  "privacy-policy": {
+    "eyebrow": "PRIVACY & STORAGE",
+    "title": "Your space.\nYour information.",
+    "description": "How this public demonstration handles browser activity and local tools.",
+    "body": [
+      {"heading":"A demonstration with limited collection","text":"HealthCode Analysis is an editorial and technology demonstration, not a healthcare service. Public accounts, newsletters, advertising, affiliate tracking and analytics integrations are not enabled. Do not submit patient records or other confidential information."},
+      {"heading":"Tools and search stay in your browser","text":"Library searches, calculator inputs, worksheets and selected images are processed by code in your browser. These functions do not send your inputs to an AI provider or a remote form service. Ask the library retrieves matching pages; it does not generate clinical answers."},
+      {"heading":"Your reading list","text":"Saving a story stores its identifier in local storage on this browser. The list remains until you remove stories, clear the reading list or clear your browser data. This requested feature is not a central account or a profile stored by HealthCode."},
+      {"heading":"Hosting and connection information","text":"Opening a page sends connection information, including your IP address and requested resources, to the hosting and delivery infrastructure. The public site uses a hosting server and Cloudflare for delivery and protection. Security-related processing can occur even without advertising or analytics. Provider retention and international processing are subject to their actual service terms."},
+      {"heading":"Administration and external sites","text":"Authorized WordPress editors use authentication cookies and administrative accounts. These are separate from public reading. Following an external source link takes you to a website with its own privacy practices."},
+      {"heading":"Before a client activates collection","text":"This demo does not provide a public submission channel for privacy requests or personal information. A real client must identify the legal operator and working privacy contact, document recipients and retention, and implement the applicable rights process before activating public collection features. This notice is not a claim of universal GDPR, HIPAA or US-state-law compliance."}
+    ]
+  },
+  "affiliate-disclosure": {
+    "eyebrow":"EDITORIAL TRANSPARENCY",
+    "title":"Context matters.\nSo does disclosure.",
+    "description":"A clear boundary between demonstration and verified evidence.",
+    "body":[
+      {"heading":"Demonstration reviews","text":"Imported stories and reviews demonstrate editorial layouts. Product availability, ratings, testing claims and clinical statements have not been independently verified. They are not verified buying advice or evidence of hands-on product testing."},
+      {"heading":"Commercial relationships","text":"No advertising or affiliate tracking integration is enabled in this demo. A future sponsored article or affiliate recommendation must disclose the real relationship clearly beside the relevant content. A general footer link is not a substitute for a required disclosure."},
+      {"heading":"Synthetic artwork","text":"The hero brain image and motion sequence are AI-generated illustrations, not medical scans or representations of a real patient. Other imported imagery is used within the demonstration; rights and provenance must be checked before a client republishes it commercially."}
+    ]
+  },
+  "editorial-policy": {
+    "eyebrow":"EDITORIAL STANDARDS",
+    "title":"Evidence before\nauthority.",
+    "description":"How demonstration material becomes eligible for real publication.",
+    "body":[
+      {"heading":"Current editorial status","text":"The imported library is demonstration content and has not received independent medical or product verification. Unverified articles are excluded from search indexing. Their presence in this library does not imply clinical review."},
+      {"heading":"Publication checks","text":"Before an article is promoted as verified, a responsible editor must check substantive claims against primary sources, confirm authorship and dates, disclose relevant relationships, verify image rights and record corrections. Medical claims require appropriate qualified review; this demo does not invent reviewer credentials."},
+      {"heading":"AI and retrieval","text":"The illustrated brain and its motion sequence were generated with AI. Ask the library performs browser-side retrieval from the collection; it is not a generative medical assistant. Imported text may not have complete provenance and must be reviewed before real publication."},
+      {"heading":"Corrections","text":"A client publication must provide a working corrections contact and maintain a correction history. Demonstration review scores and unsupported product claims must not be turned into verified ratings or testimonials."}
+    ]
+  },
+  "terms-of-use": {
+    "eyebrow":"DEMONSTRATION TERMS",
+    "title":"Explore with\nclear boundaries.",
+    "description":"Educational use, no clinical service and no purchase flow.",
+    "body":[
+      {"heading":"Educational demonstration","text":"This site demonstrates publishing, interface design and browser-based tools. It does not provide diagnosis, treatment, prescriptions or a clinician-patient relationship. Do not use its outputs for clinical decisions or emergencies."},
+      {"heading":"Medical tools","text":"Calculations and scores are educational demonstrations and have not been validated here for clinical deployment. A familiar formula or a disclaimer does not establish regulatory clearance. Use qualified professional guidance and validated clinical systems for patient care."},
+      {"heading":"Your information","text":"Use fictional or non-sensitive examples. Do not enter identifiable patient information into worksheets or select confidential medical images. Browser processing is not a promise that a shared or compromised device is private."},
+      {"heading":"No transactions","text":"This demo does not offer purchases, paid subscriptions, public accounts or newsletter registration. A real client must adopt appropriate terms and policies for its operator, jurisdictions and services before enabling those features."}
+    ]
+  },
+  "accessibility": {
+    "eyebrow":"ACCESSIBILITY",
+    "title":"A clearer path\nthrough the site.",
+    "description":"Keyboard navigation, readable content and control over motion.",
+    "body":[
+      {"heading":"Navigation and controls","text":"The interface provides labelled controls, visible keyboard focus and a responsive navigation menu. Library dialogs and educational tools are intended to work with a keyboard. Browser zoom can be used to enlarge content."},
+      {"heading":"Motion preferences","text":"The brain sequence includes a motion control. Reduced-motion preferences are respected so that animation is not required to read or use the site."},
+      {"heading":"Assessment boundary","text":"This statement describes design intent and controls, not a claim of complete WCAG or legal conformance. A real client should arrange a manual assistive-technology review and provide a working accessibility feedback contact before launch."}
+    ]
+  },
+  "contact": {
+    "eyebrow":"LET’S CONNECT",
+    "title":"Good questions\nstart something.",
+    "description":"Explore the demonstration and its publication boundaries.",
+    "body":[
+      {"heading":"No message collection in this demo","text":"This demonstration does not operate a public contact form or newsletter inbox. Do not send confidential or clinical information. A real client must configure its public contact and privacy-request channels before enabling submissions."},
+      {"heading":"Find relevant reading","text":"Search and Ask the library retrieve pages from this collection on your device. They do not contact an external AI service or provide medical advice."}
+    ]
+  }
+}

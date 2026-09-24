@@ -1,0 +1,308 @@
+{
+  "brand": "HealthCode",
+  "brand_suffix": "ANALYSIS",
+  "tagline": "At the intersection of medicine & technology.",
+  "description": "A considered look at medical AI, digital health, and the tools changing how we work.",
+  "edition": "THE INTELLIGENCE EDITION",
+  "hero": {
+    "eyebrow": "MEDICINE × TECHNOLOGY",
+    "lines": [
+      "A changing world.",
+      "A clearer"
+    ],
+    "emphasis": "perspective.",
+    "description": "Make sense of medical AI. Explore the ideas, tools, and breakthroughs shaping a more thoughtful future for healthcare.",
+    "primary": "Explore the insights",
+    "secondary": "Find your next tool",
+    "caption": "A closer look changes everything.",
+    "annotation": "COMPLEXITY → CLARITY",
+    "figure": "FIG. 01 / THE EVIDENCE ATLAS",
+    "note": "An illustrative study of information, in layers."
+  },
+  "nav": [
+    {
+      "label": "Insights",
+      "url": "/medintel-insights/"
+    },
+    {
+      "label": "Reviews",
+      "url": "/reviews/"
+    },
+    {
+      "label": "Toolbox",
+      "url": "/toolbox/"
+    },
+    {
+      "label": "Our perspective",
+      "url": "/about-us/"
+    }
+  ],
+  "footer_nav": [
+    {
+      "label": "Workflow Lab",
+      "url": "/workflow-lab/"
+    },
+    {
+      "label": "Reading list",
+      "url": "/my-reading-list/"
+    },
+    {
+      "label": "Contact",
+      "url": "/contact/"
+    },
+    {
+      "label": "Privacy",
+      "url": "/privacy-policy/"
+    },
+    {
+      "label": "Disclosure",
+      "url": "/affiliate-disclosure/"
+    }
+  ],
+  "labels": {
+    "search": "Search the library",
+    "search_placeholder": "Try medical AI, wearables, or research…",
+    "search_empty": "No stories match that search. Try a broader topic.",
+    "filter_empty": "No stories in this selection. Try another topic or clear your search.",
+    "saved": "Saved to your reading list",
+    "removed": "Removed from your reading list",
+    "storage_error": "Your browser could not save this change. Allow local storage to keep a reading list.",
+    "reading_empty": "A little space for your next big idea.",
+    "reading_description": "Save a story anywhere in the library and find it here. Your list stays on this device.",
+    "assistant_title": "Ask the library",
+    "assistant_description": "Discover articles and tools from this collection. Search runs on your device.",
+    "assistant_placeholder": "What would you like to explore?",
+    "assistant_empty": "I couldn’t find a close match. Try a topic such as radiology, research, or wearables.",
+    "assistant_intro": "Start with a question or a topic. I’ll find relevant reading in the library.",
+    "assistant_error": "The library couldn’t load. Check your connection and try again.",
+    "copied": "Copied to clipboard",
+    "copy_error": "Copy unavailable. Select the text and copy it manually.",
+    "demo": "Editorial demo",
+    "demo_notice": "This is an editorial demonstration. Imported articles and product reviews have not been independently verified. Check important claims against primary sources before relying on them.",
+    "tool_notice": "Educational use only. These tools do not diagnose conditions or recommend treatment. Inputs are processed locally and are not stored.",
+    "save": "Save for later",
+    "unsave": "Remove saved story",
+    "read": "Read the story",
+    "all": "All topics",
+    "results": "stories",
+    "clear": "Clear filters",
+    "close": "Close",
+    "back": "Back to the library",
+    "list_full": "Your reading list is full. Remove a story before saving another.",
+    "list_cleared": "Reading list cleared",
+    "copy": "Copy draft",
+    "image_size_error": "Choose a supported image within the file-size and pixel limits.",
+    "image_format_error": "This browser could not create a WebP image.",
+    "image_download": "Download optimized image ↗",
+    "tool_error": "This tool could not process those inputs.",
+    "category_eyebrow": "EXPLORE A TOPIC",
+    "category_description": "A closer look through the HealthCode collection."
+  },
+  "sections": {
+    "latest_eyebrow": "THE READING ROOM",
+    "latest_title": "Ideas worth your attention.",
+    "latest_description": "A fresh perspective on the signals shaping healthcare.",
+    "latest_link": "Explore the library",
+    "review_eyebrow": "TECHSCOPE / IN FOCUS",
+    "review_title": "Look beyond\nthe promise.",
+    "review_description": "Explore the technology, understand the trade-offs, and ask better questions. A closer look at the tools entering healthcare.",
+    "review_link": "Inside TechScope",
+    "tools_eyebrow": "LESS FRICTION. MORE FOCUS.",
+    "tools_title": "Small tools.\nUseful possibilities.",
+    "tools_description": "A practical workbench for research, learning, and creating.",
+    "tools_link": "Open the toolbox",
+    "perspective_eyebrow": "OUR PERSPECTIVE",
+    "perspective_title": "Curiosity, with\na critical eye.",
+    "perspective_description": "Technology moves quickly. Understanding takes a little more care. We connect medicine and technology through accessible explanations, considered questions, and practical exploration.",
+    "perspective_link": "Get to know HealthCode"
+  },
+  "featured_slugs": [
+    "the-digital-brain-for-doctors-managing-research-and-clinical-notes-with-obsidian-and-notion",
+    "the-ai-scribe-battle-2025-a-clinical-comparison-of-dax-copilot-nabla-and-ambience",
+    "how-to-build-an-automated-literature-review-workflow-using-n8n-pubmed-and-chatgpt"
+  ],
+  "featured_review": "gluco-cortisol-smart-patch-review-the-24-7-lab-on-your-arm",
+  "pages": {
+    "medintel-insights": {
+      "eyebrow": "THE READING ROOM",
+      "title": "A little more\nperspective.",
+      "description": "Explore the ideas at the intersection of clinical practice, technology, and discovery.",
+      "group": "insights"
+    },
+    "reviews": {
+      "eyebrow": "TECHSCOPE REVIEWS",
+      "title": "Beyond the\nfirst impression.",
+      "description": "A closer look at medical software, wearables, and emerging technology. Explore our demonstration review collection.",
+      "group": "reviews"
+    },
+    "toolbox": {
+      "eyebrow": "THE PRACTICAL WORKBENCH",
+      "title": "Make room for\nbetter work.",
+      "description": "Thoughtful little tools for research, learning, and creating. Everything runs on your device.",
+      "group": "tools"
+    },
+    "workflow-lab": {
+      "eyebrow": "WORKFLOW LAB",
+      "title": "Less busywork.\nMore possibility.",
+      "description": "Explore useful connections between research, automation, and everyday practice.",
+      "group": "insights",
+      "categories": [
+        39,
+        40
+      ]
+    },
+    "repository": {
+      "eyebrow": "THE COMPLETE COLLECTION",
+      "title": "Follow your\ncuriosity.",
+      "description": "Every insight, review, and practical resource, in one place.",
+      "group": "all"
+    },
+    "about-us": {
+      "eyebrow": "OUR PERSPECTIVE",
+      "title": "A meeting of\ncurious minds.",
+      "description": "HealthCode explores the changing relationship between medicine and technology.",
+      "body": [
+        {
+          "heading": "Clarity is the point.",
+          "text": "Medical technology deserves more than a headline. HealthCode brings together explanations, reviews, and practical learning resources for people curious about where healthcare goes next."
+        },
+        {
+          "heading": "Built for exploration.",
+          "text": "This edition is a working editorial and technology demonstration. It showcases a content publishing system, a browsable knowledge library, and local research tools. It is not a healthcare provider, and it does not offer diagnosis or treatment."
+        },
+        {
+          "heading": "A thoughtful lens.",
+          "text": "Imported demonstration stories are clearly identified. Product claims and clinical information should be checked against original research, official product documentation, and qualified professional advice."
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "LET’S CONNECT",
+      "title": "Good questions\nstart something.",
+      "description": "Explore the collection, learn about the project, or keep a story for later.",
+      "body": [
+        {
+          "heading": "About this preview",
+          "text": "This local edition does not collect messages or create accounts. There is no form that silently submits to an unavailable service."
+        },
+        {
+          "heading": "Find your next answer",
+          "text": "Use Search or Ask the library to find relevant articles, reviews, and tools. Both search the available collection without sending your query to an external AI service."
+        }
+      ]
+    },
+    "privacy-policy": {
+      "eyebrow": "THE SMALL PRINT",
+      "title": "Your space.\nYour information.",
+      "description": "How this local preview handles information.",
+      "body": [
+        {
+          "heading": "On your device",
+          "text": "Search queries, calculator values, worksheets, and images are processed locally. The preview does not send them to an AI provider or remote form service."
+        },
+        {
+          "heading": "Your reading list",
+          "text": "Saved story identifiers are stored in your browser’s local storage. You can remove individual stories or clear your reading list at any time. Clearing browser data also removes the list."
+        },
+        {
+          "heading": "External links",
+          "text": "Primary-source links open third-party websites with their own privacy practices. This preview has no analytics or tracking cookies. A deployed service would require a privacy review reflecting its actual hosting and integrations."
+        }
+      ]
+    },
+    "affiliate-disclosure": {
+      "eyebrow": "EDITORIAL TRANSPARENCY",
+      "title": "Context matters.\nSo does disclosure.",
+      "description": "A clear boundary between demonstration and evidence.",
+      "body": [
+        {
+          "heading": "Demonstration content",
+          "text": "The imported review collection is retained to demonstrate editorial layouts and publishing behavior. Review scores, testing claims, product availability, and performance statements have not been independently verified."
+        },
+        {
+          "heading": "No buying advice",
+          "text": "No affiliate tracking has been added to this local preview. Nothing here should be treated as a product endorsement or a substitute for independent research."
+        }
+      ]
+    },
+    "my-reading-list": {
+      "eyebrow": "YOUR READING LIST",
+      "title": "Worth coming\nback to.",
+      "description": "A collection of things that caught your eye. Saved on this device, ready when you are.",
+      "group": "saved"
+    }
+  },
+  "aliases": {
+    "repository-archive": "repository",
+    "useful-toolbox": "toolbox",
+    "med-tech-science": "medintel-insights",
+    "robotics-gear": "reviews",
+    "future-trends": "medintel-insights"
+  },
+  "tool_slugs": {
+    "bmi-calculator-analyzer": "bmi",
+    "egfr-precision-ckd-epi-2021-renal-function-calculator": "egfr",
+    "the-anticoagulation-decision-matrix-chads₂-vasc-has-bled-clinical-suite": "scores",
+    "pico-framework-the-medical-creators-secret-to-fast-research-summaries": "pico",
+    "high-fidelity-medicine-master-ai-with-the-medical-prompt-engineering-la": "prompt",
+    "visual-precision-optimizing-medical-imagery-with-the-media-transformer": "image"
+  },
+  "footer_note": "An editorial exploration of medicine & technology.",
+  "copyright": "HealthCode Analysis",
+  "not_found": {
+    "title": "A different direction.",
+    "description": "That page isn’t in this collection. Let’s find something worth reading.",
+    "action": "Back to HealthCode"
+  },
+  "frontier": {
+    "eyebrow": "A JOURNAL AT THE INTERSECTION",
+    "headline": [
+      "Medicine,",
+      "in perspective."
+    ],
+    "description": "Medical AI. Emerging technology. Ideas worth examining. A clearer perspective on the tools reshaping healthcare.",
+    "cta": "Discover the insights",
+    "secondary": "Explore the tools",
+    "figure": "NEURAL STUDY — MEDICINE × TECHNOLOGY",
+    "beats": [
+      {
+        "number": "01",
+        "word": "Understand.",
+        "title": "Make sense of medical AI.",
+        "text": "From clinical language models to the changing role of automation. Explore the research behind the conversation.",
+        "url": "/medintel-insights/"
+      },
+      {
+        "number": "02",
+        "word": "Question.",
+        "title": "Look closer at the technology.",
+        "text": "A different lens on wearables, software, and emerging devices. Read the demo review collection with a critical eye.",
+        "url": "/reviews/"
+      },
+      {
+        "number": "03",
+        "word": "Apply.",
+        "title": "Turn curiosity into practice.",
+        "text": "Build a better research question, draft a clearer prompt, or explore a useful calculation. Start with a tool.",
+        "url": "/toolbox/"
+      }
+    ],
+    "latest_title": "A new way of seeing.",
+    "latest_description": "Ideas from the intersection of medicine and technology.",
+    "workbench_title": [
+      "Less friction.",
+      "More possibility."
+    ],
+    "workbench_description": "A compact collection of tools for people who research, learn, and create.",
+    "close_title": "The next chapter of medicine deserves a closer look.",
+    "close_description": "HealthCode connects medical curiosity with technological possibility. An editorial project for people who want to understand the change.",
+    "film_status": "Ideas, reviews & practical tools",
+    "review_title": "Under the lens.",
+    "review_description": "Technology is a promise. Understanding the trade-offs is the work.",
+    "film_caption": [
+      "Closer to",
+      "the signal."
+    ],
+    "film_caption_note": "From medical AI to the tools shaping practice."
+  }
+}

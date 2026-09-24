@@ -1,0 +1,6 @@
+{
+  "sql_mode": "NO_AUTO_VALUE_ON_ZERO",
+  "character_set": "utf8mb4",
+  "scope": "restore_connection_only",
+  "purpose": "MySQL logical-dump compatibility for WP-CLI transformed exports; never change global server modes."
+}

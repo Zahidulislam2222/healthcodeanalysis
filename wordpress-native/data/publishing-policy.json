@@ -1,0 +1,46 @@
+{
+  "mode": "demonstration",
+  "index_demonstration_articles": false,
+  "site_name": "HealthCode Analysis",
+  "site_description": "An editorial and technology demonstration exploring medical AI, digital health and practical research tools.",
+  "language": "en",
+  "locale": "en_US",
+  "social_image": "assets/neural-generated.webp",
+  "features": {
+    "analytics": false,
+    "advertising": false,
+    "affiliates": false,
+    "newsletter": false,
+    "public_accounts": false,
+    "health_data_collection": false
+  },
+  "operator": {
+    "legal_name": null,
+    "country": null,
+    "privacy_contact": null
+  },
+  "excluded_routes": [
+    "/my-reading-list/"
+  ],
+  "training_agents_disallowed": [
+    "GPTBot"
+  ],
+  "security": {
+    "hsts_seconds": 31536000,
+    "permissions_policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    "referrer_policy": "strict-origin-when-cross-origin",
+    "front_csp": "default-src 'self'; script-src 'self' {script_sources}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self'; frame-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self' blob:",
+    "maximum_upload_mb": 20
+  },
+  "editorial": {
+    "review_required": true,
+    "disclosure": "Editorial demonstration. Imported claims have not been independently verified. This is not medical advice.",
+    "artwork_disclosure": "AI-generated illustrative artwork; not a medical scan.",
+    "search_disclosure": "Search runs in your browser. Ask the library retrieves matching pages; it does not generate medical answers."
+  },
+  "delivery": {
+    "public_cache_seconds": 30,
+    "stale_while_revalidate_seconds": 30,
+    "cache_anonymous_html": true
+  }
+}

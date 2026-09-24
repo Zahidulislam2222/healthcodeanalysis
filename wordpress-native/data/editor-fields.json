@@ -1,0 +1,35 @@
+{
+  "key": "group_hcn_publication_metadata",
+  "title": "HealthCode publication metadata",
+  "fields": [
+    {
+      "key": "field_hcn_description",
+      "label": "Search description",
+      "name": "_hcn_description",
+      "type": "textarea",
+      "instructions": "Describe this page accurately. Search engines may choose a different snippet.",
+      "maxlength": 320,
+      "rows": 3
+    },
+    {
+      "key": "field_hcn_social_image",
+      "label": "Social preview image URL",
+      "name": "_hcn_image",
+      "type": "url",
+      "instructions": "Use a licensed image from this site's media library. Leave blank for the publication's default artwork."
+    },
+    {
+      "key": "field_hcn_indexable",
+      "label": "Editorially eligible for indexing",
+      "name": "_hcn_indexable",
+      "type": "true_false",
+      "instructions": "Enable only after verifying this page's claims and publication rights. Unverified demonstration articles must remain disabled. Local and staging environments remain noindex regardless of this setting.",
+      "ui": 1,
+      "default_value": 0
+    }
+  ],
+  "location": [[{"param": "post_type", "operator": "==", "value": "page"}]],
+  "position": "normal",
+  "active": true,
+  "show_in_rest": 0
+}

@@ -1,0 +1,13 @@
+{
+  "name":"HealthCode Neural Frontier",
+  "output":"../assets/neural-frontier.png",
+  "blend":"neural-frontier.blend",
+  "resolution":[1600,1400],
+  "samples":48,
+  "camera":{"location":[5,-8,4.4],"target":[0,0,0.05],"scale":5.6},
+  "lobes":{"offset":0.57,"radii":[0.82,1.28,1.05],"tracks":64,"segments":220,"tube":0.015,"folds":13,"amplitude":0.075},
+  "material":{"color":[0.24,0.56,0.62,1],"metallic":0.65,"roughness":0.23},
+  "signal":{"color":[0.14,0.76,0.70,1],"strength":2.2,"every":11},
+  "lights":[{"location":[-4,-4,6],"color":[0.35,0.85,1],"energy":1700,"size":5},{"location":[4,2,4],"color":[1,0.48,0.23],"energy":2400,"size":4},{"location":[1,-5,-2],"color":[0.65,0.7,1],"energy":750,"size":3}],
+  "world_strength":0.07
+}

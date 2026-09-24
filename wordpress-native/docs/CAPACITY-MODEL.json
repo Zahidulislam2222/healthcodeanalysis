@@ -1,0 +1,37 @@
+{
+  "status": "ILLUSTRATIVE_MODEL_NOT_MEASURED_CAPACITY",
+  "assumptions": {
+    "seconds_between_page_views": 30,
+    "requests_per_page_view": 8,
+    "edge_cache_hit_ratio": 0.99,
+    "bytes_per_page_view": 500000,
+    "origin_response_seconds": 0.25
+  },
+  "time_based_error_budget_minutes": 432.0,
+  "scenarios": [
+    {
+      "concurrent_readers": 10000,
+      "page_views_per_second": 333.33,
+      "edge_requests_per_second": 2666.67,
+      "origin_requests_per_second": 26.67,
+      "approx_origin_requests_in_flight": 6.67,
+      "estimated_edge_gigabits_per_second": 1.333
+    },
+    {
+      "concurrent_readers": 100000,
+      "page_views_per_second": 3333.33,
+      "edge_requests_per_second": 26666.67,
+      "origin_requests_per_second": 266.67,
+      "approx_origin_requests_in_flight": 66.67,
+      "estimated_edge_gigabits_per_second": 13.333
+    },
+    {
+      "concurrent_readers": 1000000,
+      "page_views_per_second": 33333.33,
+      "edge_requests_per_second": 266666.67,
+      "origin_requests_per_second": 2666.67,
+      "approx_origin_requests_in_flight": 666.67,
+      "estimated_edge_gigabits_per_second": 133.333
+    }
+  ]
+}

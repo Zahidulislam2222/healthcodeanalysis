@@ -1,0 +1,15 @@
+{
+  "listen_port": 8080,
+  "upstream": "web:80",
+  "worker_connections": 1024,
+  "cache_zone_mb": 10,
+  "cache_max_mb": 128,
+  "cache_inactive_minutes": 10,
+  "login_requests_per_minute": 10,
+  "login_burst": 10,
+  "connect_timeout_seconds": 5,
+  "read_timeout_seconds": 60,
+  "client_body_timeout_seconds": 15,
+  "keepalive_timeout_seconds": 30,
+  "trusted_proxy_cidrs": []
+}

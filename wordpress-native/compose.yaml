@@ -1,0 +1,92 @@
+services:
+  db:
+    image: ${DB_IMAGE:?required}
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?required}
+      MYSQL_DATABASE: ${DB_NAME:?required}
+      MYSQL_USER: ${DB_USER:?required}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?required}
+    volumes: ["database:/var/lib/mysql"]
+    networks: [database]
+    mem_limit: 768m
+    cpus: 0.75
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_PASSWORD\" mysql --protocol=TCP -h127.0.0.1 -u\"$$MYSQL_USER\" -D\"$$MYSQL_DATABASE\" --connect-timeout=5 -Nse 'SELECT 1'"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+  web:
+    image: ${WP_IMAGE:?required}
+    restart: unless-stopped
+    depends_on:
+      db: {condition: service_healthy}
+    environment: &wp_environment
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME:?required}
+      WORDPRESS_DB_USER: ${DB_USER:?required}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:?required}
+      WP_ENVIRONMENT_TYPE: ${WP_ENVIRONMENT_TYPE:?required}
+      SITE_URL: ${SITE_URL:?required}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', getenv('WP_ENVIRONMENT_TYPE'));
+        define('WP_HOME', getenv('SITE_URL'));
+        define('WP_SITEURL', getenv('SITE_URL'));
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_AUTO_UPDATE_CORE', 'minor');
+        define('FORCE_SSL_ADMIN', getenv('WP_ENVIRONMENT_TYPE') === 'production');
+    volumes:
+      - content:/var/www/html
+      - ./build/plugin:/var/www/html/wp-content/plugins/healthcode-native:ro
+      - ./build/import:/import:ro
+    mem_limit: 768m
+    cpus: 1.0
+    networks: [database, frontend]
+    healthcheck:
+      test: ["CMD", "php", "-r", "require '/var/www/html/wp-load.php'; exit(is_blog_installed() ? 0 : 1);"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+  gateway:
+    image: ${EDGE_IMAGE:?required}
+    user: "101:101"
+    read_only: true
+    restart: unless-stopped
+    ports: ["127.0.0.1:${WP_PORT:?required}:8080"]
+    depends_on:
+      web: {condition: service_healthy}
+    volumes:
+      - ./build/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    tmpfs: ["/tmp:uid=101,gid=101,mode=1770,size=256m"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 384m
+    cpus: 0.5
+    pids_limit: 100
+    networks: [frontend]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--output", "/dev/null", "http://127.0.0.1:8081/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  cli:
+    image: ${CLI_IMAGE:?required}
+    profiles: [tools]
+    entrypoint: ["wp"]
+    user: "33:33"
+    networks: [database, frontend]
+    environment: *wp_environment
+    volumes:
+      - content:/var/www/html
+      - ./build/plugin:/var/www/html/wp-content/plugins/healthcode-native:ro
+      - ./build/import:/import:ro
+    depends_on:
+      db: {condition: service_healthy}
+volumes:
+  database:
+  content:
+networks:
+  database:
+    internal: true
+  frontend:

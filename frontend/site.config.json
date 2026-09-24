@@ -1,0 +1,53 @@
+{
+  "source_export": "pages-demo",
+  "output": "frontend-preview",
+  "content": "frontend/data/library.json",
+  "copy": "frontend/data/site.json",
+  "tools": "frontend/data/tools.json",
+  "templates": "frontend/templates",
+  "assets": "frontend/assets",
+  "styles": "frontend/styles",
+  "scripts": "frontend/scripts",
+  "preview_host": "127.0.0.1",
+  "preview_port": 8765,
+  "public_origin": "https://healthcodeanalysis.zahidul-islam.com",
+  "client": {
+    "search_limit": 12,
+    "assistant_limit": 4,
+    "reading_storage_key": "healthcode.reading-list.v1",
+    "max_saved": 100,
+    "motion_max_tilt": 3,
+    "search_index": "/assets/library-index.json",
+    "max_image_bytes": 20971520,
+    "max_image_pixels": 24000000,
+    "image_quality": 0.86,
+    "image_max_width": 1600,
+    "toast_duration": 3500,
+    "related_limit": 3,
+    "text_max_length": 2000,
+    "frontier": {
+      "video_url": "/assets/neural-film.mp4",
+      "minimum_width": 900,
+      "seek_epsilon": 0.045,
+      "end_padding": 0.04,
+      "headline_fade_start": 0.12,
+      "headline_fade_end": 0.43,
+      "caption_start": 0.68,
+      "caption_end": 0.84,
+      "pause_label": "Pause motion",
+      "resume_label": "Resume motion",
+      "review_count": 3,
+      "minimum_height": 650,
+      "reveal_duration": 700,
+      "reveal_distance": 24
+    }
+  },
+  "content_groups": {
+    "insights": 27,
+    "reviews": 30,
+    "tools": 26
+  },
+  "words_per_minute": 220,
+  "image_width": 1200,
+  "image_quality": 86
+}
